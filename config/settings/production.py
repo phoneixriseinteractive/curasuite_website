@@ -11,7 +11,7 @@ from .base import *  # noqa: F401, F403
 # ── Core ───────────────────────────────────────────────────────────────────────
 SECRET_KEY = os.environ["SECRET_KEY"]  # Hard fail if not set
 DEBUG = False
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "curasuite.com").split(",")
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "curasuite.app").split(",")
 
 
 # ── Database ───────────────────────────────────────────────────────────────────
@@ -25,30 +25,21 @@ DATABASES = {
         "PORT": os.environ.get("DB_PORT", "5432"),
         "OPTIONS": {
             "connect_timeout": 10,
-            "sslmode": "require",
         },
         "CONN_MAX_AGE": 60,
     }
 }
 
 
-# ── Cache (Redis) ──────────────────────────────────────────────────────────────
-REDIS_URL = os.environ["REDIS_URL"]
+# ── Cache (Databasebacked) ──────────────────────────────────────────────────────────────
+SESSION_ENGINE = "django.contrib.sessions.backends.db"
+
 CACHES = {
     "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": REDIS_URL,
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            "SOCKET_CONNECT_TIMEOUT": 5,
-            "SOCKET_TIMEOUT": 5,
-            "CONNECTION_POOL_KWARGS": {"max_connections": 50},
-        },
-        "KEY_PREFIX": "curasuite",
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "curasuite-prod",
     }
 }
-CELERY_BROKER_URL = REDIS_URL
-CELERY_RESULT_BACKEND = REDIS_URL
 
 
 # ── Email ──────────────────────────────────────────────────────────────────────

@@ -1,0 +1,123 @@
+{% extends "admin_panel/base.html" %}
+{% block content %}
+<div class="adm-page-header">
+  <div>
+    <h1 class="adm-page-title">Media Library</h1>
+    <div class="adm-breadcrumb"><a href="{% url 'admin_panel:dashboard' %}">Dashboard</a> › Media Library</div>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <select class="adm-select" style="max-width:140px;" onchange="window.location='?type='+this.value">
+      <option value="">All types</option>
+      <option value="image" {% if file_type == 'image' %}selected{% endif %}>Images</option>
+      <option value="document" {% if file_type == 'document' %}selected{% endif %}>Documents</option>
+      <option value="video" {% if file_type == 'video' %}selected{% endif %}>Videos</option>
+    </select>
+    <button onclick="document.getElementById('upload-input').click()" class="adm-btn adm-btn-primary">
+      <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Upload Files
+    </button>
+  </div>
+</div>
+
+{# Upload zone #}
+<div class="adm-card" style="margin-bottom:20px;" x-data="uploadZone()">
+  <div class="adm-upload-zone" id="upload-zone"
+       @dragover.prevent="dragging=true"
+       @dragleave="dragging=false"
+       @drop.prevent="handleDrop($event)"
+       :class="dragging ? 'drag-over' : ''">
+    <input type="file" id="upload-input" multiple accept="image/*,.pdf,.doc,.docx,.mp4"
+           @change="handleFiles($event.target.files)">
+    <div style="font-size:32px;margin-bottom:12px;">📁</div>
+    <p style="font-size:13px;font-weight:500;color:var(--adm-text-primary);margin-bottom:4px;">Drag & drop files here, or click Upload Files</p>
+    <p style="font-size:12px;color:var(--adm-text-muted);">Images (JPG, PNG, WebP), PDFs, MP4 — max 10MB each</p>
+  </div>
+  <div id="upload-progress" style="display:none;padding:16px 20px;">
+    <div style="font-size:13px;color:var(--adm-text-secondary);" id="upload-status">Uploading…</div>
+  </div>
+</div>
+
+{# File grid #}
+<div class="adm-card">
+  <div class="adm-card-header">
+    <span class="adm-card-title">Files</span>
+    <span style="font-size:12px;color:var(--adm-text-muted);">{{ files|length }} files</span>
+  </div>
+  {% if files %}
+  <div class="adm-media-grid">
+    {% for file in files %}
+    <div class="adm-media-item" id="media-{{ file.pk }}">
+      {% if file.is_image %}
+        <img src="{{ file.file.url }}" alt="{{ file.alt_text|default:file.title }}" loading="lazy">
+      {% else %}
+        <div style="height:100px;display:flex;align-items:center;justify-content:center;font-size:32px;">
+          {% if file.file_type == 'document' %}📄{% elif file.file_type == 'video' %}🎬{% else %}📎{% endif %}
+        </div>
+      {% endif %}
+      <div class="adm-media-item-info">
+        <div class="adm-media-item-name" title="{{ file.original_name }}">{{ file.title|default:file.original_name }}</div>
+        <div class="adm-media-item-size">{{ file.file_size_display }}</div>
+      </div>
+      <div class="adm-media-item-actions">
+        <a href="{{ file.file.url }}" target="_blank" class="adm-media-item-btn" title="View">↗</a>
+        <button class="adm-media-item-btn" style="color:var(--adm-red);" title="Delete"
+                onclick="if(confirm('Delete this file?')){deleteMedia('{{ file.pk }}');}">✕</button>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  {% include "admin_panel/components/empty_state.html" with icon="🖼️" title="No files yet" message="Upload images, documents, and videos." %}
+  {% endif %}
+</div>
+
+<script>
+function uploadZone() {
+  return {
+    dragging: false,
+    handleDrop(e) {
+      this.dragging = false;
+      this.uploadFiles(e.dataTransfer.files);
+    },
+    handleFiles(files) {
+      this.uploadFiles(files);
+    },
+    async uploadFiles(files) {
+      const progress = document.getElementById('upload-progress');
+      const status   = document.getElementById('upload-status');
+      progress.style.display = 'block';
+      status.textContent = `Uploading ${files.length} file(s)…`;
+
+      const form = new FormData();
+      for (const f of files) form.append('files', f);
+      form.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+      const res  = await fetch('{% url "admin_panel:media_upload" %}', { method: 'POST', body: form });
+      const data = await res.json();
+
+      if (data.errors && data.errors.length) {
+        status.textContent = 'Some errors: ' + data.errors.join(', ');
+        adminToast(data.errors[0], 'error');
+      } else {
+        adminToast(`${data.uploaded.length} file(s) uploaded!`);
+        setTimeout(() => location.reload(), 800);
+      }
+    }
+  };
+}
+
+function deleteMedia(pk) {
+  const csrf = document.querySelector('[name=csrfmiddlewaretoken]')?.value || '{{ csrf_token }}';
+  fetch(`/manage/media/${pk}/delete/`, {
+    method: 'POST',
+    headers: { 'X-CSRFToken': csrf, 'Content-Type': 'application/json' },
+  }).then(r => r.json()).then(data => {
+    if (data.ok) {
+      document.getElementById(`media-${pk}`)?.remove();
+      adminToast('File deleted.');
+    }
+  });
+}
+</script>
+{% csrf_token %}
+{% endblock %}
