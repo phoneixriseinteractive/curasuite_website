@@ -1,0 +1,34 @@
+{% extends "admin_panel/base.html" %}
+{% block content %}
+<div class="adm-page-header">
+  <div><h1 class="adm-page-title">Audit Logs</h1><div class="adm-breadcrumb"><a href="{% url 'admin_panel:dashboard' %}">Dashboard</a> › Audit Logs</div></div>
+</div>
+<div class="adm-card">
+  <div class="adm-card-header"><span class="adm-card-title">Recent Actions</span><span style="font-size:12px;color:var(--adm-text-muted);">{{ logs.paginator.count }} entries</span></div>
+  <div class="adm-table-wrap">
+    <table class="adm-table">
+      <thead><tr><th>User</th><th>Action</th><th>Object</th><th>Content Type</th><th>Time</th></tr></thead>
+      <tbody>
+      {% for log in logs %}
+      <tr>
+        <td style="font-weight:500;">{{ log.user.email|default:"System" }}</td>
+        <td><span class="adm-badge {% if log.action_flag == 1 %}adm-badge-green{% elif log.action_flag == 2 %}adm-badge-blue{% else %}adm-badge-red{% endif %}">{% if log.action_flag == 1 %}Created{% elif log.action_flag == 2 %}Changed{% else %}Deleted{% endif %}</span></td>
+        <td style="color:var(--adm-text-secondary);">{{ log.object_repr|truncatechars:40 }}</td>
+        <td style="color:var(--adm-text-muted);font-size:12px;">{{ log.content_type }}</td>
+        <td style="color:var(--adm-text-muted);font-size:12px;white-space:nowrap;">{{ log.action_time|date:"M j, Y · g:i A" }}</td>
+      </tr>
+      {% empty %}<tr><td colspan="5">{% include "admin_panel/components/empty_state.html" with icon="📋" title="No audit logs yet" %}</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% if logs.has_other_pages %}
+  <div style="padding:12px 20px;border-top:1px solid var(--adm-border);display:flex;justify-content:space-between;align-items:center;">
+    <span style="font-size:12px;color:var(--adm-text-muted);">Page {{ logs.number }} of {{ logs.paginator.num_pages }}</span>
+    <div style="display:flex;gap:8px;">
+      {% if logs.has_previous %}<a href="?page={{ logs.previous_page_number }}" class="adm-btn adm-btn-secondary" style="font-size:12px;padding:5px 12px;">← Prev</a>{% endif %}
+      {% if logs.has_next %}<a href="?page={{ logs.next_page_number }}" class="adm-btn adm-btn-secondary" style="font-size:12px;padding:5px 12px;">Next →</a>{% endif %}
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

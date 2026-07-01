@@ -1,0 +1,55 @@
+{% extends "admin_panel/base.html" %}
+{% load admin_tags %}
+{% block content %}
+<div class="adm-page-header">
+  <div>
+    <h1 class="adm-page-title">Pages</h1>
+    <div class="adm-breadcrumb"><a href="{% url 'admin_panel:dashboard' %}">Dashboard</a> › Pages</div>
+  </div>
+  <a href="{% url 'admin_panel:page_create' %}" class="adm-btn adm-btn-primary">
+    <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    New Page
+  </a>
+</div>
+
+<div class="adm-card">
+  <div class="adm-card-header">
+    <span class="adm-card-title">All Pages</span>
+    <span style="font-size:12px;color:var(--adm-text-muted);">{{ pages|length }} pages</span>
+  </div>
+  <div class="adm-table-wrap">
+    {% if pages %}
+    <table class="adm-table">
+      <thead><tr><th>Title</th><th>Slug</th><th>Type</th><th>Status</th><th>Ver</th><th>Updated</th><th>Actions</th></tr></thead>
+      <tbody>
+        {% for page in pages %}
+        <tr>
+          <td><div style="font-weight:500;">{{ page.title }}</div></td>
+          <td style="font-family:monospace;font-size:11px;color:var(--adm-text-muted);">/{{ page.slug }}/</td>
+          <td style="color:var(--adm-text-secondary);">{{ page.get_page_type_display }}</td>
+          <td>{% status_badge page.status %}</td>
+          <td style="color:var(--adm-text-muted);">v{{ page.version }}</td>
+          <td style="font-size:12px;color:var(--adm-text-muted);white-space:nowrap;">{{ page.updated_at|date:"M j, Y" }}</td>
+          <td>
+            <div style="display:flex;gap:6px;">
+              <a href="{% url 'admin_panel:page_edit' page.pk %}" class="adm-btn adm-btn-secondary" style="font-size:12px;padding:4px 10px;">Edit</a>
+              {% if page.is_published %}
+              <a href="/{{ page.slug }}/" target="_blank" class="adm-btn adm-btn-ghost" style="font-size:12px;padding:4px 10px;" title="View live">↗</a>
+              {% endif %}
+              <form method="post" action="{% url 'admin_panel:page_delete' page.pk %}" style="display:inline;"
+                    onsubmit="return confirm('Delete &quot;{{ page.title }}&quot;? This cannot be undone.')">
+                {% csrf_token %}
+                <button type="submit" class="adm-btn adm-btn-danger" style="font-size:12px;padding:4px 10px;">Del</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    {% include "admin_panel/components/empty_state.html" with icon="📄" title="No pages yet" message="Create your first page to get started." %}
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

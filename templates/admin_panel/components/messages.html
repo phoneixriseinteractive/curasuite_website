@@ -1,0 +1,12 @@
+{% if messages %}
+<div style="position:fixed;top:72px;right:24px;z-index:500;display:flex;flex-direction:column;gap:8px;max-width:360px;">
+  {% for msg in messages %}
+  <div class="adm-toast {% if msg.tags == 'error' %}adm-toast-error{% else %}adm-toast-success{% endif %}"
+       x-data="{show:true}" x-show="show"
+       x-init="setTimeout(()=>show=false, 3500)">
+    {% if msg.tags == 'error' %}✕{% else %}✓{% endif %}
+    {{ msg }}
+  </div>
+  {% endfor %}
+</div>
+{% endif %}

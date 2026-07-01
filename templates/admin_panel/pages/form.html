@@ -1,0 +1,110 @@
+{% extends "admin_panel/base.html" %}
+{% block content %}
+<div class="adm-page-header">
+  <div>
+    <h1 class="adm-page-title">{{ action }} Page</h1>
+    <div class="adm-breadcrumb"><a href="{% url 'admin_panel:dashboard' %}">Dashboard</a> › <a href="{% url 'admin_panel:pages_list' %}">Pages</a> › {{ action }}</div>
+  </div>
+  {% if page_obj %}
+  <div style="display:flex;gap:8px;">
+    {% if page_obj.is_published %}
+    <a href="/{{ page_obj.slug }}/" target="_blank" class="adm-btn adm-btn-secondary">↗ View Live</a>
+    {% endif %}
+    <form method="post" onsubmit="return confirm('Delete this page?')">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="delete">
+      <button type="submit" onclick="window.location='{% url 'admin_panel:page_delete' page_obj.pk %}';return false;"
+              class="adm-btn adm-btn-danger">Delete</button>
+    </form>
+  </div>
+  {% endif %}
+</div>
+
+<form method="post" id="page-form">
+  {% csrf_token %}
+  <input type="hidden" name="action" id="form-action" value="save">
+
+  <div style="display:grid;grid-template-columns:1fr 280px;gap:20px;align-items:start;">
+
+    {# Main content card #}
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div class="adm-card">
+        <div class="adm-card-header"><span class="adm-card-title">Page Content</span></div>
+        <div class="adm-card-body">
+          <div class="adm-form-group">
+            <label class="adm-label">Title <span style="color:var(--adm-red);">*</span></label>
+            <input type="text" name="title" class="adm-input" required
+                   value="{{ page_obj.title|default:'' }}" placeholder="Enter page title">
+          </div>
+          <div class="adm-form-group">
+            <label class="adm-label">Excerpt / Summary</label>
+            <textarea name="excerpt" class="adm-textarea" rows="2" placeholder="Short summary used in SEO and listings…">{{ page_obj.excerpt|default:'' }}</textarea>
+          </div>
+          <div class="adm-form-group" style="margin-bottom:0;">
+            <label class="adm-label">Content</label>
+            {% include "admin_panel/components/quill_editor.html" with field_id="content" field_name="content" initial_value=page_obj.content %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {# Sidebar #}
+    <div style="display:flex;flex-direction:column;gap:16px;">
+
+      {# Publish actions #}
+      <div class="adm-card">
+        <div class="adm-card-header"><span class="adm-card-title">Publishing</span></div>
+        <div class="adm-card-body" style="display:flex;flex-direction:column;gap:10px;">
+          {% if page_obj %}
+          <div style="font-size:12px;color:var(--adm-text-muted);">Status: <strong>{{ page_obj.get_status_display }}</strong></div>
+          {% if page_obj.published_at %}<div style="font-size:12px;color:var(--adm-text-muted);">Published: {{ page_obj.published_at|date:"M j, Y" }}</div>{% endif %}
+          {% endif %}
+          <button type="submit" class="adm-btn adm-btn-secondary" style="width:100%;justify-content:center;">
+            Save Draft
+          </button>
+          {% if page_obj and page_obj.is_published %}
+          <button type="button" onclick="document.getElementById('form-action').value='unpublish';document.getElementById('page-form').submit();"
+                  class="adm-btn adm-btn-ghost" style="width:100%;justify-content:center;">Unpublish</button>
+          {% else %}
+          <button type="button" onclick="document.getElementById('form-action').value='publish';document.getElementById('page-form').submit();"
+                  class="adm-btn adm-btn-primary" style="width:100%;justify-content:center;">
+            ✓ Publish
+          </button>
+          {% endif %}
+        </div>
+      </div>
+
+      {# SEO #}
+      {% include "admin_panel/components/seo_panel.html" with seo=seo %}
+
+      {# Page settings #}
+      <div class="adm-card">
+        <div class="adm-card-header"><span class="adm-card-title">Settings</span></div>
+        <div class="adm-card-body">
+          <div class="adm-form-group">
+            <label class="adm-label">Page Type</label>
+            <select name="page_type" class="adm-select">
+              {% for val,label in page_types %}<option value="{{ val }}" {% if page_obj and page_obj.page_type == val %}selected{% endif %}>{{ label }}</option>{% endfor %}
+            </select>
+          </div>
+          <div class="adm-form-group">
+            <label class="adm-label">Template</label>
+            <select name="template" class="adm-select">
+              {% for val,label in templates %}<option value="{{ val }}" {% if page_obj and page_obj.template == val %}selected{% endif %}>{{ label }}</option>{% endfor %}
+            </select>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px;">
+            <label style="display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer;">
+              <input type="checkbox" name="show_in_nav" {% if page_obj and page_obj.show_in_nav %}checked{% endif %}> Show in navigation
+            </label>
+            <label style="display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer;">
+              <input type="checkbox" name="show_in_sitemap" {% if not page_obj or page_obj.show_in_sitemap %}checked{% endif %}> Include in sitemap
+            </label>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</form>
+{% endblock %}

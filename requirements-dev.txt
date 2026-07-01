@@ -1,0 +1,42 @@
+# CuraSuite — Development Dependencies
+-r requirements.txt
+
+black==24.10.0
+ruff==0.8.6
+isort==5.13.2
+pre-commit==4.0.1
+django-debug-toolbar==4.4.6
+factory-boy==3.3.1               # Test fixtures
+faker==33.3.1                    # Fake data for tests
+coverage==7.6.10
+pytest-django==4.9.0
+amqp==5.3.1
+argon2-cffi==23.1.0
+argon2-cffi-bindings==25.1.0
+asgiref==3.11.1
+billiard==4.2.4
+celery==5.4.0
+cffi==2.0.0
+click==8.4.2
+click-didyoumean==0.3.1
+click-plugins==1.1.1.2
+click-repl==0.3.0
+colorama==0.4.6
+Django==5.1.4
+django-redis==5.4.0
+django_csp==3.8
+kombu==5.6.2
+packaging==26.2
+pillow==11.1.0
+prompt_toolkit==3.0.52
+psycopg2-binary==2.9.10
+pycparser==3.0
+python-dateutil==2.9.0.post0
+python-dotenv==1.0.1
+redis==5.2.1
+six==1.17.0
+sqlparse==0.5.5
+tzdata==2026.2
+vine==5.1.0
+wcwidth==0.8.1
+whitenoise==6.8.2

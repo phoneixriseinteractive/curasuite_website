@@ -1,0 +1,17 @@
+{% extends "admin_panel/base.html" %}
+{% block content %}
+<div class="adm-page-header">
+  <div><h1 class="adm-page-title">Edit FAQ</h1><div class="adm-breadcrumb"><a href="{% url 'admin_panel:faqs_list' %}">FAQs</a> › Edit</div></div>
+</div>
+<div class="adm-card" style="max-width:680px;">
+  <div class="adm-card-body">
+    <form method="post">{% csrf_token %}
+      <div class="adm-form-group"><label class="adm-label">Category</label><select name="category" class="adm-select">{% for val,label in categories %}<option value="{{ val }}" {% if faq.category == val %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></div>
+      <div class="adm-form-group"><label class="adm-label">Question</label><input type="text" name="question" class="adm-input" value="{{ faq.question }}" required></div>
+      <div class="adm-form-group"><label class="adm-label">Answer</label><textarea name="answer" class="adm-textarea" rows="5" required>{{ faq.answer }}</textarea></div>
+      <div class="adm-form-group"><label class="adm-label">Sort Order</label><input type="number" name="sort_order" class="adm-input" value="{{ faq.sort_order }}" min="0"></div>
+      <div style="display:flex;gap:10px;"><button type="submit" class="adm-btn adm-btn-primary">Save</button><a href="{% url 'admin_panel:faqs_list' %}" class="adm-btn adm-btn-ghost">Cancel</a></div>
+    </form>
+  </div>
+</div>
+{% endblock %}

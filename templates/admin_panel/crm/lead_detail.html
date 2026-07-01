@@ -1,0 +1,159 @@
+{% extends "admin_panel/base.html" %}
+{% load admin_tags %}
+{% block content %}
+<div class="adm-page-header">
+  <div>
+    <h1 class="adm-page-title">{{ lead.full_name }}</h1>
+    <div class="adm-breadcrumb"><a href="{% url 'admin_panel:dashboard' %}">Dashboard</a> › <a href="{% url 'admin_panel:crm_leads' %}">Leads</a> › {{ lead.full_name }}</div>
+  </div>
+  <div style="display:flex;gap:8px;">
+    {% status_badge lead.status %}
+    <a href="mailto:{{ lead.email }}" class="adm-btn adm-btn-secondary">✉ Email</a>
+    {% if lead.phone %}<a href="tel:{{ lead.phone }}" class="adm-btn adm-btn-secondary">📞 Call</a>{% endif %}
+  </div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 300px;gap:20px;align-items:start;">
+
+  {# LEFT COLUMN #}
+  <div style="display:flex;flex-direction:column;gap:16px;">
+
+    {# Contact info #}
+    <div class="adm-card">
+      <div class="adm-card-header"><span class="adm-card-title">Contact Information</span></div>
+      <div class="adm-card-body">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div><div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--adm-text-muted);margin-bottom:4px;">Name</div><div style="font-size:13px;">{{ lead.full_name }}</div></div>
+          <div><div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--adm-text-muted);margin-bottom:4px;">Email</div><div style="font-size:13px;"><a href="mailto:{{ lead.email }}">{{ lead.email }}</a></div></div>
+          {% if lead.phone %}<div><div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--adm-text-muted);margin-bottom:4px;">Phone</div><div style="font-size:13px;">{{ lead.phone }}</div></div>{% endif %}
+          {% if lead.organization %}<div><div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--adm-text-muted);margin-bottom:4px;">Organisation</div><div style="font-size:13px;">{{ lead.organization }}</div></div>{% endif %}
+          {% if lead.city %}<div><div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--adm-text-muted);margin-bottom:4px;">City</div><div style="font-size:13px;">{{ lead.city }}</div></div>{% endif %}
+          {% if lead.product_interest %}<div><div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--adm-text-muted);margin-bottom:4px;">Product Interest</div><div style="font-size:13px;">{{ lead.product_interest }}</div></div>{% endif %}
+        </div>
+        {% if lead.message %}
+        <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--adm-border);">
+          <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--adm-text-muted);margin-bottom:6px;">Message</div>
+          <p style="font-size:13px;color:var(--adm-text-secondary);line-height:1.6;">{{ lead.message }}</p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    {# Add Note #}
+    <div class="adm-card">
+      <div class="adm-card-header"><span class="adm-card-title">Add Note</span></div>
+      <div class="adm-card-body">
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="add_note">
+          <textarea name="content" class="adm-textarea" placeholder="Write a note about this lead…" rows="3"></textarea>
+          <button type="submit" class="adm-btn adm-btn-primary" style="margin-top:10px;">Add Note</button>
+        </form>
+      </div>
+    </div>
+
+    {# Activity timeline #}
+    <div class="adm-card">
+      <div class="adm-card-header"><span class="adm-card-title">Activity Timeline</span></div>
+      <div class="adm-timeline">
+        {% for activity in lead.activities.all %}
+        <div class="adm-timeline-item">
+          <div class="adm-timeline-dot {% if 'won' in activity.description %}green{% elif 'note' in activity.activity_type %}amber{% endif %}"></div>
+          <div>
+            <div style="font-size:13px;font-weight:500;color:var(--adm-text-primary);">{{ activity.get_activity_type_display }}</div>
+            {% if activity.description %}<div style="font-size:12px;color:var(--adm-text-secondary);margin-top:2px;">{{ activity.description }}</div>{% endif %}
+            <div style="font-size:11px;color:var(--adm-text-muted);margin-top:4px;">{{ activity.created_at|date:"M j, Y · g:i A" }}{% if activity.performed_by %} · {{ activity.performed_by.full_name }}{% endif %}</div>
+          </div>
+        </div>
+        {% empty %}
+        {% include "admin_panel/components/empty_state.html" with icon="📋" title="No activity yet" %}
+        {% endfor %}
+      </div>
+      {# Notes #}
+      {% for note in lead.notes.all %}
+      <div class="adm-timeline-item" style="background:var(--adm-amber-light);">
+        <div class="adm-timeline-dot amber"></div>
+        <div>
+          <div style="font-size:13px;color:var(--adm-text-primary);">{{ note.content }}</div>
+          <div style="font-size:11px;color:var(--adm-text-muted);margin-top:4px;">{{ note.created_at|date:"M j, Y · g:i A" }}{% if note.author %} · {{ note.author.full_name }}{% endif %}</div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+  </div>{# /left #}
+
+  {# RIGHT SIDEBAR #}
+  <div style="display:flex;flex-direction:column;gap:16px;">
+
+    {# Update status #}
+    <div class="adm-card">
+      <div class="adm-card-header"><span class="adm-card-title">Pipeline Status</span></div>
+      <div class="adm-card-body">
+        <form method="post" style="display:flex;flex-direction:column;gap:10px;">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="update_status">
+          <div class="adm-form-group" style="margin-bottom:0;">
+            <label class="adm-label">Status</label>
+            <select name="status" class="adm-select">
+              {% for val,label in lead_statuses %}<option value="{{ val }}" {% if lead.status == val %}selected{% endif %}>{{ label }}</option>{% endfor %}
+            </select>
+          </div>
+          <div class="adm-form-group" style="margin-bottom:0;">
+            <label class="adm-label">Lead Score</label>
+            <input type="number" name="score" value="{{ lead.score }}" min="0" max="100" class="adm-input">
+          </div>
+          <button type="submit" class="adm-btn adm-btn-primary" style="width:100%;justify-content:center;">Update</button>
+        </form>
+      </div>
+    </div>
+
+    {# Assign #}
+    <div class="adm-card">
+      <div class="adm-card-header"><span class="adm-card-title">Assignment</span></div>
+      <div class="adm-card-body">
+        <form method="post">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="assign">
+          <div class="adm-form-group" style="margin-bottom:10px;">
+            <label class="adm-label">Assign to</label>
+            <select name="assigned_to" class="adm-select">
+              <option value="">Unassigned</option>
+              {% for user in staff %}<option value="{{ user.pk }}" {% if lead.assigned_to_id == user.pk %}selected{% endif %}>{{ user.full_name }}</option>{% endfor %}
+            </select>
+          </div>
+          <button type="submit" class="adm-btn adm-btn-secondary" style="width:100%;justify-content:center;">Assign</button>
+        </form>
+      </div>
+    </div>
+
+    {# Attribution #}
+    <div class="adm-card">
+      <div class="adm-card-header"><span class="adm-card-title">Attribution</span></div>
+      <div class="adm-card-body" style="display:flex;flex-direction:column;gap:8px;">
+        <div style="font-size:12px;"><span style="color:var(--adm-text-muted);">Source:</span> <strong>{{ lead.get_source_display }}</strong></div>
+        {% if lead.utm_campaign %}<div style="font-size:12px;"><span style="color:var(--adm-text-muted);">Campaign:</span> {{ lead.utm_campaign }}</div>{% endif %}
+        {% if lead.utm_medium %}<div style="font-size:12px;"><span style="color:var(--adm-text-muted);">Medium:</span> {{ lead.utm_medium }}</div>{% endif %}
+        <div style="font-size:12px;"><span style="color:var(--adm-text-muted);">Created:</span> {{ lead.created_at|date:"M j, Y" }}</div>
+      </div>
+    </div>
+
+    {# Demo requests #}
+    {% if lead.demo_requests.all %}
+    <div class="adm-card">
+      <div class="adm-card-header"><span class="adm-card-title">Demo Requests</span></div>
+      <div style="padding:0;">
+        {% for demo in lead.demo_requests.all %}
+        <div style="padding:12px 16px;border-bottom:1px solid var(--adm-border);">
+          <div style="font-size:13px;font-weight:500;">{{ demo.product_interest|default:"TBD" }}</div>
+          {% if demo.preferred_date %}<div style="font-size:12px;color:var(--adm-text-muted);">{{ demo.preferred_date }} {{ demo.preferred_time }}</div>{% endif %}
+          <div style="margin-top:4px;">{% status_badge demo.status %}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+  </div>{# /right #}
+</div>
+{% endblock %}

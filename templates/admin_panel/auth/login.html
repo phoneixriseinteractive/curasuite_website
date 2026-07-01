@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign in — CuraSuite Admin</title>
+  <meta name="robots" content="noindex, nofollow">
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/admin.css' %}">
+  <style>
+    .login-page { min-height:100vh; display:grid; grid-template-columns:1fr 1fr; }
+    @media(max-width:768px){.login-page{grid-template-columns:1fr}.login-brand{display:none}}
+    .login-brand {
+      background:var(--adm-accent); display:flex; flex-direction:column;
+      justify-content:center; align-items:flex-start; padding:60px; color:white;
+    }
+    .login-form-area {
+      display:flex; align-items:center; justify-content:center;
+      padding:40px; background:var(--adm-bg);
+    }
+    .login-card {
+      width:100%; max-width:400px; background:var(--adm-surface);
+      border:1px solid var(--adm-border); border-radius:var(--adm-radius-lg);
+      padding:40px; box-shadow:var(--adm-shadow-md);
+    }
+  </style>
+</head>
+<body class="admin-body">
+<div class="login-page">
+  <div class="login-brand">
+    <div style="width:48px;height:48px;background:rgba(255,255,255,.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;margin-bottom:40px;">CS</div>
+    <h1 style="font-size:36px;font-weight:800;margin-bottom:16px;line-height:1.2;color:white;">CuraSuite<br>Admin Panel</h1>
+    <p style="font-size:16px;opacity:.75;max-width:340px;line-height:1.6;">Manage content, leads, campaigns, and integrations from one place.</p>
+    <div style="margin-top:48px;display:flex;flex-direction:column;gap:14px;">
+      {% for feat in "Pages & Blog Management,Lead CRM & Demo Requests,Newsletter Campaigns,Site Integrations & Settings" %}
+      {% endfor %}
+      <div style="display:flex;align-items:center;gap:12px;font-size:14px;opacity:.85;"><div style="width:20px;height:20px;background:rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;">✓</div>Pages & Blog Management</div>
+      <div style="display:flex;align-items:center;gap:12px;font-size:14px;opacity:.85;"><div style="width:20px;height:20px;background:rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;">✓</div>Lead CRM & Demo Requests</div>
+      <div style="display:flex;align-items:center;gap:12px;font-size:14px;opacity:.85;"><div style="width:20px;height:20px;background:rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;">✓</div>Newsletter Campaigns</div>
+      <div style="display:flex;align-items:center;gap:12px;font-size:14px;opacity:.85;"><div style="width:20px;height:20px;background:rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;">✓</div>Site Integrations & Settings</div>
+    </div>
+  </div>
+  <div class="login-form-area">
+    <div class="login-card">
+      <div style="margin-bottom:32px;">
+        <h2 style="font-size:22px;font-weight:700;color:var(--adm-text-primary);margin-bottom:6px;">Welcome back</h2>
+        <p style="font-size:13px;color:var(--adm-text-muted);">Sign in to your admin account</p>
+      </div>
+      {% if error %}<div class="adm-alert adm-alert-error" style="margin-bottom:20px;">{{ error }}</div>{% endif %}
+      {% if request.GET.error == 'access_denied' %}<div class="adm-alert adm-alert-error" style="margin-bottom:20px;">Your account does not have admin access.</div>{% endif %}
+      <form method="post" novalidate>
+        {% csrf_token %}
+        <div class="adm-form-group">
+          <label class="adm-label" for="id_email">Email address</label>
+          <input type="email" name="email" id="id_email" class="adm-input" placeholder="admin@curasuite.com" autocomplete="email" autofocus required value="{{ form.email.value|default:'' }}">
+        </div>
+        <div class="adm-form-group">
+          <label class="adm-label" for="id_password">Password</label>
+          <input type="password" name="password" id="id_password" class="adm-input" placeholder="••••••••••••" autocomplete="current-password" required>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:24px;">
+          <input type="checkbox" name="remember_me" id="id_remember" style="width:14px;height:14px;accent-color:var(--adm-accent);">
+          <label for="id_remember" style="font-size:13px;color:var(--adm-text-secondary);cursor:pointer;">Keep me signed in</label>
+        </div>
+        <button type="submit" class="adm-btn adm-btn-primary" style="width:100%;justify-content:center;padding:10px 16px;font-size:14px;">Sign in</button>
+      </form>
+    </div>
+  </div>
+</div>
+</body>
+</html>

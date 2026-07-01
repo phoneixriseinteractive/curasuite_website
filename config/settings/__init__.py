@@ -1,0 +1,1 @@
+"""CuraSuite settings package."""

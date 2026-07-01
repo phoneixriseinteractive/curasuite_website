@@ -1,0 +1,14 @@
+<div style="text-align:center;padding:var(--space-10) var(--space-6);">
+  <div style="width:72px;height:72px;background:var(--color-secondary-100);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto var(--space-5);font-size:32px;">✓</div>
+  <h3 style="margin-bottom:var(--space-3);color:var(--color-secondary-700);">Demo Request Received!</h3>
+  <p style="color:var(--text-secondary);margin-bottom:var(--space-4);line-height:var(--leading-relaxed);">
+    Thank you{% if lead %}, {{ lead.first_name }}{% endif %}! Our team will reach out within one business day to confirm your demo slot.
+  </p>
+  <p style="font-size:var(--text-sm);color:var(--text-muted);margin-bottom:var(--space-6);">
+    In the meantime, feel free to explore our products or WhatsApp us at <a href="https://wa.me/919876543210">+91 98765 43210</a> for immediate assistance.
+  </p>
+  <div style="display:flex;gap:var(--space-3);justify-content:center;flex-wrap:wrap;">
+    <a href="/products/" class="btn btn-secondary" style="font-size:var(--text-sm);">Explore Products</a>
+    <a href="/pricing/" class="btn btn-secondary" style="font-size:var(--text-sm);">View Pricing</a>
+  </div>
+</div>

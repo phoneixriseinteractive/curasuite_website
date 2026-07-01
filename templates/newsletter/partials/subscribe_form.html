@@ -1,0 +1,10 @@
+<div style="display:flex;gap:var(--space-3);flex-wrap:wrap;">
+  <input type="email" name="email" placeholder="your@email.com"
+    class="form-input{% if form.email.errors %} error{% endif %}"
+    style="flex:1;min-width:220px;" required autocomplete="email"
+    {% if form.email.value %}value="{{ form.email.value }}"{% endif %}>
+  <button type="submit" class="btn btn-primary">Subscribe</button>
+</div>
+{% if form.email.errors %}
+  <p class="form-error" style="margin-top:var(--space-2);">{{ form.email.errors.0 }}</p>
+{% endif %}

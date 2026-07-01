@@ -1,0 +1,35 @@
+{% extends "admin_panel/base.html" %}
+{% block content %}
+<div class="adm-page-header">
+  <div><h1 class="adm-page-title">Users</h1><div class="adm-breadcrumb"><a href="{% url 'admin_panel:dashboard' %}">Dashboard</a> › Users</div></div>
+  <a href="{% url 'admin_panel:user_create' %}" class="adm-btn adm-btn-primary">+ New User</a>
+</div>
+<div class="adm-card">
+  <div class="adm-table-wrap">
+    <table class="adm-table">
+      <thead><tr><th>User</th><th>Name</th><th>Staff</th><th>Superuser</th><th>Active</th><th>Joined</th><th>Actions</th></tr></thead>
+      <tbody>
+      {% for user in users %}
+      <tr>
+        <td><div style="font-weight:500;">{{ user.email }}</div></td>
+        <td style="color:var(--adm-text-secondary);">{{ user.full_name|default:"—" }}</td>
+        <td>{% if user.is_staff %}<span class="adm-badge adm-badge-blue">Staff</span>{% else %}<span class="adm-badge adm-badge-default">No</span>{% endif %}</td>
+        <td>{% if user.is_superuser %}<span class="adm-badge adm-badge-black">Admin</span>{% else %}<span class="adm-badge adm-badge-default">No</span>{% endif %}</td>
+        <td>{% if user.is_active %}<span class="adm-badge adm-badge-green">Active</span>{% else %}<span class="adm-badge adm-badge-red">Suspended</span>{% endif %}</td>
+        <td style="font-size:12px;color:var(--adm-text-muted);">{{ user.date_joined|date:"M j, Y" }}</td>
+        <td><div style="display:flex;gap:6px;">
+          <a href="{% url 'admin_panel:user_edit' user.pk %}" class="adm-btn adm-btn-secondary" style="font-size:12px;padding:4px 10px;">Edit</a>
+          {% if user.pk != request.user.pk %}
+          <form method="post" action="{% url 'admin_panel:user_edit' user.pk %}" style="display:inline;">{% csrf_token %}
+            <input type="hidden" name="action" value="{% if user.is_active %}suspend{% else %}activate{% endif %}">
+            <button type="submit" class="adm-btn {% if user.is_active %}adm-btn-danger{% else %}adm-btn-ghost{% endif %}" style="font-size:12px;padding:4px 10px;">{% if user.is_active %}Suspend{% else %}Activate{% endif %}</button>
+          </form>
+          {% endif %}
+        </div></td>
+      </tr>
+      {% empty %}<tr><td colspan="7">{% include "admin_panel/components/empty_state.html" with icon="👤" title="No users" %}</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

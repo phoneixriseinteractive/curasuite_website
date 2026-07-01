@@ -1,0 +1,83 @@
+{% extends "base/base.html" %}
+{% block seo_title %}Healthcare Technology Blog — Insights for Clinics & Doctors | {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}Healthcare technology articles, clinic growth strategies, SEO guides for doctors, and product updates from the CuraSuite team.{% endblock %}
+
+{% block content %}
+<section class="section-sm" style="background:var(--surface-card);border-bottom:1px solid var(--border-default);">
+  <div class="container">
+    <h1 style="margin-bottom:var(--space-2);">CuraSuite Insights</h1>
+    <p style="color:var(--text-secondary);">Healthcare technology, clinic growth, and digital transformation.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container" style="display:grid;grid-template-columns:1fr 280px;gap:var(--space-12);">
+
+    {# ── Posts ─────────────────────────────────────────────────────────────── #}
+    <div>
+      {% if blogs.object_list %}
+        <div class="grid grid-2" style="gap:var(--space-6);">
+          {% for blog in blogs %}
+          <article class="card" style="padding:0;overflow:hidden;">
+            {% if blog.featured_image %}
+            <img src="{{ blog.featured_image.url }}" alt="{{ blog.featured_image_alt|default:blog.title }}" style="width:100%;aspect-ratio:16/9;object-fit:cover;" loading="lazy">
+            {% else %}
+            <div style="aspect-ratio:16/9;background:var(--color-primary-50);display:flex;align-items:center;justify-content:center;">
+              <span style="color:var(--color-primary-200);font-size:var(--text-3xl);">✦</span>
+            </div>
+            {% endif %}
+            <div style="padding:var(--space-5);">
+              {% if blog.category %}
+              <a href="{{ blog.category.get_absolute_url }}" style="font-size:var(--text-xs);font-weight:var(--font-semi);color:var(--color-primary-600);text-transform:uppercase;letter-spacing:.05em;">{{ blog.category.name }}</a>
+              {% endif %}
+              <h2 style="font-size:var(--text-lg);margin:var(--space-2) 0 var(--space-3);">
+                <a href="{{ blog.get_absolute_url }}" style="color:var(--text-primary);">{{ blog.title }}</a>
+              </h2>
+              <p style="color:var(--text-secondary);font-size:var(--text-sm);margin-bottom:var(--space-4);">{{ blog.excerpt|truncatewords:20 }}</p>
+              <div style="display:flex;align-items:center;gap:var(--space-3);font-size:var(--text-xs);color:var(--text-muted);">
+                {% if blog.author %}<span>{{ blog.author.full_name }}</span><span>·</span>{% endif %}
+                {% if blog.published_at %}<span>{{ blog.published_at|date:"M j, Y" }}</span><span>·</span>{% endif %}
+                <span>{{ blog.reading_time_minutes }} min read</span>
+              </div>
+            </div>
+          </article>
+          {% endfor %}
+        </div>
+
+        {# ── Pagination ──────────────────────────────────────────────────────── #}
+        {% if blogs.has_other_pages %}
+        <div style="display:flex;gap:var(--space-2);justify-content:center;margin-top:var(--space-10);"
+             hx-boost="true">
+          {% if blogs.has_previous %}
+          <a href="?page={{ blogs.previous_page_number }}" class="btn btn-secondary btn-sm">← Previous</a>
+          {% endif %}
+          <span style="padding:var(--space-2) var(--space-4);color:var(--text-secondary);font-size:var(--text-sm);">
+            Page {{ blogs.number }} of {{ blogs.paginator.num_pages }}
+          </span>
+          {% if blogs.has_next %}
+          <a href="?page={{ blogs.next_page_number }}" class="btn btn-secondary btn-sm">Next →</a>
+          {% endif %}
+        </div>
+        {% endif %}
+
+      {% else %}
+      <p style="color:var(--text-muted);text-align:center;padding:var(--space-16) 0;">No posts yet. Check back soon.</p>
+      {% endif %}
+    </div>
+
+    {# ── Sidebar ───────────────────────────────────────────────────────────── #}
+    <aside>
+      {% if categories %}
+      <div class="card" style="margin-bottom:var(--space-6);">
+        <h3 style="font-size:var(--text-base);margin-bottom:var(--space-4);">Categories</h3>
+        <ul style="display:flex;flex-direction:column;gap:var(--space-2);">
+          {% for cat in categories %}
+          <li><a href="{{ cat.get_absolute_url }}" style="font-size:var(--text-sm);color:{% if active_category_slug == cat.slug %}var(--color-primary-600){% else %}var(--text-secondary){% endif %};">{{ cat.name }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+    </aside>
+  </div>
+</section>
+{% endblock %}

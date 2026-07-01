@@ -1,0 +1,82 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block seo_title %}{% if seo %}{{ seo.get_title }}{% else %}{{ blog.title }} | {{ SITE_NAME }}{% endif %}{% endblock %}
+{% block meta_description %}{% if seo %}{{ seo.get_description }}{% else %}{{ blog.excerpt }}{% endif %}{% endblock %}
+{% block og_title %}{{ blog.title }}{% endblock %}
+{% block og_description %}{{ blog.excerpt }}{% endblock %}
+
+{% block schema %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "{{ blog.title }}",
+  "description": "{{ blog.excerpt }}",
+  "datePublished": "{{ blog.published_at|date:'c' }}",
+  "dateModified": "{{ blog.updated_at|date:'c' }}",
+  {% if blog.author %}"author": {"@type": "Person", "name": "{{ blog.author.full_name }}"},{% endif %}
+  "publisher": {"@type": "Organization", "name": "{{ SITE_NAME }}"}
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<article>
+  {# ── Hero ───────────────────────────────────────────────────────────────── #}
+  <header style="background:var(--surface-card);border-bottom:1px solid var(--border-default);">
+    <div class="container" style="max-width:820px;padding-block:var(--space-12);">
+      {% if blog.category %}
+      <a href="{{ blog.category.get_absolute_url }}" style="font-size:var(--text-sm);font-weight:var(--font-semi);color:var(--color-primary-600);text-transform:uppercase;letter-spacing:.05em;margin-bottom:var(--space-4);display:block;">{{ blog.category.name }}</a>
+      {% endif %}
+      <h1 style="margin-bottom:var(--space-6);">{{ blog.title }}</h1>
+      <p style="font-size:var(--text-xl);color:var(--text-secondary);margin-bottom:var(--space-6);">{{ blog.excerpt }}</p>
+      <div style="display:flex;align-items:center;gap:var(--space-4);font-size:var(--text-sm);color:var(--text-muted);">
+        {% if blog.author %}<span>By <strong style="color:var(--text-primary);">{{ blog.author.full_name }}</strong></span><span>·</span>{% endif %}
+        {% if blog.published_at %}<time datetime="{{ blog.published_at|date:'c' }}">{{ blog.published_at|date:"F j, Y" }}</time><span>·</span>{% endif %}
+        <span>{{ blog.reading_time_minutes }} min read</span>
+      </div>
+    </div>
+  </header>
+
+  {% if blog.featured_image %}
+  <div style="max-height:480px;overflow:hidden;">
+    <img src="{{ blog.featured_image.url }}" alt="{{ blog.featured_image_alt|default:blog.title }}" style="width:100%;object-fit:cover;" loading="eager">
+  </div>
+  {% endif %}
+
+  {# ── Content ───────────────────────────────────────────────────────────── #}
+  <div class="container" style="max-width:820px;padding-block:var(--space-12);">
+    <div class="prose">{{ blog.content|safe }}</div>
+
+    {# ── Tags ────────────────────────────────────────────────────────────── #}
+    {% if blog.tags.all %}
+    <div style="margin-top:var(--space-10);padding-top:var(--space-6);border-top:1px solid var(--border-default);">
+      <span style="font-size:var(--text-sm);color:var(--text-muted);margin-right:var(--space-3);">Tags:</span>
+      {% for tag in blog.tags.all %}
+      <a href="{{ tag.get_absolute_url }}" style="display:inline-block;background:var(--surface-card);border:1px solid var(--border-default);border-radius:var(--radius-full);padding:var(--space-1) var(--space-3);font-size:var(--text-xs);color:var(--text-secondary);margin:var(--space-1);">{{ tag.name }}</a>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+
+  {# ── Related Posts ──────────────────────────────────────────────────────── #}
+  {% if related %}
+  <section style="background:var(--surface-card);border-top:1px solid var(--border-default);padding-block:var(--space-12);">
+    <div class="container">
+      <h2 style="margin-bottom:var(--space-8);">Related Articles</h2>
+      <div class="grid grid-3" style="gap:var(--space-6);">
+        {% for post in related %}
+        <article class="card">
+          <h3 style="font-size:var(--text-base);margin-bottom:var(--space-2);">
+            <a href="{{ post.get_absolute_url }}" style="color:var(--text-primary);">{{ post.title }}</a>
+          </h3>
+          <p style="color:var(--text-secondary);font-size:var(--text-sm);">{{ post.excerpt|truncatewords:15 }}</p>
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+</article>
+{% endblock %}

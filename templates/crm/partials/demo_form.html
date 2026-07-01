@@ -1,0 +1,38 @@
+<div id="form-response">
+  {% if form.non_field_errors %}
+    <div style="background:var(--color-error-bg);border:1px solid var(--color-error-border);color:var(--color-error-text);padding:var(--space-4);border-radius:var(--radius);margin-bottom:var(--space-6);">
+      {{ form.non_field_errors }}
+    </div>
+  {% endif %}
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-5);">
+    {% for field in form %}
+      <div class="form-group" style="{% if field.name == 'message' %}grid-column:1/-1;{% endif %}">
+        <label class="form-label" for="{{ field.id_for_label }}">
+          {{ field.label }}{% if field.field.required %}<span class="required">*</span>{% endif %}
+        </label>
+        <input
+          type="{{ field.field.widget.input_type|default:'text' }}"
+          name="{{ field.html_name }}"
+          id="{{ field.id_for_label }}"
+          class="form-input{% if field.errors %} error{% endif %}"
+          {% if field.value %}value="{{ field.value }}"{% endif %}
+          {% if field.field.required %}required{% endif %}
+          {% if field.name == 'email' %}autocomplete="email"{% endif %}
+          {% if field.name == 'full_name' %}autocomplete="name"{% endif %}
+        >
+        {% if field.name == 'message' %}
+          {# Replace above input with textarea for message #}
+        {% endif %}
+        {% for error in field.errors %}
+          <span class="form-error">{{ error }}</span>
+        {% endfor %}
+      </div>
+    {% endfor %}
+  </div>
+
+  <button type="submit" class="btn btn-primary btn-lg" style="margin-top:var(--space-6);width:100%;justify-content:center;">
+    <span class="htmx-indicator" style="margin-right:var(--space-2);">⟳</span>
+    Book Free Demo
+  </button>
+</div>

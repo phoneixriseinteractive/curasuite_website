@@ -1,0 +1,67 @@
+{% extends "admin_panel/base.html" %}
+{% block content %}
+<div class="adm-page-header">
+  <div>
+    <h1 class="adm-page-title">Categories & Tags</h1>
+    <div class="adm-breadcrumb"><a href="{% url 'admin_panel:dashboard' %}">Dashboard</a> › <a href="{% url 'admin_panel:blogs_list' %}">Blog Posts</a> › Categories</div>
+  </div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+
+  {# Categories #}
+  <div class="adm-card">
+    <div class="adm-card-header"><span class="adm-card-title">Categories</span></div>
+    <div class="adm-card-body">
+      <form method="post" style="display:flex;gap:10px;margin-bottom:20px;">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="create">
+        <input type="text" name="name" class="adm-input" placeholder="Category name" required>
+        <button type="submit" class="adm-btn adm-btn-primary" style="white-space:nowrap;">Add</button>
+      </form>
+      {% for cat in categories %}
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--adm-border);">
+        <span style="font-size:13px;">{{ cat.name }}</span>
+        <form method="post" onsubmit="return confirm('Delete this category?')">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="delete">
+          <input type="hidden" name="pk" value="{{ cat.pk }}">
+          <button type="submit" class="adm-btn adm-btn-ghost" style="font-size:11px;padding:3px 8px;color:var(--adm-red);">Remove</button>
+        </form>
+      </div>
+      {% empty %}
+      <p style="font-size:13px;color:var(--adm-text-muted);">No categories yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+
+  {# Tags #}
+  <div class="adm-card">
+    <div class="adm-card-header"><span class="adm-card-title">Tags</span></div>
+    <div class="adm-card-body">
+      <form method="post" style="display:flex;gap:10px;margin-bottom:20px;" action="">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="create_tag">
+        <input type="text" name="tag_name" class="adm-input" placeholder="Tag name" required>
+        <button type="submit" class="adm-btn adm-btn-primary" style="white-space:nowrap;">Add</button>
+      </form>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;">
+        {% for tag in tags %}
+        <span class="adm-tag">
+          {{ tag.name }}
+          <form method="post" style="display:inline;" onsubmit="return confirm('Delete tag?')">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="delete_tag">
+            <input type="hidden" name="tag_pk" value="{{ tag.pk }}">
+            <button type="submit" style="border:none;background:none;cursor:pointer;color:var(--adm-text-muted);font-size:14px;">×</button>
+          </form>
+        </span>
+        {% empty %}
+        <p style="font-size:13px;color:var(--adm-text-muted);">No tags yet.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

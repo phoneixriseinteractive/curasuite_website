@@ -1,0 +1,116 @@
+{% extends "admin_panel/base.html" %}
+{% block content %}
+<div class="adm-page-header">
+  <div>
+    <h1 class="adm-page-title">{{ action }} Post</h1>
+    <div class="adm-breadcrumb"><a href="{% url 'admin_panel:dashboard' %}">Dashboard</a> › <a href="{% url 'admin_panel:blogs_list' %}">Blog Posts</a> › {{ action }}</div>
+  </div>
+  {% if blog_obj %}
+  <form method="post" action="{% url 'admin_panel:blog_delete' blog_obj.pk %}"
+        onsubmit="return confirm('Delete this post?')">
+    {% csrf_token %}
+    <button type="submit" class="adm-btn adm-btn-danger">Delete</button>
+  </form>
+  {% endif %}
+</div>
+
+<form method="post" id="blog-form">
+  {% csrf_token %}
+  <input type="hidden" name="action" id="blog-action" value="save">
+
+  <div style="display:grid;grid-template-columns:1fr 280px;gap:20px;align-items:start;">
+
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div class="adm-card">
+        <div class="adm-card-header"><span class="adm-card-title">Post Content</span></div>
+        <div class="adm-card-body">
+          <div class="adm-form-group">
+            <label class="adm-label">Title <span style="color:var(--adm-red);">*</span></label>
+            <input type="text" name="title" class="adm-input" required
+                   value="{{ blog_obj.title|default:'' }}" placeholder="Post title">
+          </div>
+          <div class="adm-form-group">
+            <label class="adm-label">Excerpt <span style="color:var(--adm-red);">*</span></label>
+            <textarea name="excerpt" class="adm-textarea" rows="2" required
+                      placeholder="Short description shown in listings and social cards…">{{ blog_obj.excerpt|default:'' }}</textarea>
+          </div>
+          <div class="adm-form-group" style="margin-bottom:0;">
+            <label class="adm-label">Content</label>
+            {% include "admin_panel/components/quill_editor.html" with field_id="content" field_name="content" initial_value=blog_obj.content %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:16px;">
+
+      {# Publish #}
+      <div class="adm-card">
+        <div class="adm-card-header"><span class="adm-card-title">Publishing</span></div>
+        <div class="adm-card-body" style="display:flex;flex-direction:column;gap:10px;">
+          {% if blog_obj %}
+          <div style="font-size:12px;color:var(--adm-text-muted);">Status: <strong>{{ blog_obj.get_status_display }}</strong></div>
+          {% if blog_obj.published_at %}<div style="font-size:12px;color:var(--adm-text-muted);">Published: {{ blog_obj.published_at|date:"M j, Y" }}</div>{% endif %}
+          <div style="font-size:12px;color:var(--adm-text-muted);">Reading time: {{ blog_obj.reading_time_minutes }} min</div>
+          <div style="font-size:12px;color:var(--adm-text-muted);">Views: {{ blog_obj.view_count }}</div>
+          {% endif %}
+          <button type="submit" class="adm-btn adm-btn-secondary" style="width:100%;justify-content:center;">Save Draft</button>
+          {% if blog_obj and blog_obj.is_published %}
+          <button type="button" onclick="document.getElementById('blog-action').value='unpublish';document.getElementById('blog-form').submit();"
+                  class="adm-btn adm-btn-ghost" style="width:100%;justify-content:center;">Unpublish</button>
+          {% else %}
+          <button type="button" onclick="document.getElementById('blog-action').value='publish';document.getElementById('blog-form').submit();"
+                  class="adm-btn adm-btn-primary" style="width:100%;justify-content:center;">✓ Publish</button>
+          {% endif %}
+          {% if blog_obj and blog_obj.is_published %}
+          <a href="{{ blog_obj.get_absolute_url }}" target="_blank" class="adm-btn adm-btn-ghost" style="width:100%;justify-content:center;font-size:12px;">↗ View Live</a>
+          {% endif %}
+        </div>
+      </div>
+
+      {# SEO #}
+      {% include "admin_panel/components/seo_panel.html" with seo=seo %}
+
+      {# Category & Tags #}
+      <div class="adm-card">
+        <div class="adm-card-header"><span class="adm-card-title">Category & Tags</span></div>
+        <div class="adm-card-body">
+          <div class="adm-form-group">
+            <label class="adm-label">Category</label>
+            <select name="category" class="adm-select">
+              <option value="">— No category —</option>
+              {% for cat in categories %}<option value="{{ cat.pk }}" {% if blog_obj and blog_obj.category_id == cat.pk %}selected{% endif %}>{{ cat.name }}</option>{% endfor %}
+            </select>
+          </div>
+          <div class="adm-form-group" style="margin-bottom:0;">
+            <label class="adm-label">Tags</label>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;border:1px solid var(--adm-border-strong);border-radius:var(--adm-radius-sm);padding:8px;">
+              {% for tag in tags %}
+              <label style="display:flex;align-items:center;gap:4px;font-size:12px;cursor:pointer;">
+                <input type="checkbox" name="tags" value="{{ tag.pk }}"
+                       {% if tag.pk in selected_tags %}checked{% endif %}
+                       style="accent-color:var(--adm-accent);">
+                {{ tag.name }}
+              </label>
+              {% empty %}<span style="font-size:12px;color:var(--adm-text-muted);">No tags yet — <a href="{% url 'admin_panel:blog_categories' %}">create some</a></span>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {# Options #}
+      <div class="adm-card">
+        <div class="adm-card-header"><span class="adm-card-title">Options</span></div>
+        <div class="adm-card-body">
+          <label style="display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer;">
+            <input type="checkbox" name="is_featured" {% if blog_obj and blog_obj.is_featured %}checked{% endif %} style="accent-color:var(--adm-accent);">
+            Mark as Featured Post
+          </label>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</form>
+{% endblock %}

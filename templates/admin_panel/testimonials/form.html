@@ -1,0 +1,37 @@
+{% extends "admin_panel/base.html" %}
+{% block content %}
+<div class="adm-page-header">
+  <div><h1 class="adm-page-title">{{ action }} Testimonial</h1><div class="adm-breadcrumb"><a href="{% url 'admin_panel:testimonials_list' %}">Testimonials</a> › {{ action }}</div></div>
+</div>
+<form method="post" enctype="multipart/form-data">{% csrf_token %}
+  <div style="display:grid;grid-template-columns:1fr 280px;gap:20px;align-items:start;">
+    <div class="adm-card">
+      <div class="adm-card-header"><span class="adm-card-title">Customer Details</span></div>
+      <div class="adm-card-body">
+        <div class="adm-form-grid-2">
+          <div class="adm-form-group"><label class="adm-label">Customer Name *</label><input type="text" name="customer_name" class="adm-input" required value="{{ testimonial.customer_name|default:'' }}"></div>
+          <div class="adm-form-group"><label class="adm-label">Designation / Role</label><input type="text" name="designation" class="adm-input" value="{{ testimonial.designation|default:'' }}" placeholder="Dr., Clinic Manager…"></div>
+          <div class="adm-form-group"><label class="adm-label">Clinic / Organisation</label><input type="text" name="clinic_name" class="adm-input" value="{{ testimonial.clinic_name|default:'' }}"></div>
+          <div class="adm-form-group"><label class="adm-label">City / Location</label><input type="text" name="location" class="adm-input" value="{{ testimonial.location|default:'' }}"></div>
+          <div class="adm-form-group"><label class="adm-label">Product</label><select name="product" class="adm-select"><option value="">General (all products)</option><option value="CuraCMS" {% if testimonial and testimonial.product == "CuraCMS" %}selected{% endif %}>CuraCMS</option><option value="CuraLabs" {% if testimonial and testimonial.product == "CuraLabs" %}selected{% endif %}>CuraLabs</option><option value="CuraSuite" {% if testimonial and testimonial.product == "CuraSuite" %}selected{% endif %}>CuraSuite</option></select></div>
+          <div class="adm-form-group"><label class="adm-label">Rating</label><select name="rating" class="adm-select">{% for i in "12345" %}<option value="{{ i }}" {% if testimonial and testimonial.rating == i|add:0 %}selected{% elif not testimonial and i == "5" %}selected{% endif %}>{{ i }} Star{% if i != "1" %}s{% endif %}</option>{% endfor %}</select></div>
+          <div class="adm-form-group adm-form-full"><label class="adm-label">Testimonial Text *</label><textarea name="feedback" class="adm-textarea" rows="4" required>{{ testimonial.feedback|default:'' }}</textarea></div>
+          <div class="adm-form-group"><label class="adm-label">Photo</label><input type="file" name="photo" class="adm-input" accept="image/*">{% if testimonial and testimonial.photo %}<img src="{{ testimonial.photo.url }}" style="width:48px;height:48px;border-radius:50%;object-fit:cover;margin-top:8px;">{% endif %}</div>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div class="adm-card">
+        <div class="adm-card-header"><span class="adm-card-title">Status</span></div>
+        <div class="adm-card-body" style="display:flex;flex-direction:column;gap:12px;">
+          <div class="adm-form-group" style="margin-bottom:0;"><label class="adm-label">Review Status</label><select name="status" class="adm-select"><option value="pending" {% if not testimonial or testimonial.status == "pending" %}selected{% endif %}>Pending Review</option><option value="approved" {% if testimonial and testimonial.status == "approved" %}selected{% endif %}>Approved</option><option value="rejected" {% if testimonial and testimonial.status == "rejected" %}selected{% endif %}>Rejected</option></select></div>
+          <label style="display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer;"><input type="checkbox" name="is_featured" {% if testimonial and testimonial.is_featured %}checked{% endif %} style="accent-color:var(--adm-accent);"> Show on homepage</label>
+          <div class="adm-form-group" style="margin-bottom:0;"><label class="adm-label">Sort Order</label><input type="number" name="sort_order" class="adm-input" value="{{ testimonial.sort_order|default:0 }}" min="0"></div>
+          <button type="submit" class="adm-btn adm-btn-primary" style="width:100%;justify-content:center;">Save Testimonial</button>
+          <a href="{% url 'admin_panel:testimonials_list' %}" class="adm-btn adm-btn-ghost" style="width:100%;justify-content:center;">Cancel</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+{% endblock %}

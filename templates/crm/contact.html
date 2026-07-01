@@ -1,0 +1,318 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block seo_title %}Contact Us — Book a Free Demo | CuraSuite{% endblock %}
+{% block meta_description %}Book a free CuraSuite demo, request pricing, or get support. Our team responds within one business day. Available Mon–Sat, 9 AM–7 PM IST.{% endblock %}
+
+{% block contextual_cta %}{% endblock %}
+{% block newsletter %}{% endblock %}
+
+{% block content %}
+
+<!-- ═══ HERO ════════════════════════════════════════════════════════════════ -->
+<section style="position:relative;overflow:hidden;padding:var(--space-16) 0;" class="hero-pattern">
+  <div class="pattern-fade-light" style="position:absolute;inset:0;pointer-events:none;"></div>
+  <div class="container text-center" style="position:relative;z-index:1;">
+    <div class="pill">💬 We respond within 1 business day</div>
+    <h1 style="margin-bottom:var(--space-4);">Talk to Our Team</h1>
+    <p style="font-size:var(--text-xl);color:var(--text-secondary);max-width:560px;margin-inline:auto;">
+      Book a free demo, request pricing, or ask us anything. We'd love to help your practice grow.
+    </p>
+  </div>
+</section>
+
+<!-- ═══ CONTACT CARDS ═══════════════════════════════════════════════════════ -->
+<section style="padding:var(--space-8) 0;background:var(--surface-card);border-bottom:1px solid var(--border-default);">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-6);">
+      <div style="display:flex;align-items:center;gap:var(--space-4);padding:var(--space-5);background:white;border-radius:var(--radius-lg);border:1px solid var(--border-default);">
+        <div style="width:48px;height:48px;background:var(--color-primary-50);border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">📧</div>
+        <div>
+          <div style="font-size:var(--text-xs);color:var(--text-muted);font-weight:var(--font-semi);text-transform:uppercase;letter-spacing:.06em;">Email</div>
+          <a href="mailto:hello@curasuite.com" style="font-size:var(--text-sm);font-weight:var(--font-semi);color:var(--text-primary);">hello@curasuite.com</a>
+          <div style="font-size:var(--text-xs);color:var(--text-muted);">Response within 1 business day</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:var(--space-4);padding:var(--space-5);background:white;border-radius:var(--radius-lg);border:1px solid var(--border-default);">
+        <div style="width:48px;height:48px;background:var(--color-secondary-50);border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">💬</div>
+        <div>
+          <div style="font-size:var(--text-xs);color:var(--text-muted);font-weight:var(--font-semi);text-transform:uppercase;letter-spacing:.06em;">WhatsApp</div>
+          <a href="https://wa.me/919876543210" target="_blank" style="font-size:var(--text-sm);font-weight:var(--font-semi);color:var(--text-primary);">+91 98765 43210</a>
+          <div style="font-size:var(--text-xs);color:var(--text-muted);">Mon–Sat, 9 AM–7 PM IST</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:var(--space-4);padding:var(--space-5);background:white;border-radius:var(--radius-lg);border:1px solid var(--border-default);">
+        <div style="width:48px;height:48px;background:var(--color-accent-50);border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">📅</div>
+        <div>
+          <div style="font-size:var(--text-xs);color:var(--text-muted);font-weight:var(--font-semi);text-transform:uppercase;letter-spacing:.06em;">Demo Call</div>
+          <div style="font-size:var(--text-sm);font-weight:var(--font-semi);color:var(--text-primary);">30 minutes, free</div>
+          <div style="font-size:var(--text-xs);color:var(--text-muted);">Google Meet / Zoom</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ MAIN FORM SECTION ═══════════════════════════════════════════════════ -->
+<section class="section">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 400px;gap:var(--space-12);align-items:start;">
+
+      <!-- Left: Form -->
+      <div>
+        <h2 style="margin-bottom:var(--space-2);">Book a Free Demo</h2>
+        <p style="color:var(--text-secondary);margin-bottom:var(--space-8);">Fill in your details and our team will reach out to schedule a personalised demo call.</p>
+
+        <div class="card" style="padding:var(--space-8);" id="contact-card">
+          <form method="post"
+                hx-post="{% url 'crm:demo_htmx' %}"
+                hx-target="#contact-form-wrap"
+                hx-swap="innerHTML"
+                hx-indicator="#form-spinner"
+                novalidate>
+            {% csrf_token %}
+            <div id="contact-form-wrap">
+
+              {% if form.non_field_errors %}
+              <div style="background:var(--color-error-bg);border:1px solid var(--color-error-border);color:var(--color-error-text);padding:var(--space-4);border-radius:var(--radius);margin-bottom:var(--space-5);">
+                {{ form.non_field_errors }}
+              </div>
+              {% endif %}
+
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);">
+
+                <!-- Full name -->
+                <div style="display:flex;flex-direction:column;gap:var(--space-2);">
+                  <label style="font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--text-secondary);">Full Name <span style="color:var(--color-error);">*</span></label>
+                  <input type="text" name="full_name" required autocomplete="name"
+                    placeholder="Dr. Anita Sharma"
+                    value="{{ form.full_name.value|default:'' }}"
+                    style="padding:var(--space-3) var(--space-4);border:1px solid {% if form.full_name.errors %}var(--color-error){% else %}var(--border-default){% endif %};border-radius:var(--radius);font-size:var(--text-sm);font-family:inherit;transition:border-color var(--transition-fast);"
+                    onfocus="this.style.borderColor='var(--color-primary-500)'" onblur="this.style.borderColor='var(--border-default)'">
+                  {% if form.full_name.errors %}<span style="font-size:var(--text-xs);color:var(--color-error);">{{ form.full_name.errors.0 }}</span>{% endif %}
+                </div>
+
+                <!-- Email -->
+                <div style="display:flex;flex-direction:column;gap:var(--space-2);">
+                  <label style="font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--text-secondary);">Email Address <span style="color:var(--color-error);">*</span></label>
+                  <input type="email" name="email" required autocomplete="email"
+                    placeholder="doctor@clinic.com"
+                    value="{{ form.email.value|default:'' }}"
+                    style="padding:var(--space-3) var(--space-4);border:1px solid {% if form.email.errors %}var(--color-error){% else %}var(--border-default){% endif %};border-radius:var(--radius);font-size:var(--text-sm);font-family:inherit;"
+                    onfocus="this.style.borderColor='var(--color-primary-500)'" onblur="this.style.borderColor='var(--border-default)'">
+                  {% if form.email.errors %}<span style="font-size:var(--text-xs);color:var(--color-error);">{{ form.email.errors.0 }}</span>{% endif %}
+                </div>
+
+                <!-- Phone -->
+                <div style="display:flex;flex-direction:column;gap:var(--space-2);">
+                  <label style="font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--text-secondary);">Phone Number</label>
+                  <input type="tel" name="phone" autocomplete="tel"
+                    placeholder="+91 98765 43210"
+                    value="{{ form.phone.value|default:'' }}"
+                    style="padding:var(--space-3) var(--space-4);border:1px solid var(--border-default);border-radius:var(--radius);font-size:var(--text-sm);font-family:inherit;"
+                    onfocus="this.style.borderColor='var(--color-primary-500)'" onblur="this.style.borderColor='var(--border-default)'">
+                </div>
+
+                <!-- Organisation -->
+                <div style="display:flex;flex-direction:column;gap:var(--space-2);">
+                  <label style="font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--text-secondary);">Clinic / Organisation</label>
+                  <input type="text" name="organization"
+                    placeholder="Sharma Clinic, Jaipur"
+                    value="{{ form.organization.value|default:'' }}"
+                    style="padding:var(--space-3) var(--space-4);border:1px solid var(--border-default);border-radius:var(--radius);font-size:var(--text-sm);font-family:inherit;"
+                    onfocus="this.style.borderColor='var(--color-primary-500)'" onblur="this.style.borderColor='var(--border-default)'">
+                </div>
+
+                <!-- City -->
+                <div style="display:flex;flex-direction:column;gap:var(--space-2);">
+                  <label style="font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--text-secondary);">City</label>
+                  <input type="text" name="city"
+                    placeholder="Dehradun"
+                    value="{{ form.city.value|default:'' }}"
+                    style="padding:var(--space-3) var(--space-4);border:1px solid var(--border-default);border-radius:var(--radius);font-size:var(--text-sm);font-family:inherit;"
+                    onfocus="this.style.borderColor='var(--color-primary-500)'" onblur="this.style.borderColor='var(--border-default)'">
+                </div>
+
+                <!-- Business type -->
+                <div style="display:flex;flex-direction:column;gap:var(--space-2);">
+                  <label style="font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--text-secondary);">Practice Type</label>
+                  <select name="business_type"
+                    style="padding:var(--space-3) var(--space-4);border:1px solid var(--border-default);border-radius:var(--radius);font-size:var(--text-sm);font-family:inherit;background:white;"
+                    onfocus="this.style.borderColor='var(--color-primary-500)'" onblur="this.style.borderColor='var(--border-default)'">
+                    <option value="">Select type…</option>
+                    {% for val, label in form.business_type.field.choices %}
+                    {% if val %}<option value="{{ val }}" {% if form.business_type.value == val %}selected{% endif %}>{{ label }}</option>{% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+
+                <!-- Product interest -->
+                <div style="display:flex;flex-direction:column;gap:var(--space-2);">
+                  <label style="font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--text-secondary);">I'm interested in</label>
+                  <select name="product_interest"
+                    style="padding:var(--space-3) var(--space-4);border:1px solid var(--border-default);border-radius:var(--radius);font-size:var(--text-sm);font-family:inherit;background:white;"
+                    onfocus="this.style.borderColor='var(--color-primary-500)'" onblur="this.style.borderColor='var(--border-default)'">
+                    <option value="">Select product…</option>
+                    <option value="CuraCMS">CuraCMS — Website for Doctors &amp; Clinics</option>
+                    <option value="CuraLabs">CuraLabs — Platform for Pathology Labs</option>
+                    <option value="CuraSuite">CuraSuite — Clinic Management Software</option>
+                    <option value="Not sure">Not sure yet — help me decide</option>
+                  </select>
+                </div>
+
+                <!-- Preferred date -->
+                <div style="display:flex;flex-direction:column;gap:var(--space-2);">
+                  <label style="font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--text-secondary);">Preferred Demo Date</label>
+                  <input type="date" name="preferred_date"
+                    value="{{ form.preferred_date.value|default:'' }}"
+                    style="padding:var(--space-3) var(--space-4);border:1px solid var(--border-default);border-radius:var(--radius);font-size:var(--text-sm);font-family:inherit;background:white;"
+                    onfocus="this.style.borderColor='var(--color-primary-500)'" onblur="this.style.borderColor='var(--border-default)'">
+                </div>
+
+                <!-- Preferred time -->
+                <div style="display:flex;flex-direction:column;gap:var(--space-2);">
+                  <label style="font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--text-secondary);">Preferred Time Slot</label>
+                  <select name="preferred_time"
+                    style="padding:var(--space-3) var(--space-4);border:1px solid var(--border-default);border-radius:var(--radius);font-size:var(--text-sm);font-family:inherit;background:white;"
+                    onfocus="this.style.borderColor='var(--color-primary-500)'" onblur="this.style.borderColor='var(--border-default)'">
+                    <option value="">Any time works</option>
+                    <option value="10:00 AM">10:00 AM</option>
+                    <option value="11:00 AM">11:00 AM</option>
+                    <option value="12:00 PM">12:00 PM</option>
+                    <option value="2:00 PM">2:00 PM</option>
+                    <option value="3:00 PM">3:00 PM</option>
+                    <option value="4:00 PM">4:00 PM</option>
+                    <option value="5:00 PM">5:00 PM</option>
+                  </select>
+                </div>
+
+                <!-- Message (full width) -->
+                <div style="grid-column:1/-1;display:flex;flex-direction:column;gap:var(--space-2);">
+                  <label style="font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--text-secondary);">Message <span style="font-weight:400;color:var(--text-muted);">(optional)</span></label>
+                  <textarea name="message" rows="4"
+                    placeholder="Tell us about your practice, current challenges, or anything specific you'd like to see in the demo…"
+                    style="padding:var(--space-3) var(--space-4);border:1px solid var(--border-default);border-radius:var(--radius);font-size:var(--text-sm);font-family:inherit;resize:vertical;"
+                    onfocus="this.style.borderColor='var(--color-primary-500)'" onblur="this.style.borderColor='var(--border-default)'">{{ form.message.value|default:'' }}</textarea>
+                </div>
+
+              </div>
+
+              <input type="hidden" name="source" value="contact_form">
+
+              <button type="submit" class="btn btn-primary btn-lg" style="margin-top:var(--space-6);width:100%;justify-content:center;font-size:var(--text-base);">
+                <span id="form-spinner" class="htmx-indicator" style="margin-right:var(--space-2);">⟳</span>
+                Book Free Demo →
+              </button>
+              <p style="font-size:var(--text-xs);color:var(--text-muted);text-align:center;margin-top:var(--space-3);">
+                By submitting, you agree to our <a href="/privacy-policy/">Privacy Policy</a>. We'll never spam you.
+              </p>
+
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Right: Why book a demo + FAQ -->
+      <div style="display:flex;flex-direction:column;gap:var(--space-6);">
+
+        <!-- What to expect -->
+        <div class="card" style="padding:var(--space-8);">
+          <h3 style="margin-bottom:var(--space-6);">What Happens in Your Demo</h3>
+          <div style="display:flex;flex-direction:column;gap:var(--space-5);">
+            <div style="display:flex;gap:var(--space-4);align-items:flex-start;">
+              <div style="width:32px;height:32px;background:var(--color-primary-100);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:700;color:var(--color-primary-600);flex-shrink:0;">1</div>
+              <div>
+                <div style="font-size:var(--text-sm);font-weight:var(--font-semi);margin-bottom:2px;">We learn about your practice</div>
+                <div style="font-size:var(--text-sm);color:var(--text-muted);">5 minutes understanding your specialty, current workflow, and goals.</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:var(--space-4);align-items:flex-start;">
+              <div style="width:32px;height:32px;background:var(--color-primary-100);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:700;color:var(--color-primary-600);flex-shrink:0;">2</div>
+              <div>
+                <div style="font-size:var(--text-sm);font-weight:var(--font-semi);margin-bottom:2px;">Live product walkthrough</div>
+                <div style="font-size:var(--text-sm);color:var(--text-muted);">15 minutes showing exactly how CuraSuite solves your specific challenges.</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:var(--space-4);align-items:flex-start;">
+              <div style="width:32px;height:32px;background:var(--color-primary-100);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:var(--text-sm);font-weight:700;color:var(--color-primary-600);flex-shrink:0;">3</div>
+              <div>
+                <div style="font-size:var(--text-sm);font-weight:var(--font-semi);margin-bottom:2px;">Pricing & next steps</div>
+                <div style="font-size:var(--text-sm);color:var(--text-muted);">10 minutes on the right plan for your practice and how to get started.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Trust signals -->
+        <div class="card" style="padding:var(--space-6);">
+          <h4 style="margin-bottom:var(--space-4);font-size:var(--text-base);">Why 500+ providers chose CuraSuite</h4>
+          <ul class="check-list">
+            <li>No technical knowledge required</li>
+            <li>Go live in 7–21 days</li>
+            <li>30-day money-back guarantee</li>
+            <li>Dedicated onboarding support</li>
+            <li>Free content migration</li>
+            <li>WhatsApp support available</li>
+          </ul>
+        </div>
+
+        <!-- Office info -->
+        <div class="card" style="padding:var(--space-6);">
+          <h4 style="margin-bottom:var(--space-4);font-size:var(--text-base);">Office Hours</h4>
+          <div style="display:flex;flex-direction:column;gap:var(--space-3);">
+            <div style="display:flex;justify-content:space-between;font-size:var(--text-sm);">
+              <span style="color:var(--text-secondary);">Monday – Friday</span>
+              <span style="font-weight:var(--font-medium);">9:00 AM – 7:00 PM IST</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:var(--text-sm);">
+              <span style="color:var(--text-secondary);">Saturday</span>
+              <span style="font-weight:var(--font-medium);">10:00 AM – 5:00 PM IST</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:var(--text-sm);">
+              <span style="color:var(--text-secondary);">Sunday</span>
+              <span style="color:var(--text-muted);">Email only</span>
+            </div>
+            <div style="padding-top:var(--space-3);border-top:1px solid var(--border-default);">
+              <a href="https://wa.me/919876543210" target="_blank" class="btn btn-secondary" style="width:100%;justify-content:center;font-size:var(--text-sm);">
+                💬 Chat on WhatsApp
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ QUICK CONTACT METHODS ═══════════════════════════════════════════════ -->
+<section class="section bg-grid-blue" style="position:relative;">
+  <div style="position:absolute;inset:0;background:var(--color-primary-50);opacity:.85;"></div>
+  <div class="container" style="position:relative;z-index:1;">
+    <div class="text-center" style="margin-bottom:var(--space-10);">
+      <h2>Other Ways to Reach Us</h2>
+    </div>
+    <div class="grid grid-3" style="gap:var(--space-6);">
+      <div class="card card-hover" style="padding:var(--space-8);text-align:center;">
+        <div style="font-size:36px;margin-bottom:var(--space-4);">📧</div>
+        <h4 style="margin-bottom:var(--space-2);">Email Us</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);margin-bottom:var(--space-4);">For general enquiries, support, or partnership opportunities.</p>
+        <a href="mailto:hello@curasuite.com" class="btn btn-secondary" style="width:100%;justify-content:center;">hello@curasuite.com</a>
+      </div>
+      <div class="card card-hover" style="padding:var(--space-8);text-align:center;">
+        <div style="font-size:36px;margin-bottom:var(--space-4);">💬</div>
+        <h4 style="margin-bottom:var(--space-2);">WhatsApp</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);margin-bottom:var(--space-4);">Fastest response for sales enquiries and quick questions.</p>
+        <a href="https://wa.me/919876543210?text=Hi%2C+I%27d+like+to+know+more+about+CuraSuite" target="_blank" class="btn btn-secondary" style="width:100%;justify-content:center;">+91 98765 43210</a>
+      </div>
+      <div class="card card-hover" style="padding:var(--space-8);text-align:center;">
+        <div style="font-size:36px;margin-bottom:var(--space-4);">🎯</div>
+        <h4 style="margin-bottom:var(--space-2);">For Partnerships</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);margin-bottom:var(--space-4);">Reseller programmes, hospital group deals, and white-label enquiries.</p>
+        <a href="mailto:partnerships@curasuite.com" class="btn btn-secondary" style="width:100%;justify-content:center;">partnerships@curasuite.com</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

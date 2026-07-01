@@ -1,0 +1,72 @@
+{% extends "admin_panel/base.html" %}
+{% block content %}
+<div class="adm-page-header">
+  <div>
+    <h1 class="adm-page-title">Site Settings</h1>
+    <div class="adm-breadcrumb"><a href="{% url 'admin_panel:dashboard' %}">Dashboard</a> › Settings</div>
+  </div>
+</div>
+
+<div id="settings-feedback"></div>
+
+<form method="post"
+      hx-post="{% url 'admin_panel:settings' %}"
+      hx-target="#settings-feedback"
+      hx-swap="innerHTML"
+      hx-on::after-request="if(event.detail.successful) adminToast('Settings saved!')">
+  {% csrf_token %}
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+
+    <div class="adm-card">
+      <div class="adm-card-header"><span class="adm-card-title">Analytics</span></div>
+      <div class="adm-card-body">
+        <div class="adm-form-group"><label class="adm-label">GA4 Measurement ID</label><input type="text" name="ga4_measurement_id" class="adm-input" placeholder="G-XXXXXXXXXX" value="{{ settings.ga4_measurement_id }}"></div>
+        <div class="adm-form-group"><label class="adm-label">GTM Container ID</label><input type="text" name="gtm_container_id" class="adm-input" placeholder="GTM-XXXXXXX" value="{{ settings.gtm_container_id }}"></div>
+        <div class="adm-form-group"><label class="adm-label">Meta Pixel ID</label><input type="text" name="meta_pixel_id" class="adm-input" placeholder="000000000000000" value="{{ settings.meta_pixel_id }}"></div>
+        <div class="adm-form-group" style="margin-bottom:0;"><label class="adm-label">Microsoft Clarity ID</label><input type="text" name="clarity_project_id" class="adm-input" placeholder="xxxxxxxxxx" value="{{ settings.clarity_project_id }}"></div>
+      </div>
+    </div>
+
+    <div class="adm-card">
+      <div class="adm-card-header">
+        <span class="adm-card-title">WhatsApp Widget</span>
+        <label class="adm-toggle"><input type="checkbox" name="whatsapp_enabled" {% if settings.whatsapp_enabled %}checked{% endif %}><span class="adm-toggle-slider"></span></label>
+      </div>
+      <div class="adm-card-body">
+        <div class="adm-form-group"><label class="adm-label">Phone (no +)</label><input type="text" name="whatsapp_phone" class="adm-input" placeholder="919876543210" value="{{ settings.whatsapp_phone }}"></div>
+        <div class="adm-form-group"><label class="adm-label">Pre-filled Message</label><input type="text" name="whatsapp_message" class="adm-input" value="{{ settings.whatsapp_message }}"></div>
+        <div class="adm-form-group" style="margin-bottom:0;"><label class="adm-label">Tooltip Text</label><input type="text" name="whatsapp_tooltip" class="adm-input" value="{{ settings.whatsapp_tooltip }}"></div>
+      </div>
+    </div>
+
+    <div class="adm-card" style="grid-column:1/-1;">
+      <div class="adm-card-header">
+        <span class="adm-card-title">AI Chatbot</span>
+        <label class="adm-toggle"><input type="checkbox" name="chatbot_enabled" {% if settings.chatbot_enabled %}checked{% endif %}><span class="adm-toggle-slider"></span></label>
+      </div>
+      <div class="adm-card-body" style="display:grid;grid-template-columns:1fr 1fr;gap:0 16px;">
+        <div class="adm-form-group"><label class="adm-label">Chatbot Name</label><input type="text" name="chatbot_name" class="adm-input" value="{{ settings.chatbot_name }}"></div>
+        <div class="adm-form-group"><label class="adm-label">Greeting Message</label><input type="text" name="chatbot_greeting" class="adm-input" value="{{ settings.chatbot_greeting }}"></div>
+        <div class="adm-form-group" style="grid-column:1/-1;margin-bottom:0;"><label class="adm-label">System Prompt</label><textarea name="chatbot_system_prompt" class="adm-textarea" style="min-height:100px;">{{ settings.chatbot_system_prompt }}</textarea></div>
+      </div>
+    </div>
+
+    <div class="adm-card">
+      <div class="adm-card-header">
+        <span class="adm-card-title">CAPTCHA</span>
+        <label class="adm-toggle"><input type="checkbox" name="captcha_enabled" {% if settings.captcha_enabled %}checked{% endif %}><span class="adm-toggle-slider"></span></label>
+      </div>
+      <div class="adm-card-body">
+        <div class="adm-form-group"><label class="adm-label">Provider</label><select name="captcha_provider" class="adm-select"><option value="turnstile" {% if settings.captcha_provider == 'turnstile' %}selected{% endif %}>Cloudflare Turnstile</option><option value="recaptcha_v3" {% if settings.captcha_provider == 'recaptcha_v3' %}selected{% endif %}>Google reCAPTCHA v3</option></select></div>
+        <div class="adm-form-group" style="margin-bottom:0;"><label class="adm-label">Site Key (public)</label><input type="text" name="captcha_site_key" class="adm-input" value="{{ settings.captcha_site_key }}"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="margin-top:20px;display:flex;justify-content:flex-end;">
+    <button type="submit" class="adm-btn adm-btn-primary" style="padding:10px 28px;">Save Settings</button>
+  </div>
+</form>
+{% endblock %}

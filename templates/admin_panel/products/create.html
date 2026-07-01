@@ -1,0 +1,26 @@
+{% extends "admin_panel/base.html" %}
+{% block content %}
+<div class="adm-page-header">
+  <div><h1 class="adm-page-title">New Product</h1><div class="adm-breadcrumb"><a href="{% url 'admin_panel:products_list' %}">Products</a> › New</div></div>
+</div>
+{% if error %}<div class="adm-alert adm-alert-error">{{ error }}</div>{% endif %}
+<div class="adm-card" style="max-width:680px;">
+  <div class="adm-card-header"><span class="adm-card-title">Product Details</span></div>
+  <div class="adm-card-body">
+    <form method="post">{% csrf_token %}
+      <div class="adm-form-grid-2">
+        <div class="adm-form-group"><label class="adm-label">Product Key * <span style="font-weight:400;color:var(--adm-text-muted);">(unique, URL-safe)</span></label><input type="text" name="key" class="adm-input" required placeholder="my-product" pattern="[a-z0-9\-]+" title="Lowercase letters, numbers, hyphens only"></div>
+        <div class="adm-form-group"><label class="adm-label">Brand Color</label><input type="color" name="color" value="#2563EB" style="height:38px;width:100%;border:1px solid var(--adm-border-strong);border-radius:var(--adm-radius-sm);cursor:pointer;"></div>
+        <div class="adm-form-group adm-form-full"><label class="adm-label">Product Name *</label><input type="text" name="name" class="adm-input" required placeholder="e.g. CuraPharmacy"></div>
+        <div class="adm-form-group adm-form-full"><label class="adm-label">Tagline</label><input type="text" name="tagline" class="adm-input" placeholder="One-line value proposition"></div>
+        <div class="adm-form-group adm-form-full"><label class="adm-label">Short Description *</label><textarea name="short_description" class="adm-textarea" rows="2" required placeholder="Used in cards and listings"></textarea></div>
+        <div class="adm-form-group adm-form-full"><label class="adm-label">Target Audience <span style="font-weight:400;color:var(--adm-text-muted);">(comma-separated)</span></label><input type="text" name="target_audience" class="adm-input" placeholder="Pharmacies, Clinics"></div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:8px;">
+        <button type="submit" class="adm-btn adm-btn-primary">Create Product</button>
+        <a href="{% url 'admin_panel:products_list' %}" class="adm-btn adm-btn-ghost">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

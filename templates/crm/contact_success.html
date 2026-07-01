@@ -1,0 +1,14 @@
+{% extends "base/base.html" %}
+{% block seo_title %}Request Received | {{ SITE_NAME }}{% endblock %}
+{% block robots %}noindex, follow{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="container text-center" style="max-width:600px;">
+    <h1>We'll be in touch soon!</h1>
+    <p style="font-size:var(--text-lg);color:var(--text-secondary);margin-top:var(--space-4);">
+      Our team will reach out within one business day.
+    </p>
+    <a href="/" class="btn btn-primary" style="margin-top:var(--space-8);">Back to Home</a>
+  </div>
+</section>
+{% endblock %}

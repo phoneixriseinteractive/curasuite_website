@@ -1,0 +1,46 @@
+<!-- CuraSuite — Site Header -->
+<header id="site-header" style="position:sticky;top:0;z-index:var(--z-sticky);background:white;border-bottom:1px solid var(--border-default);box-shadow:var(--shadow-sm);">
+  <div class="container" style="display:flex;align-items:center;justify-content:space-between;height:64px;">
+
+    <!-- Logo -->
+    <a href="/" style="font-size:var(--text-xl);font-weight:var(--font-bold);color:var(--color-primary-600);text-decoration:none;">
+      {{ SITE_NAME }}
+    </a>
+
+    <!-- Desktop nav -->
+    <nav aria-label="Primary navigation" style="display:flex;align-items:center;gap:var(--space-6);">
+      {% for item in PRIMARY_NAV %}
+        {% if item.has_dropdown and item.children %}
+        <!-- Dropdown item -->
+        <div x-data="{ open: false }" style="position:relative;">
+          <button @click="open = !open" @keydown.escape="open = false"
+                  style="display:flex;align-items:center;gap:4px;font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--text-secondary);background:none;border:none;cursor:pointer;padding:0;">
+            {{ item.label }}
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" :style="open ? 'transform:rotate(180deg);transition:.15s' : 'transition:.15s'"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div x-show="open" @click.outside="open = false" x-transition
+               style="position:absolute;top:calc(100% + 12px);left:50%;transform:translateX(-50%);background:white;border:1px solid var(--border-default);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);padding:8px;min-width:240px;z-index:200;">
+            {% for child in item.children %}
+            <a href="{{ child.url }}"
+               style="display:block;padding:10px 14px;border-radius:var(--radius-md);text-decoration:none;transition:background .1s;"
+               onmouseover="this.style.background='var(--color-primary-50)'" onmouseout="this.style.background=''">
+              <div style="font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--text-primary);">{{ child.label }}</div>
+              {% if child.description %}<div style="font-size:var(--text-xs);color:var(--text-muted);margin-top:2px;">{{ child.description }}</div>{% endif %}
+            </a>
+            {% endfor %}
+          </div>
+        </div>
+        {% else %}
+        <!-- Flat link -->
+        <a href="{{ item.url }}"
+           style="font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--text-secondary);text-decoration:none;"
+           onmouseover="this.style.color='var(--color-primary-600)'" onmouseout="this.style.color='var(--text-secondary)'">
+          {{ item.label }}
+        </a>
+        {% endif %}
+      {% endfor %}
+    </nav>
+
+    <a href="/contact/" class="btn btn-primary btn-sm">Book Demo</a>
+  </div>
+</header>

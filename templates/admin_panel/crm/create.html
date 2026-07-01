@@ -1,0 +1,29 @@
+{% extends "admin_panel/base.html" %}
+{% block content %}
+<div class="adm-page-header">
+  <div><h1 class="adm-page-title">Add Lead</h1><div class="adm-breadcrumb"><a href="{% url 'admin_panel:crm_leads' %}">Leads</a> › Add</div></div>
+</div>
+{% if error %}<div class="adm-alert adm-alert-error">{{ error }}</div>{% endif %}
+<div class="adm-card" style="max-width:680px;">
+  <div class="adm-card-header"><span class="adm-card-title">Lead Information</span></div>
+  <div class="adm-card-body">
+    <form method="post">{% csrf_token %}
+      <div class="adm-form-grid-2">
+        <div class="adm-form-group"><label class="adm-label">Full Name *</label><input type="text" name="full_name" class="adm-input" required placeholder="Dr. Anita Sharma"></div>
+        <div class="adm-form-group"><label class="adm-label">Email *</label><input type="email" name="email" class="adm-input" required placeholder="doctor@clinic.com"></div>
+        <div class="adm-form-group"><label class="adm-label">Phone</label><input type="tel" name="phone" class="adm-input" placeholder="9876543210"></div>
+        <div class="adm-form-group"><label class="adm-label">City</label><input type="text" name="city" class="adm-input" placeholder="Dehradun"></div>
+        <div class="adm-form-group"><label class="adm-label">Organisation</label><input type="text" name="organization" class="adm-input" placeholder="Sharma Clinic"></div>
+        <div class="adm-form-group"><label class="adm-label">Product Interest</label><select name="product_interest" class="adm-select"><option value="">Select product</option><option value="CuraCMS">CuraCMS</option><option value="CuraLabs">CuraLabs</option><option value="CuraSuite">CuraSuite</option><option value="Not sure">Not sure yet</option></select></div>
+        <div class="adm-form-group"><label class="adm-label">Business Type</label><select name="business_type" class="adm-select"><option value="">Select type</option>{% for val,label in business_type_choices %}<option value="{{ val }}">{{ label }}</option>{% endfor %}</select></div>
+        <div class="adm-form-group"><label class="adm-label">Source</label><select name="source" class="adm-select">{% for val,label in source_choices %}<option value="{{ val }}">{{ label }}</option>{% endfor %}</select></div>
+        <div class="adm-form-group adm-form-full"><label class="adm-label">Message / Notes</label><textarea name="message" class="adm-textarea" rows="3" placeholder="Any additional notes about this lead…"></textarea></div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:8px;">
+        <button type="submit" class="adm-btn adm-btn-primary">Create Lead</button>
+        <a href="{% url 'admin_panel:crm_leads' %}" class="adm-btn adm-btn-ghost">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

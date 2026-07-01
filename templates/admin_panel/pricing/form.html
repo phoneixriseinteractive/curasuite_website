@@ -1,0 +1,185 @@
+{% extends "admin_panel/base.html" %}
+{% block content %}
+
+<div class="adm-page-header">
+  <div>
+    <h1 class="adm-page-title">{{ action }} Pricing Tier — {{ product.name }}</h1>
+    <div class="adm-breadcrumb">
+      <a href="{% url 'admin_panel:dashboard' %}">Dashboard</a> ›
+      <a href="{% url 'admin_panel:pricing_list' %}">Pricing</a> ›
+      {{ action }}
+    </div>
+  </div>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 300px;gap:20px;align-items:start;">
+
+  <!-- Main form -->
+  <div class="adm-card">
+    <div class="adm-card-header"><span class="adm-card-title">Tier Details</span></div>
+    <div class="adm-card-body">
+      <form method="post" id="pricing-form">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="save">
+
+        <div class="adm-form-grid-2">
+          <div class="adm-form-group">
+            <label class="adm-label">Tier Name *</label>
+            <input type="text" name="tier_name" class="adm-input" required
+                   value="{{ tier.tier_name|default:'' }}"
+                   placeholder="Starter, Professional, Enterprise…">
+          </div>
+          <div class="adm-form-group">
+            <label class="adm-label">Billing Cycle</label>
+            <select name="billing_cycle" class="adm-select">
+              {% for val, label in billing_choices %}
+              <option value="{{ val }}" {% if tier and tier.billing_cycle == val %}selected{% elif not tier and val == 'yearly' %}selected{% endif %}>{{ label }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="adm-form-group">
+            <label class="adm-label">
+              Price (₹)
+              <span style="font-weight:400;color:var(--adm-text-muted);">— leave blank for "Contact Sales"</span>
+            </label>
+            <div style="position:relative;">
+              <span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--adm-text-muted);font-size:14px;">₹</span>
+              <input type="number" name="price" class="adm-input" style="padding-left:28px;"
+                     value="{{ tier.price|default:'' }}" placeholder="9999" min="0" step="1">
+            </div>
+          </div>
+          <div class="adm-form-group">
+            <label class="adm-label">Sort Order</label>
+            <input type="number" name="sort_order" class="adm-input"
+                   value="{{ tier.sort_order|default:0 }}" min="0">
+          </div>
+
+          <div class="adm-form-group adm-form-full">
+            <label class="adm-label">Short Description <span style="font-weight:400;color:var(--adm-text-muted);">(shown under tier name)</span></label>
+            <input type="text" name="description" class="adm-input"
+                   value="{{ tier.description|default:'' }}"
+                   placeholder="Best for solo practitioners">
+          </div>
+
+          <div class="adm-form-group adm-form-full">
+            <label class="adm-label">
+              Features Included
+              <span style="font-weight:400;color:var(--adm-text-muted);">— one feature per line</span>
+            </label>
+            <textarea name="features_included" class="adm-textarea" rows="8"
+                      placeholder="Unlimited Pages&#10;Appointment Booking&#10;Patient CRM&#10;Blog Engine&#10;AI Chatbot&#10;Priority Support">{{ tier.features_included|default:'' }}</textarea>
+            <span style="font-size:11px;color:var(--adm-text-muted);">Each line becomes one feature bullet on the pricing page.</span>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <div style="display:flex;flex-direction:column;gap:16px;">
+
+    <!-- CTA & Publish -->
+    <div class="adm-card">
+      <div class="adm-card-header"><span class="adm-card-title">Call to Action</span></div>
+      <div class="adm-card-body">
+        <form method="post" id="cta-form">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="save">
+
+          <div class="adm-form-group">
+            <label class="adm-label">CTA Button Text</label>
+            <input type="text" name="cta_text" class="adm-input"
+                   value="{{ tier.cta_text|default:'Get Started' }}"
+                   placeholder="Get Started">
+          </div>
+          <div class="adm-form-group">
+            <label class="adm-label">CTA URL <span style="font-weight:400;color:var(--adm-text-muted);">(optional)</span></label>
+            <input type="text" name="cta_url" class="adm-input"
+                   value="{{ tier.cta_url|default:'' }}"
+                   placeholder="/contact/">
+          </div>
+          <div class="adm-form-group" style="margin-bottom:0;">
+            <label style="display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer;">
+              <input type="checkbox" name="is_featured"
+                     {% if tier and tier.is_featured %}checked{% endif %}
+                     style="accent-color:var(--adm-accent);width:15px;height:15px;">
+              <div>
+                <strong>Featured Tier</strong>
+                <div style="font-size:11px;color:var(--adm-text-muted);margin-top:2px;">Highlighted on the pricing page with a badge</div>
+              </div>
+            </label>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="adm-card">
+      <div class="adm-card-header"><span class="adm-card-title">Actions</span></div>
+      <div class="adm-card-body" style="display:flex;flex-direction:column;gap:10px;">
+        <button type="submit" form="pricing-form" class="adm-btn adm-btn-primary" style="width:100%;justify-content:center;"
+                onclick="syncForms()">
+          {{ action }} Tier
+        </button>
+        <a href="{% url 'admin_panel:pricing_list' %}" class="adm-btn adm-btn-ghost" style="width:100%;justify-content:center;">
+          Cancel
+        </a>
+        {% if tier %}
+        <hr class="adm-divider">
+        <form method="post" onsubmit="return confirm('Delete this pricing tier? This cannot be undone.')">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="delete">
+          <button type="submit" class="adm-btn adm-btn-danger" style="width:100%;justify-content:center;">
+            Delete Tier
+          </button>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Preview card -->
+    <div class="adm-card">
+      <div class="adm-card-header"><span class="adm-card-title">Live Preview</span></div>
+      <div class="adm-card-body" style="padding:0;">
+        <div style="border:2px solid {{ product.color }}30;border-radius:var(--adm-radius);margin:16px;padding:20px;text-align:center;">
+          <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:{{ product.color }};margin-bottom:8px;">
+            {% if tier %}{{ tier.tier_name }}{% else %}Tier Name{% endif %}
+          </div>
+          <div style="font-size:28px;font-weight:800;color:var(--adm-text-primary);margin-bottom:4px;">
+            {% if tier %}{{ tier.formatted_price }}{% else %}₹9,999{% endif %}
+          </div>
+          <div style="font-size:12px;color:var(--adm-text-muted);margin-bottom:16px;">
+            {% if tier and tier.billing_cycle == 'yearly' %}per year{% elif tier %}{{ tier.get_billing_cycle_display }}{% else %}per year{% endif %}
+          </div>
+          <a href="#" class="adm-btn adm-btn-primary" style="width:100%;justify-content:center;background:{{ product.color }};border-color:{{ product.color }};">
+            {% if tier %}{{ tier.cta_text }}{% else %}Get Started{% endif %}
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function syncForms() {
+  // Merge CTA form fields into the main form before submit
+  const ctaForm = document.getElementById('cta-form');
+  const mainForm = document.getElementById('pricing-form');
+  if (!ctaForm || !mainForm) return;
+  ctaForm.querySelectorAll('input, select, textarea').forEach(el => {
+    if (el.name && el.name !== 'csrfmiddlewaretoken' && el.name !== 'action') {
+      const existing = mainForm.querySelector(`[name="${el.name}"]`);
+      if (!existing) {
+        const clone = el.cloneNode(true);
+        clone.style.display = 'none';
+        mainForm.appendChild(clone);
+      }
+    }
+  });
+}
+</script>
+
+{% endblock %}

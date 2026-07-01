@@ -1,0 +1,30 @@
+{% extends "base/base.html" %}
+{% block seo_title %}Unsubscribe | {{ SITE_NAME }}{% endblock %}
+{% block robots %}noindex, follow{% endblock %}
+{% block content %}
+<section class="section">
+  <div class="container" style="max-width:480px;">
+    <h1 style="margin-bottom:var(--space-6);">Unsubscribe</h1>
+    <p style="color:var(--text-secondary);margin-bottom:var(--space-8);">
+      Are you sure you want to unsubscribe <strong>{{ subscriber.email }}</strong> from CuraSuite Insights?
+    </p>
+    <form method="post">
+      {% csrf_token %}
+      <div class="form-group" style="margin-bottom:var(--space-6);">
+        <label class="form-label">Reason (optional)</label>
+        <select name="reason" class="form-input">
+          <option value="">Select a reason</option>
+          <option value="too_frequent">Too many emails</option>
+          <option value="not_relevant">Content not relevant</option>
+          <option value="never_signed_up">I never signed up</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:var(--space-4);">
+        <button type="submit" class="btn btn-danger" style="background:var(--color-error);border-color:var(--color-error);color:white;">Unsubscribe</button>
+        <a href="/" class="btn btn-ghost">Cancel</a>
+      </div>
+    </form>
+  </div>
+</section>
+{% endblock %}

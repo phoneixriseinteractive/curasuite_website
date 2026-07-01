@@ -1,0 +1,87 @@
+{% extends "admin_panel/base.html" %}
+{% load admin_tags %}
+{% block content %}
+<div class="adm-page-header">
+  <div>
+    <h1 class="adm-page-title">Blog Posts</h1>
+    <div class="adm-breadcrumb"><a href="{% url 'admin_panel:dashboard' %}">Dashboard</a> › Blog Posts</div>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <a href="{% url 'admin_panel:blog_comments' %}" class="adm-btn adm-btn-secondary">Comments</a>
+    <a href="{% url 'admin_panel:blog_categories' %}" class="adm-btn adm-btn-secondary">Categories & Tags</a>
+    <a href="{% url 'admin_panel:blog_create' %}" class="adm-btn adm-btn-primary">
+      <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      New Post
+    </a>
+  </div>
+</div>
+
+<div class="adm-card" style="margin-bottom:16px;">
+  <div class="adm-card-body" style="padding:12px 20px;">
+    <form method="get" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+      <input type="search" name="q" value="{{ search }}" placeholder="Search title…" class="adm-input" style="max-width:240px;">
+      <select name="status" class="adm-select" style="max-width:160px;" onchange="this.form.submit()">
+        <option value="">All statuses</option>
+        <option value="draft" {% if status_filter == 'draft' %}selected{% endif %}>Draft</option>
+        <option value="published" {% if status_filter == 'published' %}selected{% endif %}>Published</option>
+        <option value="review" {% if status_filter == 'review' %}selected{% endif %}>In Review</option>
+      </select>
+      <button type="submit" class="adm-btn adm-btn-secondary">Filter</button>
+      {% if search or status_filter %}<a href="{% url 'admin_panel:blogs_list' %}" class="adm-btn adm-btn-ghost">Clear</a>{% endif %}
+    </form>
+  </div>
+</div>
+
+<div class="adm-card">
+  <div class="adm-card-header">
+    <span class="adm-card-title">{% if search %}Results for "{{ search }}"{% else %}All Posts{% endif %}</span>
+    <span style="font-size:12px;color:var(--adm-text-muted);">{{ blogs.paginator.count }} posts</span>
+  </div>
+  <div class="adm-table-wrap">
+    {% if blogs %}
+    <table class="adm-table">
+      <thead><tr><th>Title</th><th>Category</th><th>Author</th><th>Status</th><th>Views</th><th>Published</th><th>Actions</th></tr></thead>
+      <tbody>
+        {% for blog in blogs %}
+        <tr>
+          <td>
+            <div style="font-weight:500;">{{ blog.title|truncatechars:50 }}</div>
+            {% if blog.is_featured %}<span class="adm-badge adm-badge-amber" style="font-size:10px;margin-top:2px;">⭐ Featured</span>{% endif %}
+          </td>
+          <td style="color:var(--adm-text-secondary);">{{ blog.category.name|default:"—" }}</td>
+          <td style="font-size:12px;color:var(--adm-text-secondary);">{{ blog.author.full_name|default:"—" }}</td>
+          <td>{% status_badge blog.status %}</td>
+          <td style="color:var(--adm-text-muted);">{{ blog.view_count }}</td>
+          <td style="font-size:12px;color:var(--adm-text-muted);">{{ blog.published_at|date:"M j, Y"|default:"—" }}</td>
+          <td>
+            <div style="display:flex;gap:6px;">
+              <a href="{% url 'admin_panel:blog_edit' blog.pk %}" class="adm-btn adm-btn-secondary" style="font-size:12px;padding:4px 10px;">Edit</a>
+              {% if blog.is_published %}
+              <a href="{{ blog.get_absolute_url }}" target="_blank" class="adm-btn adm-btn-ghost" style="font-size:12px;padding:4px 10px;">↗</a>
+              {% endif %}
+              <form method="post" action="{% url 'admin_panel:blog_delete' blog.pk %}" style="display:inline;"
+                    onsubmit="return confirm('Delete this post? Cannot be undone.')">
+                {% csrf_token %}
+                <button type="submit" class="adm-btn adm-btn-danger" style="font-size:12px;padding:4px 10px;">Del</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    {% include "admin_panel/components/empty_state.html" with icon="✍️" title="No posts yet" message="Create your first blog post." %}
+    {% endif %}
+  </div>
+  {% if blogs.has_other_pages %}
+  <div style="padding:12px 20px;border-top:1px solid var(--adm-border);display:flex;justify-content:space-between;align-items:center;">
+    <span style="font-size:12px;color:var(--adm-text-muted);">Page {{ blogs.number }} of {{ blogs.paginator.num_pages }}</span>
+    <div style="display:flex;gap:8px;">
+      {% if blogs.has_previous %}<a href="?page={{ blogs.previous_page_number }}&q={{ search }}&status={{ status_filter }}" class="adm-btn adm-btn-secondary" style="font-size:12px;padding:5px 12px;">← Prev</a>{% endif %}
+      {% if blogs.has_next %}<a href="?page={{ blogs.next_page_number }}&q={{ search }}&status={{ status_filter }}" class="adm-btn adm-btn-secondary" style="font-size:12px;padding:5px 12px;">Next →</a>{% endif %}
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

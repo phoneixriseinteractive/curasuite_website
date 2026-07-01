@@ -1,0 +1,90 @@
+<!-- SEO Panel Component — include with: seo=seo_obj (seo_obj may be None) -->
+<div class="adm-card">
+  <div class="adm-card-header"><span class="adm-card-title">SEO</span></div>
+  <div class="adm-card-body">
+
+    <div class="adm-form-group">
+      <label class="adm-label">SEO Title
+        <span id="seo-title-count" style="font-weight:400;color:var(--adm-text-muted);float:right;">0/60</span>
+      </label>
+      <input type="text" name="seo_title" id="seo-title-input" class="adm-input"
+             maxlength="70" placeholder="Page title for search engines"
+             value="{{ seo.seo_title|default:'' }}"
+             oninput="document.getElementById('seo-title-count').textContent=this.value.length+'/60';">
+      <span style="font-size:11px;color:var(--adm-text-muted);">Recommended 50–60 characters</span>
+    </div>
+
+    <div class="adm-form-group">
+      <label class="adm-label">Meta Description
+        <span id="seo-desc-count" style="font-weight:400;color:var(--adm-text-muted);float:right;">0/160</span>
+      </label>
+      <textarea name="meta_description" id="seo-desc-input" class="adm-textarea" rows="3"
+                maxlength="165" placeholder="Description shown in search results…"
+                oninput="document.getElementById('seo-desc-count').textContent=this.value.length+'/160';">{{ seo.meta_description|default:'' }}</textarea>
+      <span style="font-size:11px;color:var(--adm-text-muted);">Recommended 140–160 characters</span>
+    </div>
+
+    <div class="adm-form-group">
+      <label class="adm-label">Focus Keyword</label>
+      <input type="text" name="focus_keyword" class="adm-input"
+             placeholder="Primary target keyword"
+             value="{{ seo.focus_keyword|default:'' }}">
+    </div>
+
+    <div class="adm-form-group">
+      <label class="adm-label">Canonical URL <span style="font-weight:400;color:var(--adm-text-muted);">(optional)</span></label>
+      <input type="url" name="canonical_url" class="adm-input"
+             placeholder="https://curasuite.com/page/"
+             value="{{ seo.canonical_url|default:'' }}">
+    </div>
+
+    <div class="adm-form-group">
+      <label class="adm-label">Schema Type</label>
+      <select name="schema_type" class="adm-select">
+        <option value="">None</option>
+        <option value="WebPage" {% if seo and seo.schema_type == 'WebPage' %}selected{% endif %}>Web Page</option>
+        <option value="Article" {% if seo and seo.schema_type == 'Article' %}selected{% endif %}>Article</option>
+        <option value="BlogPosting" {% if seo and seo.schema_type == 'BlogPosting' %}selected{% endif %}>Blog Posting</option>
+        <option value="FAQPage" {% if seo and seo.schema_type == 'FAQPage' %}selected{% endif %}>FAQ Page</option>
+        <option value="SoftwareApplication" {% if seo and seo.schema_type == 'SoftwareApplication' %}selected{% endif %}>Software Application</option>
+        <option value="LocalBusiness" {% if seo and seo.schema_type == 'LocalBusiness' %}selected{% endif %}>Local Business</option>
+        <option value="Organization" {% if seo and seo.schema_type == 'Organization' %}selected{% endif %}>Organization</option>
+      </select>
+    </div>
+
+    <div class="adm-form-group" style="margin-bottom:0;">
+      <label class="adm-label">Robots</label>
+      <select name="robots" class="adm-select">
+        <option value="index, follow" {% if not seo or seo.robots == 'index, follow' %}selected{% endif %}>Index, Follow (default)</option>
+        <option value="noindex, follow" {% if seo and seo.robots == 'noindex, follow' %}selected{% endif %}>No Index, Follow</option>
+        <option value="index, nofollow" {% if seo and seo.robots == 'index, nofollow' %}selected{% endif %}>Index, No Follow</option>
+        <option value="noindex, nofollow" {% if seo and seo.robots == 'noindex, nofollow' %}selected{% endif %}>No Index, No Follow</option>
+      </select>
+    </div>
+
+    <hr class="adm-divider">
+
+    <p style="font-size:12px;font-weight:600;color:var(--adm-text-secondary);margin-bottom:10px;">Open Graph</p>
+    <div class="adm-form-group">
+      <label class="adm-label">OG Title</label>
+      <input type="text" name="og_title" class="adm-input"
+             placeholder="Defaults to SEO title"
+             value="{{ seo.og_title|default:'' }}">
+    </div>
+    <div class="adm-form-group" style="margin-bottom:0;">
+      <label class="adm-label">OG Description</label>
+      <textarea name="og_description" class="adm-textarea" rows="2"
+                placeholder="Defaults to meta description">{{ seo.og_description|default:'' }}</textarea>
+    </div>
+
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var t = document.getElementById('seo-title-input');
+  var d = document.getElementById('seo-desc-input');
+  if (t) document.getElementById('seo-title-count').textContent = t.value.length + '/60';
+  if (d) document.getElementById('seo-desc-count').textContent  = d.value.length + '/160';
+});
+</script>

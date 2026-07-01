@@ -1,0 +1,41 @@
+{% extends "admin_panel/base.html" %}
+{% block content %}
+<div class="adm-page-header">
+  <div><h1 class="adm-page-title">Global FAQs</h1><div class="adm-breadcrumb"><a href="{% url 'admin_panel:dashboard' %}">Dashboard</a> › FAQs</div></div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start;">
+  <div class="adm-card">
+    <div class="adm-card-header"><span class="adm-card-title">All FAQs</span><span style="font-size:12px;color:var(--adm-text-muted);">{{ faqs|length }} entries</span></div>
+    <div class="adm-table-wrap">
+      <table class="adm-table">
+        <thead><tr><th>Question</th><th>Category</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+        {% for faq in faqs %}
+        <tr>
+          <td><div style="font-weight:500;">{{ faq.question|truncatechars:60 }}</div><div style="font-size:11px;color:var(--adm-text-muted);">{{ faq.answer|truncatechars:60 }}</div></td>
+          <td><span class="adm-badge adm-badge-default">{{ faq.get_category_display }}</span></td>
+          <td>{% if faq.is_active %}<span class="adm-badge adm-badge-green">Active</span>{% else %}<span class="adm-badge adm-badge-default">Hidden</span>{% endif %}</td>
+          <td><div style="display:flex;gap:6px;">
+            <a href="{% url 'admin_panel:faq_edit' faq.pk %}" class="adm-btn adm-btn-secondary" style="font-size:12px;padding:4px 10px;">Edit</a>
+            <form method="post" style="display:inline;">{% csrf_token %}<input type="hidden" name="action" value="toggle"><input type="hidden" name="pk" value="{{ faq.pk }}"><button type="submit" class="adm-btn adm-btn-ghost" style="font-size:12px;padding:4px 10px;">{% if faq.is_active %}Hide{% else %}Show{% endif %}</button></form>
+            <form method="post" style="display:inline;" onsubmit="return confirm('Delete?')">{% csrf_token %}<input type="hidden" name="action" value="delete"><input type="hidden" name="pk" value="{{ faq.pk }}"><button type="submit" class="adm-btn adm-btn-danger" style="font-size:12px;padding:4px 10px;">Del</button></form>
+          </div></td>
+        </tr>
+        {% empty %}<tr><td colspan="4">{% include "admin_panel/components/empty_state.html" with icon="❓" title="No FAQs yet" %}</td></tr>{% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="adm-card">
+    <div class="adm-card-header"><span class="adm-card-title">Add FAQ</span></div>
+    <div class="adm-card-body">
+      <form method="post">{% csrf_token %}<input type="hidden" name="action" value="create">
+        <div class="adm-form-group"><label class="adm-label">Category</label><select name="category" class="adm-select">{% for val,label in categories %}<option value="{{ val }}">{{ label }}</option>{% endfor %}</select></div>
+        <div class="adm-form-group"><label class="adm-label">Question *</label><input type="text" name="question" class="adm-input" required></div>
+        <div class="adm-form-group" style="margin-bottom:0;"><label class="adm-label">Answer *</label><textarea name="answer" class="adm-textarea" rows="4" required></textarea></div>
+        <button type="submit" class="adm-btn adm-btn-primary" style="margin-top:14px;width:100%;justify-content:center;">Add FAQ</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

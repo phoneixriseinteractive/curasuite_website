@@ -1,0 +1,30 @@
+{% extends "admin_panel/base.html" %}
+{% block content %}
+<div class="adm-page-header">
+  <div><h1 class="adm-page-title">{{ action }} User</h1><div class="adm-breadcrumb"><a href="{% url 'admin_panel:users_list' %}">Users</a> › {{ action }}</div></div>
+</div>
+{% if error %}<div class="adm-alert adm-alert-error">{{ error }}</div>{% endif %}
+<div class="adm-card" style="max-width:560px;">
+  <div class="adm-card-body">
+    <form method="post">{% csrf_token %}
+      <input type="hidden" name="action" value="save">
+      <div class="adm-form-grid-2">
+        <div class="adm-form-group"><label class="adm-label">First Name</label><input type="text" name="first_name" class="adm-input" value="{{ user_obj.first_name|default:'' }}"></div>
+        <div class="adm-form-group"><label class="adm-label">Last Name</label><input type="text" name="last_name" class="adm-input" value="{{ user_obj.last_name|default:'' }}"></div>
+        <div class="adm-form-group adm-form-full"><label class="adm-label">Email Address *</label><input type="email" name="email" class="adm-input" required value="{{ user_obj.email|default:'' }}" {% if user_obj %}readonly style="background:var(--adm-surface-2);"{% endif %}></div>
+        <div class="adm-form-group adm-form-full"><label class="adm-label">{% if user_obj %}New Password <span style="font-weight:400;color:var(--adm-text-muted);">(leave blank to keep current)</span>{% else %}Password *{% endif %}</label><input type="password" name="{% if user_obj %}new_password{% else %}password{% endif %}" class="adm-input" {% if not user_obj %}required{% endif %} placeholder="Min 8 characters" autocomplete="new-password"></div>
+      </div>
+      <hr class="adm-divider">
+      <p style="font-size:12px;font-weight:600;color:var(--adm-text-secondary);margin-bottom:12px;">Permissions</p>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
+        <label style="display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer;"><input type="checkbox" name="is_staff" {% if user_obj and user_obj.is_staff %}checked{% endif %} style="accent-color:var(--adm-accent);"> <div><strong>Staff</strong> — can access the admin panel</div></label>
+        <label style="display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer;"><input type="checkbox" name="is_superuser" {% if user_obj and user_obj.is_superuser %}checked{% endif %} style="accent-color:var(--adm-accent);"> <div><strong>Superuser</strong> — full access to everything</div></label>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button type="submit" class="adm-btn adm-btn-primary">{% if user_obj %}Save Changes{% else %}Create User{% endif %}</button>
+        <a href="{% url 'admin_panel:users_list' %}" class="adm-btn adm-btn-ghost">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

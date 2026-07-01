@@ -1,0 +1,144 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block seo_title %}Our Products — CuraCMS, CuraLabs & CuraSuite | {{ SITE_NAME }}{% endblock %}
+{% block meta_description %}Explore CuraSuite's healthcare technology suite — professional website CMS for doctors, digital platform for pathology labs, and complete clinic management software.{% endblock %}
+
+{% block content %}
+
+<!-- ═══ HERO ════════════════════════════════════════════════════════════════ -->
+<section class="section-lg hero-pattern" style="position:relative;overflow:hidden;">
+  <div class="pattern-fade-light" style="position:absolute;inset:0;pointer-events:none;"></div>
+  <div class="container text-center" style="position:relative;z-index:1;">
+    <div class="pill">The CuraSuite Ecosystem</div>
+    <h1 style="margin-bottom:var(--space-6);">Healthcare Technology Built for India</h1>
+    <p style="font-size:var(--text-xl);color:var(--text-secondary);max-width:640px;margin-inline:auto;line-height:var(--leading-relaxed);">
+      A unified suite of products designed specifically for clinics, doctors, and diagnostic labs across India.
+      Each product is purpose-built, deeply integrated, and live in 7–14 days.
+    </p>
+  </div>
+</section>
+
+<!-- ═══ PRODUCTS ═══════════════════════════════════════════════════════════ -->
+<section class="section">
+  <div class="container">
+    {% for product in products %}
+    <div style="display:grid;grid-template-columns:{% if forloop.even %}1fr 1fr{% else %}1fr 1fr{% endif %};gap:var(--space-16);align-items:center;margin-bottom:var(--space-20);{% if not forloop.last %}padding-bottom:var(--space-20);border-bottom:1px solid var(--border-default);{% endif %}">
+
+      {% if forloop.even %}
+      <!-- Image first on even rows -->
+      <div style="background:{{ product.color }}08;border-radius:var(--radius-xl);padding:var(--space-10);border:1px solid {{ product.color }}20;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:-20px;right:-20px;width:120px;height:120px;background:{{ product.color }}10;border-radius:50%;"></div>
+        {% if product.hero_image %}
+        <img src="{{ product.hero_image.url }}" alt="{{ product.name }}" style="border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);position:relative;z-index:1;" loading="lazy">
+        {% else %}
+        <div style="aspect-ratio:16/10;background:white;border-radius:var(--radius-lg);border:2px dashed {{ product.color }}30;display:flex;align-items:center;justify-content:center;position:relative;z-index:1;">
+          {% if product.icon %}
+          <img src="{{ product.icon.url }}" alt="{{ product.name }}" style="width:80px;height:80px;object-fit:contain;opacity:.4;" loading="lazy">
+          {% else %}
+          <span style="font-size:64px;opacity:.3;font-weight:800;color:{{ product.color }};">{{ product.name|slice:":1" }}</span>
+          {% endif %}
+        </div>
+        {% endif %}
+        <div style="position:absolute;bottom:-20px;left:-20px;width:80px;height:80px;background:{{ product.color }}08;border-radius:50%;"></div>
+      </div>
+      {% endif %}
+
+      <!-- Content -->
+      <div>
+        <div style="display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-5);">
+          {% if product.icon %}
+          <img src="{{ product.icon.url }}" alt="" style="width:44px;height:44px;object-fit:contain;" loading="lazy">
+          {% else %}
+          <div style="width:44px;height:44px;background:{{ product.color }}15;border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;">
+            <span style="color:{{ product.color }};font-weight:800;font-size:var(--text-xl);">{{ product.name|slice:":1" }}</span>
+          </div>
+          {% endif %}
+          <span style="font-size:var(--text-sm);font-weight:var(--font-semi);color:{{ product.color }};text-transform:uppercase;letter-spacing:.06em;">{{ product.name }}</span>
+        </div>
+        <h2 style="margin-bottom:var(--space-4);">{{ product.tagline }}</h2>
+        <p style="color:var(--text-secondary);font-size:var(--text-lg);margin-bottom:var(--space-6);line-height:var(--leading-relaxed);">{{ product.short_description }}</p>
+
+        {% if product.features.all %}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3);margin-bottom:var(--space-8);">
+          {% for feat in product.features.all|slice:":6" %}
+          <div style="display:flex;align-items:flex-start;gap:var(--space-2);">
+            <span style="color:{{ product.color }};font-weight:700;font-size:14px;flex-shrink:0;margin-top:2px;">✓</span>
+            <span style="font-size:var(--text-sm);color:var(--text-secondary);">{{ feat.title }}</span>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        <div style="display:flex;gap:var(--space-4);flex-wrap:wrap;">
+          <a href="{{ product.get_absolute_url }}" class="btn btn-primary" style="background:{{ product.color }};border-color:{{ product.color }};">Explore {{ product.name }}</a>
+          <a href="/pricing/" class="btn btn-secondary" style="border-color:{{ product.color }};color:{{ product.color }};">View Pricing</a>
+        </div>
+      </div>
+
+      {% if not forloop.even %}
+      <!-- Image last on odd rows -->
+      <div style="background:{{ product.color }}08;border-radius:var(--radius-xl);padding:var(--space-10);border:1px solid {{ product.color }}20;position:relative;overflow:hidden;">
+        <div style="position:absolute;top:-20px;left:-20px;width:120px;height:120px;background:{{ product.color }}10;border-radius:50%;"></div>
+        {% if product.hero_image %}
+        <img src="{{ product.hero_image.url }}" alt="{{ product.name }}" style="border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);position:relative;z-index:1;" loading="lazy">
+        {% else %}
+        <div style="aspect-ratio:16/10;background:white;border-radius:var(--radius-lg);border:2px dashed {{ product.color }}30;display:flex;align-items:center;justify-content:center;position:relative;z-index:1;">
+          {% if product.icon %}
+          <img src="{{ product.icon.url }}" alt="{{ product.name }}" style="width:80px;height:80px;object-fit:contain;opacity:.4;" loading="lazy">
+          {% else %}
+          <span style="font-size:64px;opacity:.3;font-weight:800;color:{{ product.color }};">{{ product.name|slice:":1" }}</span>
+          {% endif %}
+        </div>
+        {% endif %}
+        <div style="position:absolute;bottom:-20px;right:-20px;width:80px;height:80px;background:{{ product.color }}08;border-radius:50%;"></div>
+      </div>
+      {% endif %}
+
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- ═══ COMPARISON TABLE ════════════════════════════════════════════════════ -->
+<section class="section bg-dots-sm" style="position:relative;">
+  <div style="position:absolute;inset:0;background:var(--surface-card);opacity:.95;"></div>
+  <div class="container" style="position:relative;z-index:1;">
+    <div class="text-center" style="margin-bottom:var(--space-10);">
+      <div class="section-label">Compare</div>
+      <h2>Which Product Is Right for You?</h2>
+    </div>
+    <div style="overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;background:white;border-radius:var(--radius-xl);overflow:hidden;box-shadow:var(--shadow);">
+        <thead>
+          <tr style="background:var(--color-primary-600);color:white;">
+            <th style="padding:var(--space-4) var(--space-6);text-align:left;font-size:var(--text-sm);">Feature</th>
+            {% for product in products %}
+            <th style="padding:var(--space-4) var(--space-6);text-align:center;font-size:var(--text-sm);">{{ product.name }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--border-default);"><td style="padding:var(--space-4) var(--space-6);font-size:var(--text-sm);font-weight:var(--font-medium);">Professional website</td><td style="text-align:center;color:var(--color-secondary-600);font-weight:700;">✓</td><td style="text-align:center;color:var(--color-secondary-600);font-weight:700;">✓</td><td style="text-align:center;color:var(--color-secondary-600);font-weight:700;">✓</td></tr>
+          <tr style="border-bottom:1px solid var(--border-default);background:var(--surface-card);"><td style="padding:var(--space-4) var(--space-6);font-size:var(--text-sm);font-weight:var(--font-medium);">Online appointment booking</td><td style="text-align:center;color:var(--color-secondary-600);font-weight:700;">✓</td><td style="text-align:center;color:var(--color-secondary-600);font-weight:700;">✓</td><td style="text-align:center;color:var(--color-secondary-600);font-weight:700;">✓</td></tr>
+          <tr style="border-bottom:1px solid var(--border-default);"><td style="padding:var(--space-4) var(--space-6);font-size:var(--text-sm);font-weight:var(--font-medium);">Blog & content management</td><td style="text-align:center;color:var(--color-secondary-600);font-weight:700;">✓</td><td style="text-align:center;color:var(--color-gray-300);">—</td><td style="text-align:center;color:var(--color-gray-300);">—</td></tr>
+          <tr style="border-bottom:1px solid var(--border-default);background:var(--surface-card);"><td style="padding:var(--space-4) var(--space-6);font-size:var(--text-sm);font-weight:var(--font-medium);">AI chatbot (24/7)</td><td style="text-align:center;color:var(--color-secondary-600);font-weight:700;">✓</td><td style="text-align:center;color:var(--color-secondary-600);font-weight:700;">✓</td><td style="text-align:center;color:var(--color-secondary-600);font-weight:700;">✓</td></tr>
+          <tr style="border-bottom:1px solid var(--border-default);"><td style="padding:var(--space-4) var(--space-6);font-size:var(--text-sm);font-weight:var(--font-medium);">Online test booking</td><td style="text-align:center;color:var(--color-gray-300);">—</td><td style="text-align:center;color:var(--color-secondary-600);font-weight:700;">✓</td><td style="text-align:center;color:var(--color-gray-300);">—</td></tr>
+          <tr style="border-bottom:1px solid var(--border-default);background:var(--surface-card);"><td style="padding:var(--space-4) var(--space-6);font-size:var(--text-sm);font-weight:var(--font-medium);">Report download (OTP)</td><td style="text-align:center;color:var(--color-gray-300);">—</td><td style="text-align:center;color:var(--color-secondary-600);font-weight:700;">✓</td><td style="text-align:center;color:var(--color-gray-300);">—</td></tr>
+          <tr style="border-bottom:1px solid var(--border-default);"><td style="padding:var(--space-4) var(--space-6);font-size:var(--text-sm);font-weight:var(--font-medium);">Digital prescriptions</td><td style="text-align:center;color:var(--color-gray-300);">—</td><td style="text-align:center;color:var(--color-gray-300);">—</td><td style="text-align:center;color:var(--color-secondary-600);font-weight:700;">✓</td></tr>
+          <tr><td style="padding:var(--space-4) var(--space-6);font-size:var(--text-sm);font-weight:var(--font-medium);">Billing & invoicing</td><td style="text-align:center;color:var(--color-gray-300);">—</td><td style="text-align:center;color:var(--color-gray-300);">—</td><td style="text-align:center;color:var(--color-secondary-600);font-weight:700;">✓</td></tr>
+          <tr style="background:var(--color-primary-50);">
+            <td style="padding:var(--space-4) var(--space-6);font-size:var(--text-sm);font-weight:var(--font-semi);">Best for</td>
+            <td style="text-align:center;font-size:var(--text-xs);font-weight:var(--font-semi);color:var(--color-primary-600);padding:var(--space-4);">Individual Doctors &amp; Clinics</td>
+            <td style="text-align:center;font-size:var(--text-xs);font-weight:var(--font-semi);color:var(--color-primary-600);padding:var(--space-4);">Pathology &amp; Diagnostic Labs</td>
+            <td style="text-align:center;font-size:var(--text-xs);font-weight:var(--font-semi);color:var(--color-primary-600);padding:var(--space-4);">Multi-doctor Clinics</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="text-align:center;margin-top:var(--space-8);">
+      <a href="/contact/" class="btn btn-primary btn-lg">Not sure? Book a free consultation</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

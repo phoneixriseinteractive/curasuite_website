@@ -1,0 +1,4 @@
+<div class="adm-alert adm-alert-{{ type|default:'info' }}">
+  {% if type == 'success' %}✓{% elif type == 'error' %}✕{% else %}ℹ{% endif %}
+  {{ message }}
+</div>

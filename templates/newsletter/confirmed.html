@@ -1,0 +1,18 @@
+{% extends "base/base.html" %}
+{% block seo_title %}{{ tpl|title }} | {{ SITE_NAME }}{% endblock %}
+{% block robots %}noindex, follow{% endblock %}
+{% block content %}
+<section class="section"><div class="container text-center" style="max-width:560px;">
+{% if 'confirmed' == 'subscribe_success' %}
+  <h1>Check your inbox!</h1>
+  <p style="color:var(--text-secondary);margin-top:var(--space-4);">We've sent a confirmation email. Click the link inside to complete your subscription.</p>
+{% elif 'confirmed' == 'confirmed' %}
+  <h1>You're subscribed! 🎉</h1>
+  <p style="color:var(--text-secondary);margin-top:var(--space-4);">Welcome to CuraSuite Insights{% if subscriber %}, {{ subscriber.first_name }}{% endif %}. Expect practical healthcare technology content in your inbox.</p>
+{% elif 'confirmed' == 'unsubscribed' %}
+  <h1>You've been unsubscribed</h1>
+  <p style="color:var(--text-secondary);margin-top:var(--space-4);">{% if subscriber %}{{ subscriber.email }} has been removed from our list.{% endif %} We're sorry to see you go.</p>
+{% endif %}
+<a href="/" class="btn btn-primary" style="margin-top:var(--space-8);">Back to Home</a>
+</div></section>
+{% endblock %}

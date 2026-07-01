@@ -1,0 +1,12 @@
+{# Usage: {% include "admin_panel/components/quill_editor.html" with field_id="content" field_name="content" initial_value=obj.content %} #}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css">
+<div class="adm-editor-wrap">
+  <div id="{{ field_id }}-editor">{{ initial_value|safe }}</div>
+</div>
+<input type="hidden" name="{{ field_name }}" id="{{ field_id }}-input" value="{{ initial_value|default:'' }}">
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  initQuill('{{ field_id }}-editor', '{{ field_id }}-input');
+});
+</script>

@@ -1,0 +1,44 @@
+{% extends "admin_panel/base.html" %}
+{% load admin_tags %}
+{% block content %}
+<div class="adm-page-header">
+  <div>
+    <h1 class="adm-page-title">Products</h1>
+    <div class="adm-breadcrumb"><a href="{% url 'admin_panel:dashboard' %}">Dashboard</a> › Products</div>
+  </div>
+  <a href="{% url 'admin_panel:product_create' %}" class="adm-btn adm-btn-primary">
+    <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    New Product
+  </a>
+</div>
+<div class="adm-card">
+  <div class="adm-table-wrap">
+    <table class="adm-table">
+      <thead><tr><th>Product</th><th>Key</th><th>Status</th><th>Features</th><th>Pricing Tiers</th><th>FAQs</th><th>Actions</th></tr></thead>
+      <tbody>
+        {% for product in products %}
+        <tr>
+          <td>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div style="width:32px;height:32px;background:{{ product.color }}20;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:700;color:{{ product.color }};font-size:13px;">{{ product.name|slice:":1" }}</div>
+              <div>
+                <div style="font-weight:500;">{{ product.name }}</div>
+                <div style="font-size:11px;color:var(--adm-text-muted);">{{ product.tagline|truncatechars:40 }}</div>
+              </div>
+            </div>
+          </td>
+          <td style="font-family:monospace;font-size:12px;color:var(--adm-text-muted);">{{ product.key }}</td>
+          <td>{% status_badge product.status %}</td>
+          <td style="color:var(--adm-text-secondary);">{{ product.features.count }}</td>
+          <td style="color:var(--adm-text-secondary);">{{ product.pricing_tiers.count }}</td>
+          <td style="color:var(--adm-text-secondary);">{{ product.faqs.count }}</td>
+          <td>
+            <a href="{% url 'admin_panel:product_edit' product.pk %}" class="adm-btn adm-btn-secondary" style="font-size:12px;padding:4px 10px;">Edit →</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

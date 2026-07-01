@@ -1,0 +1,66 @@
+{% extends "admin_panel/base.html" %}
+{% load admin_tags %}
+{% block content %}
+<div class="adm-page-header">
+  <div>
+    <h1 class="adm-page-title">Subscribers</h1>
+    <div class="adm-breadcrumb"><a href="{% url 'admin_panel:dashboard' %}">Dashboard</a> › Newsletter › Subscribers</div>
+  </div>
+  <a href="{% url 'admin_panel:newsletter_campaigns' %}" class="adm-btn adm-btn-secondary">View Campaigns →</a>
+</div>
+
+<div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+  <div class="adm-kpi" style="flex:1;min-width:150px;">
+    <div class="adm-kpi-label">Total</div>
+    <div class="adm-kpi-value">{{ subscribers.paginator.count }}</div>
+  </div>
+</div>
+
+<div class="adm-card" style="margin-bottom:16px;">
+  <div class="adm-card-body" style="padding:12px 20px;">
+    <form method="get" style="display:flex;gap:10px;align-items:center;">
+      <select name="status" class="adm-select" style="max-width:180px;" onchange="this.form.submit()">
+        <option value="">All statuses</option>
+        {% for val,label in status_choices %}<option value="{{ val }}" {% if status_filter == val %}selected{% endif %}>{{ label }}</option>{% endfor %}
+      </select>
+      {% if status_filter %}<a href="{% url 'admin_panel:newsletter' %}" class="adm-btn adm-btn-ghost">Clear</a>{% endif %}
+    </form>
+  </div>
+</div>
+
+<div class="adm-card">
+  <div class="adm-card-header">
+    <span class="adm-card-title">Subscriber List</span>
+    <span style="font-size:12px;color:var(--adm-text-muted);">{{ subscribers.paginator.count }} total</span>
+  </div>
+  <div class="adm-table-wrap">
+    {% if subscribers %}
+    <table class="adm-table">
+      <thead><tr><th>Email</th><th>Name</th><th>Status</th><th>Source</th><th>Confirmed</th></tr></thead>
+      <tbody>
+        {% for sub in subscribers %}
+        <tr>
+          <td style="font-weight:500;">{{ sub.email }}</td>
+          <td style="color:var(--adm-text-secondary);">{{ sub.first_name|default:"—" }}</td>
+          <td>{% status_badge sub.status %}</td>
+          <td style="font-size:12px;color:var(--adm-text-muted);">{{ sub.source|default:"—" }}</td>
+          <td style="font-size:12px;color:var(--adm-text-muted);">{{ sub.confirmed_at|date:"M j, Y"|default:"Pending" }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    {% include "admin_panel/components/empty_state.html" with icon="📧" title="No subscribers yet" %}
+    {% endif %}
+  </div>
+  {% if subscribers.has_other_pages %}
+  <div style="padding:12px 20px;border-top:1px solid var(--adm-border);display:flex;justify-content:space-between;">
+    <span style="font-size:12px;color:var(--adm-text-muted);">Page {{ subscribers.number }} of {{ subscribers.paginator.num_pages }}</span>
+    <div style="display:flex;gap:8px;">
+      {% if subscribers.has_previous %}<a href="?page={{ subscribers.previous_page_number }}&status={{ status_filter }}" class="adm-btn adm-btn-secondary" style="font-size:12px;padding:5px 12px;">← Prev</a>{% endif %}
+      {% if subscribers.has_next %}<a href="?page={{ subscribers.next_page_number }}&status={{ status_filter }}" class="adm-btn adm-btn-secondary" style="font-size:12px;padding:5px 12px;">Next →</a>{% endif %}
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% load integrations_tags %}
+{% load static %}
+{# CuraSuite — Newsletter signup component #}
+<section style="background:var(--color-primary-900);color:white;padding:var(--space-12) 0;">
+  <div class="container" style="max-width:560px;text-align:center;">
+    <h2 style="color:white;margin-bottom:var(--space-3);">CuraSuite Insights</h2>
+    <p style="opacity:.8;margin-bottom:var(--space-6);">Healthcare technology guides, product updates, and clinic growth strategies.</p>
+    <form hx-post="{% url 'newsletter:subscribe' %}" hx-target="#newsletter-response" hx-swap="innerHTML" novalidate>
+      {% csrf_token %}
+      <div id="newsletter-response">
+        <div style="display:flex;gap:var(--space-3);">
+          <input type="email" name="email" placeholder="your@email.com" autocomplete="email" required
+            class="form-input" style="flex:1;background:white;color:var(--text-primary);">
+          <button type="submit" class="btn btn-accent">Subscribe</button>
+        </div>
+      </div>
+    </form>
+    <p style="font-size:var(--text-xs);opacity:.6;margin-top:var(--space-4);">No spam. Unsubscribe anytime.</p>
+  </div>
+</section>

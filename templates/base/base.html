@@ -1,0 +1,79 @@
+{% load static integrations_tags %}
+<!DOCTYPE html>
+<html lang="en" x-data="{ darkMode: localStorage.getItem('theme')==='dark' }" :class="{ 'dark': darkMode }">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  {# ── SEO ────────────────────────────────────────────────────────────────── #}
+  <title>{% block seo_title %}{{ SITE_NAME }}{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}{% endblock %}">
+  <link rel="canonical" href="{% block canonical_url %}{{ request.build_absolute_uri }}{% endblock %}">
+  <meta name="robots" content="{% block robots %}index, follow{% endblock %}">
+
+  {# ── Open Graph ──────────────────────────────────────────────────────────── #}
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{% block og_title %}{{ SITE_NAME }}{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}{% endblock %}">
+  <meta property="og:url" content="{{ request.build_absolute_uri }}">
+  <meta property="og:image" content="{% block og_image %}{% endblock %}">
+  <meta name="twitter:card" content="summary_large_image">
+
+  {# ── Analytics (head) ────────────────────────────────────────────────────── #}
+  {% gtm_head %}
+  {% ga4_tag %}
+  {% meta_pixel_tag %}
+  {% clarity_tag %}
+
+  {# ── CAPTCHA scripts ─────────────────────────────────────────────────────── #}
+  {% captcha_scripts %}
+
+  {# ── Design System ───────────────────────────────────────────────────────── #}
+  <link rel="stylesheet" href="{% static 'css/tokens.css' %}">
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
+  {% block extra_css %}{% endblock %}
+
+  {# ── Schema ──────────────────────────────────────────────────────────────── #}
+  {% block schema %}
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"Organization","name":"{{ SITE_NAME }}","url":"{{ request.scheme }}://{{ request.get_host }}"}
+  </script>
+  {% endblock %}
+
+  {% block head_extra %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+
+  {# ── GTM noscript (immediately after body open) ───────────────────────────── #}
+  {% gtm_body %}
+
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  {% block announcement_bar %}{% endblock %}
+  {% block header %}{% include "components/header.html" %}{% endblock %}
+  {% block breadcrumb %}{% endblock %}
+
+  <main id="main-content" role="main">
+    {% block content %}{% endblock %}
+  </main>
+
+  {% block contextual_cta %}{% include "components/cta_section.html" %}{% endblock %}
+  {% block newsletter %}{% include "components/newsletter.html" %}{% endblock %}
+  {% block footer %}{% include "components/footer.html" %}{% endblock %}
+
+  {# ── Floating widgets ────────────────────────────────────────────────────── #}
+  {% whatsapp_widget %}
+  {% chatbot_widget %}
+
+  {# ── Toast container ─────────────────────────────────────────────────────── #}
+  <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  {# ── JS ───────────────────────────────────────────────────────────────────── #}
+  <script src="https://unpkg.com/htmx.org@2.0.3" defer></script>
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <script src="{% static 'js/main.js' %}" defer></script>
+  {% block extra_js %}{% endblock %}
+
+</body>
+</html>

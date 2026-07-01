@@ -1,0 +1,36 @@
+{% extends "base/base.html" %}
+
+{% block seo_title %}{% if seo %}{{ seo.get_title }}{% else %}{{ page.title }} | {{ SITE_NAME }}{% endif %}{% endblock %}
+{% block meta_description %}{% if seo %}{{ seo.get_description }}{% else %}{{ page.excerpt }}{% endif %}{% endblock %}
+{% block robots %}{% if seo %}{{ seo.robots }}{% else %}index, follow{% endif %}{% endblock %}
+
+{% block breadcrumb %}
+{% if breadcrumbs|length > 1 %}
+<nav aria-label="Breadcrumb" style="background:var(--surface-card);border-bottom:1px solid var(--border-default);">
+  <div class="container" style="padding-block:var(--space-3);">
+    <ol style="display:flex;align-items:center;gap:var(--space-2);font-size:var(--text-sm);color:var(--text-secondary);" itemscope itemtype="https://schema.org/BreadcrumbList">
+      {% for crumb in breadcrumbs %}
+      <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        {% if not forloop.last %}
+          <a itemprop="item" href="{{ crumb.url }}" style="color:var(--text-link);"><span itemprop="name">{{ crumb.title }}</span></a>
+          <span aria-hidden="true" style="margin-left:var(--space-2);">›</span>
+        {% else %}
+          <span itemprop="name" aria-current="page" style="color:var(--text-primary);">{{ crumb.title }}</span>
+        {% endif %}
+        <meta itemprop="position" content="{{ forloop.counter }}">
+      </li>
+      {% endfor %}
+    </ol>
+  </div>
+</nav>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container" style="max-width:860px;">
+    <h1 style="margin-bottom:var(--space-8);">{{ page.title }}</h1>
+    <div class="prose">{{ page.content|safe }}</div>
+  </div>
+</section>
+{% endblock %}

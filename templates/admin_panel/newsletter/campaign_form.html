@@ -1,0 +1,53 @@
+{% extends "admin_panel/base.html" %}
+{% block content %}
+<div class="adm-page-header">
+  <div>
+    <h1 class="adm-page-title">{{ action }} Campaign</h1>
+    <div class="adm-breadcrumb"><a href="{% url 'admin_panel:dashboard' %}">Dashboard</a> › <a href="{% url 'admin_panel:newsletter_campaigns' %}">Campaigns</a> › {{ action }}</div>
+  </div>
+</div>
+
+<form method="post" id="campaign-form">
+  {% csrf_token %}
+  <input type="hidden" name="action" id="campaign-action" value="save">
+  <div style="display:grid;grid-template-columns:1fr 260px;gap:20px;align-items:start;">
+    <div class="adm-card">
+      <div class="adm-card-header"><span class="adm-card-title">Email Content</span></div>
+      <div class="adm-card-body">
+        <div class="adm-form-group">
+          <label class="adm-label">Subject Line <span style="color:var(--adm-red);">*</span></label>
+          <input type="text" name="subject" class="adm-input" required value="{{ campaign.subject|default:'' }}" placeholder="Your email subject">
+        </div>
+        <div class="adm-form-group">
+          <label class="adm-label">Preview Text <span style="font-weight:400;color:var(--adm-text-muted);">(shown before opening)</span></label>
+          <input type="text" name="preview_text" class="adm-input" value="{{ campaign.preview_text|default:'' }}" placeholder="Brief preview shown in inbox">
+        </div>
+        <div class="adm-form-group" style="margin-bottom:0;">
+          <label class="adm-label">HTML Content</label>
+          {% include "admin_panel/components/quill_editor.html" with field_id="content_html" field_name="content_html" initial_value=campaign.content_html %}
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div class="adm-card">
+        <div class="adm-card-header"><span class="adm-card-title">Send</span></div>
+        <div class="adm-card-body" style="display:flex;flex-direction:column;gap:10px;">
+          {% if campaign %}
+          <div style="font-size:12px;color:var(--adm-text-muted);">Status: <strong>{{ campaign.get_status_display }}</strong></div>
+          <div style="font-size:12px;color:var(--adm-text-muted);">Sent: {{ campaign.total_sent }}</div>
+          <div style="font-size:12px;color:var(--adm-text-muted);">Opens: {{ campaign.open_rate }}</div>
+          {% endif %}
+          <button type="submit" class="adm-btn adm-btn-secondary" style="width:100%;justify-content:center;">Save Draft</button>
+          {% if campaign and campaign.status == 'draft' %}
+          <button type="button" class="adm-btn adm-btn-primary" style="width:100%;justify-content:center;"
+                  onclick="if(confirm('Send to all confirmed subscribers?')){document.getElementById('campaign-action').value='send';document.getElementById('campaign-form').submit();}">
+            📨 Send Campaign
+          </button>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+{% endblock %}

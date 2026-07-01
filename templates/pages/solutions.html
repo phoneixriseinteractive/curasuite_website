@@ -1,0 +1,271 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block seo_title %}{{ page.title }} | CuraSuite{% endblock %}
+{% block meta_description %}{% if seo %}{{ seo.get_description }}{% else %}{{ page.excerpt }}{% endif %}{% endblock %}
+
+{% block content %}
+
+<!-- ═══ HERO ════════════════════════════════════════════════════════════════ -->
+<section style="position:relative;overflow:hidden;padding:var(--space-20) 0 var(--space-16);" class="hero-pattern">
+  <div class="pattern-fade-light" style="position:absolute;inset:0;pointer-events:none;"></div>
+  <div class="container" style="position:relative;z-index:1;">
+    <div style="max-width:720px;">
+      <div class="pill">
+        {% if "doctors" in page.slug %}🩺 For Doctors
+        {% elif "labs" in page.slug %}🔬 For Pathology Labs
+        {% else %}🏥 For Clinics
+        {% endif %}
+      </div>
+      <h1 style="margin-bottom:var(--space-6);">{{ page.title }}</h1>
+      <p style="font-size:var(--text-xl);color:var(--text-secondary);line-height:var(--leading-relaxed);margin-bottom:var(--space-8);">
+        {{ page.excerpt }}
+      </p>
+      <div style="display:flex;gap:var(--space-4);flex-wrap:wrap;">
+        <a href="/contact/" class="btn btn-primary btn-lg">Book Free Demo</a>
+        <a href="/pricing/" class="btn btn-secondary btn-lg">View Pricing</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PAGE CONTENT ════════════════════════════════════════════════════════ -->
+<section class="section">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 360px;gap:var(--space-16);align-items:start;">
+
+      <!-- Main content from CMS -->
+      <div>
+        <div class="prose" style="font-size:var(--text-lg);color:var(--text-secondary);line-height:var(--leading-relaxed);">
+          {{ page.content|safe }}
+        </div>
+      </div>
+
+      <!-- Sticky demo form sidebar -->
+      <div style="position:sticky;top:80px;">
+        <div class="card" style="padding:var(--space-8);border:2px solid var(--color-primary-100);background:var(--color-primary-50);">
+          <h3 style="margin-bottom:var(--space-2);">Book Your Free Demo</h3>
+          <p style="font-size:var(--text-sm);color:var(--text-secondary);margin-bottom:var(--space-6);">
+            See how CuraSuite can work for your practice. Takes 30 minutes.
+          </p>
+          <form method="post" action="/contact/"
+                hx-post="/contact/demo/"
+                hx-target="#solutions-form-wrap"
+                hx-swap="innerHTML">
+            {% csrf_token %}
+            <div id="solutions-form-wrap">
+              <div style="display:flex;flex-direction:column;gap:var(--space-3);">
+                <input type="text" name="full_name" required placeholder="Your full name *"
+                  style="width:100%;padding:var(--space-3) var(--space-4);border:1px solid var(--border-default);border-radius:var(--radius);font-size:var(--text-sm);font-family:inherit;background:white;">
+                <input type="email" name="email" required placeholder="Email address *"
+                  style="width:100%;padding:var(--space-3) var(--space-4);border:1px solid var(--border-default);border-radius:var(--radius);font-size:var(--text-sm);font-family:inherit;background:white;">
+                <input type="tel" name="phone" placeholder="Phone number"
+                  style="width:100%;padding:var(--space-3) var(--space-4);border:1px solid var(--border-default);border-radius:var(--radius);font-size:var(--text-sm);font-family:inherit;background:white;">
+                <input type="text" name="organization" placeholder="Clinic / Organisation name"
+                  style="width:100%;padding:var(--space-3) var(--space-4);border:1px solid var(--border-default);border-radius:var(--radius);font-size:var(--text-sm);font-family:inherit;background:white;">
+                <select name="product_interest"
+                  style="width:100%;padding:var(--space-3) var(--space-4);border:1px solid var(--border-default);border-radius:var(--radius);font-size:var(--text-sm);font-family:inherit;background:white;">
+                  {% if "doctors" in page.slug or "clinics" in page.slug %}
+                  <option value="CuraCMS" selected>CuraCMS</option>
+                  {% elif "labs" in page.slug %}
+                  <option value="CuraLabs" selected>CuraLabs</option>
+                  {% else %}
+                  <option value="">Select product interest</option>
+                  <option value="CuraCMS">CuraCMS</option>
+                  <option value="CuraLabs">CuraLabs</option>
+                  <option value="CuraSuite">CuraSuite</option>
+                  {% endif %}
+                </select>
+                <input type="hidden" name="source" value="solutions_page">
+                <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:var(--space-4);">
+                  Request Free Demo →
+                </button>
+              </div>
+            </div>
+          </form>
+          <p style="font-size:11px;color:var(--text-muted);text-align:center;margin-top:var(--space-3);">
+            No credit card required · Response within 1 business day
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ BENEFITS GRID ═══════════════════════════════════════════════════════ -->
+<section class="section bg-dots-sm" style="position:relative;">
+  <div style="position:absolute;inset:0;background:var(--surface-card);opacity:.93;"></div>
+  <div class="container" style="position:relative;z-index:1;">
+    <div class="text-center" style="margin-bottom:var(--space-12);">
+      <div class="section-label">Key Benefits</div>
+      <h2>
+        {% if "doctors" in page.slug %}Why Doctors Choose CuraCMS
+        {% elif "labs" in page.slug %}Why Labs Choose CuraLabs
+        {% else %}Why Clinics Choose CuraSuite
+        {% endif %}
+      </h2>
+    </div>
+    <div class="grid grid-3" style="gap:var(--space-6);">
+      {% if "doctors" in page.slug %}
+      <div class="card card-hover" style="padding:var(--space-8);">
+        <div class="feature-icon" style="background:var(--color-primary-50);">📈</div>
+        <h4 style="margin-bottom:var(--space-3);">More Patients Online</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);line-height:var(--leading-relaxed);">A professional, fast website with SEO built in helps new patients find you on Google before they find your competitors. Our clients report 200–400% more online enquiries within 90 days.</p>
+      </div>
+      <div class="card card-hover" style="padding:var(--space-8);">
+        <div class="feature-icon" style="background:var(--color-secondary-50);">📅</div>
+        <h4 style="margin-bottom:var(--space-3);">24/7 Appointment Booking</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);line-height:var(--leading-relaxed);">40% of appointments are booked outside working hours. Our online booking system captures those patients automatically — no phone calls, no missed opportunities.</p>
+      </div>
+      <div class="card card-hover" style="padding:var(--space-8);">
+        <div class="feature-icon" style="background:var(--color-accent-50);">🤖</div>
+        <h4 style="margin-bottom:var(--space-3);">AI Chatbot Handles Queries</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);line-height:var(--leading-relaxed);">Our Gemini-powered chatbot answers patient questions about timings, services, and appointments around the clock — reducing your reception workload by up to 60%.</p>
+      </div>
+      <div class="card card-hover" style="padding:var(--space-8);">
+        <div class="feature-icon" style="background:var(--color-primary-50);">✍️</div>
+        <h4 style="margin-bottom:var(--space-3);">Health Content That Ranks</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);line-height:var(--leading-relaxed);">The integrated blog lets you publish health articles easily. Regular content establishes you as an authority in your specialty and dramatically improves your Google rankings over time.</p>
+      </div>
+      <div class="card card-hover" style="padding:var(--space-8);">
+        <div class="feature-icon" style="background:var(--color-secondary-50);">⭐</div>
+        <h4 style="margin-bottom:var(--space-3);">Showcase Your Credentials</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);line-height:var(--leading-relaxed);">Display your qualifications, experience, and patient testimonials prominently. Build trust before the patient even walks through your door — or picks up the phone.</p>
+      </div>
+      <div class="card card-hover" style="padding:var(--space-8);">
+        <div class="feature-icon" style="background:var(--color-accent-50);">🚀</div>
+        <h4 style="margin-bottom:var(--space-3);">Live in 7–14 Days</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);line-height:var(--leading-relaxed);">Our team handles everything — design, content upload, SEO setup, and staff training. You approve and go live. No technical knowledge required whatsoever.</p>
+      </div>
+      {% elif "labs" in page.slug %}
+      <div class="card card-hover" style="padding:var(--space-8);">
+        <div class="feature-icon" style="background:var(--color-primary-50);">📋</div>
+        <h4 style="margin-bottom:var(--space-3);">Digital Test Catalogue</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);line-height:var(--leading-relaxed);">Showcase your full test catalogue with prices, sample requirements, turnaround times, and preparation instructions. Patients find the test they need without calling.</p>
+      </div>
+      <div class="card card-hover" style="padding:var(--space-8);">
+        <div class="feature-icon" style="background:var(--color-secondary-50);">🏠</div>
+        <h4 style="margin-bottom:var(--space-3);">Home Collection Requests</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);line-height:var(--leading-relaxed);">Let patients book home sample collection with preferred date, time, and address. Automated WhatsApp confirmations go out instantly — no manual coordination needed.</p>
+      </div>
+      <div class="card card-hover" style="padding:var(--space-8);">
+        <div class="feature-icon" style="background:var(--color-accent-50);">📄</div>
+        <h4 style="margin-bottom:var(--space-3);">Secure Report Download</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);line-height:var(--leading-relaxed);">Patients download reports using OTP verification — secure, instant, and paperless. Your phone call volume drops by 50–70% as patients no longer need to call for results.</p>
+      </div>
+      <div class="card card-hover" style="padding:var(--space-8);">
+        <div class="feature-icon" style="background:var(--color-primary-50);">💬</div>
+        <h4 style="margin-bottom:var(--space-3);">Automated Notifications</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);line-height:var(--leading-relaxed);">WhatsApp and SMS notifications for booking confirmations, sample collection reminders, and report availability alerts — all triggered automatically without manual effort.</p>
+      </div>
+      <div class="card card-hover" style="padding:var(--space-8);">
+        <div class="feature-icon" style="background:var(--color-secondary-50);">🔬</div>
+        <h4 style="margin-bottom:var(--space-3);">NABL-Ready Presentation</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);line-height:var(--leading-relaxed);">Display your accreditations, certifications, and quality commitments prominently. Build patient trust with a professional digital presence that matches the quality of your lab.</p>
+      </div>
+      <div class="card card-hover" style="padding:var(--space-8);">
+        <div class="feature-icon" style="background:var(--color-accent-50);">📊</div>
+        <h4 style="margin-bottom:var(--space-3);">Multi-Branch Support</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);line-height:var(--leading-relaxed);">Running multiple collection centres? CuraLabs Enterprise manages all branches from one dashboard with unified patient records, reporting, and notifications.</p>
+      </div>
+      {% else %}
+      <div class="card card-hover" style="padding:var(--space-8);">
+        <div class="feature-icon" style="background:var(--color-primary-50);">👥</div>
+        <h4 style="margin-bottom:var(--space-3);">Digital Reception</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);line-height:var(--leading-relaxed);">Replace paper registers with a digital patient queue. Reception staff register patients, manage waiting lists, and route patients to the right doctor — all from one screen.</p>
+      </div>
+      <div class="card card-hover" style="padding:var(--space-8);">
+        <div class="feature-icon" style="background:var(--color-secondary-50);">📋</div>
+        <h4 style="margin-bottom:var(--space-3);">Digital Prescriptions</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);line-height:var(--leading-relaxed);">Doctors generate prescriptions in under 60 seconds using medicine templates, favourite medications lists, and patient history. Printed or sent to patient WhatsApp instantly.</p>
+      </div>
+      <div class="card card-hover" style="padding:var(--space-8);">
+        <div class="feature-icon" style="background:var(--color-accent-50);">💰</div>
+        <h4 style="margin-bottom:var(--space-3);">Integrated Billing</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);line-height:var(--leading-relaxed);">Generate invoices, collect payments, track outstanding balances, and produce financial reports. GST-compliant billing that saves 2+ hours of administrative work every day.</p>
+      </div>
+      <div class="card card-hover" style="padding:var(--space-8);">
+        <div class="feature-icon" style="background:var(--color-primary-50);">📦</div>
+        <h4 style="margin-bottom:var(--space-3);">Inventory Management</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);line-height:var(--leading-relaxed);">Track medicines, consumables, and equipment with low-stock alerts and automated reorder reminders. Never run out of critical supplies unexpectedly again.</p>
+      </div>
+      <div class="card card-hover" style="padding:var(--space-8);">
+        <div class="feature-icon" style="background:var(--color-secondary-50);">📈</div>
+        <h4 style="margin-bottom:var(--space-3);">Reports & Analytics</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);line-height:var(--leading-relaxed);">Daily revenue summaries, doctor productivity reports, patient footfall analysis, and custom date-range reports — all available in one click without manual calculations.</p>
+      </div>
+      <div class="card card-hover" style="padding:var(--space-8);">
+        <div class="feature-icon" style="background:var(--color-accent-50);">🔗</div>
+        <h4 style="margin-bottom:var(--space-3);">Multi-Doctor Support</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);line-height:var(--leading-relaxed);">Doctor-wise calendars, individual billing, and separate prescription pads. Manage a 2-doctor clinic or a 20-doctor hospital wing with the same platform.</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- ═══ STATS ROW ════════════════════════════════════════════════════════════ -->
+<section style="background:var(--color-primary-600);padding:var(--space-10) 0;">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-8);text-align:center;">
+      {% if "doctors" in page.slug %}
+      <div><div style="font-size:var(--text-4xl);font-weight:800;color:white;margin-bottom:4px;">300%</div><div style="color:rgba(255,255,255,.75);font-size:var(--text-sm);">Avg increase in online enquiries</div></div>
+      <div><div style="font-size:var(--text-4xl);font-weight:800;color:white;margin-bottom:4px;">40%</div><div style="color:rgba(255,255,255,.75);font-size:var(--text-sm);">Bookings outside working hours</div></div>
+      <div><div style="font-size:var(--text-4xl);font-weight:800;color:white;margin-bottom:4px;">60%</div><div style="color:rgba(255,255,255,.75);font-size:var(--text-sm);">Drop in phone call volume</div></div>
+      <div><div style="font-size:var(--text-4xl);font-weight:800;color:white;margin-bottom:4px;">7 days</div><div style="color:rgba(255,255,255,.75);font-size:var(--text-sm);">Average go-live time</div></div>
+      {% elif "labs" in page.slug %}
+      <div><div style="font-size:var(--text-4xl);font-weight:800;color:white;margin-bottom:4px;">60%</div><div style="color:rgba(255,255,255,.75);font-size:var(--text-sm);">Drop in phone call volume</div></div>
+      <div><div style="font-size:var(--text-4xl);font-weight:800;color:white;margin-bottom:4px;">35%</div><div style="color:rgba(255,255,255,.75);font-size:var(--text-sm);">Increase in test bookings</div></div>
+      <div><div style="font-size:var(--text-4xl);font-weight:800;color:white;margin-bottom:4px;">100%</div><div style="color:rgba(255,255,255,.75);font-size:var(--text-sm);">Paperless report delivery</div></div>
+      <div><div style="font-size:var(--text-4xl);font-weight:800;color:white;margin-bottom:4px;">14 days</div><div style="color:rgba(255,255,255,.75);font-size:var(--text-sm);">Average go-live time</div></div>
+      {% else %}
+      <div><div style="font-size:var(--text-4xl);font-weight:800;color:white;margin-bottom:4px;">3 hrs</div><div style="color:rgba(255,255,255,.75);font-size:var(--text-sm);">Admin time saved daily</div></div>
+      <div><div style="font-size:var(--text-4xl);font-weight:800;color:white;margin-bottom:4px;">99%</div><div style="color:rgba(255,255,255,.75);font-size:var(--text-sm);">Billing accuracy</div></div>
+      <div><div style="font-size:var(--text-4xl);font-weight:800;color:white;margin-bottom:4px;">50%</div><div style="color:rgba(255,255,255,.75);font-size:var(--text-sm);">Faster prescription generation</div></div>
+      <div><div style="font-size:var(--text-4xl);font-weight:800;color:white;margin-bottom:4px;">21 days</div><div style="color:rgba(255,255,255,.75);font-size:var(--text-sm);">Average go-live time</div></div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TESTIMONIALS ════════════════════════════════════════════════════════ -->
+{% if testimonials %}
+<section class="section">
+  <div class="container">
+    <div class="text-center" style="margin-bottom:var(--space-10);">
+      <div class="section-label">Customer Stories</div>
+      <h2>What Our Customers Say</h2>
+    </div>
+    <div class="grid grid-2" style="gap:var(--space-6);">
+      {% for t in testimonials %}
+      <div class="testimonial-card">
+        <div style="color:#F59E0B;margin-bottom:var(--space-3);">{{ t.star_display }}</div>
+        <p style="color:var(--text-secondary);font-size:var(--text-base);line-height:var(--leading-relaxed);margin-bottom:var(--space-5);font-style:italic;">"{{ t.feedback }}"</p>
+        <div style="display:flex;align-items:center;gap:var(--space-3);">
+          {% if t.photo %}<img src="{{ t.photo.url }}" alt="" style="width:44px;height:44px;border-radius:50%;object-fit:cover;flex-shrink:0;" loading="lazy">
+          {% else %}<div style="width:44px;height:44px;background:var(--color-primary-100);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--color-primary-600);flex-shrink:0;">{{ t.customer_name|slice:":1" }}</div>{% endif %}
+          <div>
+            <div style="font-size:var(--text-sm);font-weight:var(--font-semi);">{{ t.customer_name }}</div>
+            <div style="font-size:var(--text-xs);color:var(--text-muted);">{{ t.designation }}{% if t.clinic_name %}, {{ t.clinic_name }}{% endif %}{% if t.location %} — {{ t.location }}{% endif %}</div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ═══ CTA ══════════════════════════════════════════════════════════════════ -->
+<section style="background:var(--color-gray-900);padding:var(--space-16) 0;position:relative;overflow:hidden;" class="hero-pattern-dark">
+  <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(37,99,235,.35) 0%,rgba(17,24,39,.95) 100%);"></div>
+  <div class="container text-center" style="position:relative;z-index:1;">
+    <h2 style="color:white;margin-bottom:var(--space-4);">Ready to Get Started?</h2>
+    <p style="color:rgba(255,255,255,.75);font-size:var(--text-lg);margin-bottom:var(--space-8);max-width:500px;margin-inline:auto;">Book a free 30-minute demo. Our team will show you exactly how CuraSuite works for your practice.</p>
+    <a href="/contact/" class="btn btn-lg" style="background:var(--color-primary-500);color:white;border-color:var(--color-primary-500);">Book Free Demo Today</a>
+    <p style="color:rgba(255,255,255,.4);font-size:var(--text-sm);margin-top:var(--space-4);">No commitment · Free trial available · Setup in 7–21 days</p>
+  </div>
+</section>
+
+{% endblock %}
