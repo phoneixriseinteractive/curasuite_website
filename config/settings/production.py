@@ -32,23 +32,14 @@ DATABASES = {
 }
 
 
-# ── Cache (Redis) ──────────────────────────────────────────────────────────────
-REDIS_URL = os.environ["REDIS_URL"]
+# ── Cache (Local memory — no Celery/Redis in use on this deployment) ───────────
+SESSION_ENGINE = "django.contrib.sessions.backends.db"
 CACHES = {
     "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": REDIS_URL,
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-            "SOCKET_CONNECT_TIMEOUT": 5,
-            "SOCKET_TIMEOUT": 5,
-            "CONNECTION_POOL_KWARGS": {"max_connections": 50},
-        },
-        "KEY_PREFIX": "curasuite",
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "curasuite-prod",
     }
 }
-CELERY_BROKER_URL = REDIS_URL
-CELERY_RESULT_BACKEND = REDIS_URL
 
 
 # ── Email ──────────────────────────────────────────────────────────────────────
