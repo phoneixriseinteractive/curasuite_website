@@ -1,0 +1,114 @@
+{% comment %}
+Creative CSS/SVG placeholder shown when a product has no real screenshots yet.
+Usage: {% include "components/product_mockup.html" with product=product mockup_style="website" %}
+mockup_style: "website" (browser chrome + hero/nav/cards) or "dashboard" (sidebar + stats + table rows)
+{% endcomment %}
+
+<div style="position:relative;background:white;border-radius:var(--radius-xl);border:1px solid var(--border-default);box-shadow:var(--shadow-lg);overflow:hidden;max-width:640px;margin-inline:auto;">
+
+  {% if mockup_style == "dashboard" %}
+  <!-- ═══ DASHBOARD MOCKUP — CuraLabs / CuraSuite style ═══════════════════════ -->
+
+  <!-- Top bar -->
+  <div style="display:flex;align-items:center;gap:8px;padding:12px 16px;background:{{ product.color }};">
+    <div style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.4);"></div>
+    <div style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.4);"></div>
+    <div style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.4);"></div>
+    <div style="flex:1;text-align:center;font-size:11px;color:rgba(255,255,255,.85);font-weight:600;letter-spacing:.03em;">{{ product.name }} Dashboard</div>
+  </div>
+
+  <div style="display:flex;min-height:320px;">
+    <!-- Sidebar -->
+    <div style="width:76px;background:var(--color-gray-900);padding:16px 0;display:flex;flex-direction:column;align-items:center;gap:18px;flex-shrink:0;">
+      <div style="width:28px;height:28px;border-radius:8px;background:{{ product.color }};"></div>
+      {% for i in "1234"|make_list %}
+      <div style="width:20px;height:20px;border-radius:5px;background:{% if i == '1' %}rgba(255,255,255,.9){% else %}rgba(255,255,255,.25){% endif %};"></div>
+      {% endfor %}
+    </div>
+
+    <!-- Main dashboard content -->
+    <div style="flex:1;padding:20px;background:var(--surface-card);">
+      <!-- Stat cards row -->
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px;">
+        {% for i in "123"|make_list %}
+        <div style="background:white;border-radius:8px;padding:12px;border:1px solid var(--border-default);">
+          <div style="width:60%;height:6px;border-radius:3px;background:var(--color-gray-200);margin-bottom:8px;"></div>
+          <div style="width:40%;height:14px;border-radius:3px;background:{{ product.color }};opacity:.8;"></div>
+        </div>
+        {% endfor %}
+      </div>
+      <!-- Table skeleton -->
+      <div style="background:white;border-radius:8px;border:1px solid var(--border-default);overflow:hidden;">
+        <div style="display:flex;padding:10px 14px;background:var(--color-gray-50);border-bottom:1px solid var(--border-default);gap:12px;">
+          <div style="width:30%;height:6px;border-radius:3px;background:var(--color-gray-300);"></div>
+          <div style="width:20%;height:6px;border-radius:3px;background:var(--color-gray-300);"></div>
+          <div style="width:20%;height:6px;border-radius:3px;background:var(--color-gray-300);"></div>
+        </div>
+        {% for i in "1234"|make_list %}
+        <div style="display:flex;align-items:center;padding:11px 14px;gap:12px;{% if not forloop.last %}border-bottom:1px solid var(--border-default);{% endif %}">
+          <div style="width:22px;height:22px;border-radius:50%;background:{{ product.color }}20;flex-shrink:0;"></div>
+          <div style="width:28%;height:6px;border-radius:3px;background:var(--color-gray-200);"></div>
+          <div style="width:18%;height:6px;border-radius:3px;background:var(--color-gray-200);"></div>
+          <div style="width:14%;height:16px;border-radius:10px;background:{{ product.color }}15;"></div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  {% else %}
+  <!-- ═══ WEBSITE MOCKUP — CuraCMS style ═══════════════════════════════════════ -->
+
+  <!-- Browser chrome -->
+  <div style="display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--color-gray-100);border-bottom:1px solid var(--border-default);">
+    <div style="width:10px;height:10px;border-radius:50%;background:#FF5F57;"></div>
+    <div style="width:10px;height:10px;border-radius:50%;background:#FEBC2E;"></div>
+    <div style="width:10px;height:10px;border-radius:50%;background:#28C840;"></div>
+    <div style="flex:1;background:white;border-radius:6px;padding:4px 12px;margin-left:8px;font-size:10px;color:var(--text-muted);font-family:monospace;">
+      🔒 {{ product.name|lower }}.curasuite.app
+    </div>
+  </div>
+
+  <!-- Mock site nav -->
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--border-default);">
+    <div style="width:80px;height:10px;border-radius:3px;background:{{ product.color }};"></div>
+    <div style="display:flex;gap:14px;">
+      {% for i in "123"|make_list %}
+      <div style="width:34px;height:6px;border-radius:3px;background:var(--color-gray-200);"></div>
+      {% endfor %}
+    </div>
+    <div style="width:64px;height:22px;border-radius:14px;background:{{ product.color }};"></div>
+  </div>
+
+  <!-- Mock hero -->
+  <div style="padding:28px 20px;background:{{ product.color }}06;">
+    <div style="width:70%;height:16px;border-radius:4px;background:var(--color-gray-800);margin-bottom:10px;"></div>
+    <div style="width:85%;height:9px;border-radius:3px;background:var(--color-gray-300);margin-bottom:6px;"></div>
+    <div style="width:60%;height:9px;border-radius:3px;background:var(--color-gray-300);margin-bottom:16px;"></div>
+    <div style="display:flex;gap:8px;">
+      <div style="width:90px;height:26px;border-radius:6px;background:{{ product.color }};"></div>
+      <div style="width:90px;height:26px;border-radius:6px;background:white;border:1px solid var(--border-default);"></div>
+    </div>
+  </div>
+
+  <!-- Mock card grid -->
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;padding:20px;">
+    {% for i in "123"|make_list %}
+    <div style="background:var(--surface-card);border:1px solid var(--border-default);border-radius:8px;padding:12px;">
+      <div style="width:26px;height:26px;border-radius:6px;background:{{ product.color }}15;margin-bottom:8px;"></div>
+      <div style="width:80%;height:6px;border-radius:3px;background:var(--color-gray-300);margin-bottom:5px;"></div>
+      <div style="width:60%;height:6px;border-radius:3px;background:var(--color-gray-200);"></div>
+    </div>
+    {% endfor %}
+  </div>
+
+  {% endif %}
+
+  <!-- "Coming soon" ribbon — honest about placeholder status without looking broken -->
+  <div style="position:absolute;top:12px;right:-32px;background:{{ product.color }};color:white;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:4px 40px;transform:rotate(35deg);box-shadow:0 2px 6px rgba(0,0,0,.15);">
+    Live Preview
+  </div>
+</div>
+<p style="text-align:center;font-size:12px;color:var(--text-muted);margin-top:14px;">
+  Illustrative preview — actual {{ product.name }} interface may vary by plan.
+</p>

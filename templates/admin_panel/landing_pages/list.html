@@ -1,0 +1,49 @@
+{% extends "admin_panel/base.html" %}
+{% load admin_tags %}
+{% block content %}
+<div class="adm-page-header">
+  <div>
+    <h1 class="adm-page-title">Landing Pages</h1>
+    <div class="adm-breadcrumb"><a href="{% url 'admin_panel:dashboard' %}">Dashboard</a> › Landing Pages</div>
+  </div>
+  <a href="{% url 'admin_panel:landing_page_create' %}" class="adm-btn adm-btn-primary">
+    <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    New Landing Page
+  </a>
+</div>
+
+<div class="adm-card">
+  <div class="adm-table-wrap">
+    <table class="adm-table">
+      <thead><tr><th>Headline</th><th>Product</th><th>URL</th><th>Status</th><th>Pain Points</th><th>Benefits</th><th>Actions</th></tr></thead>
+      <tbody>
+        {% for lp in pages %}
+        <tr>
+          <td style="font-weight:500;">{{ lp.headline|truncatechars:50 }}</td>
+          <td>
+            <span style="display:inline-flex;align-items:center;gap:6px;">
+              <span style="width:8px;height:8px;border-radius:50%;background:{{ lp.product.color }};display:inline-block;"></span>
+              {{ lp.product.name }}
+            </span>
+          </td>
+          <td style="font-family:monospace;font-size:11px;color:var(--adm-text-muted);">/lp/{{ lp.slug }}/</td>
+          <td>{% status_badge lp.status %}</td>
+          <td style="color:var(--adm-text-secondary);">{{ lp.pain_points.count }}</td>
+          <td style="color:var(--adm-text-secondary);">{{ lp.benefits.count }}</td>
+          <td>
+            <div style="display:flex;gap:6px;">
+              <a href="{% url 'admin_panel:landing_page_edit' lp.pk %}" class="adm-btn adm-btn-secondary" style="font-size:12px;padding:4px 10px;">Edit</a>
+              {% if lp.is_published %}
+              <a href="{{ lp.get_absolute_url }}" target="_blank" class="adm-btn adm-btn-ghost" style="font-size:12px;padding:4px 10px;">↗ View</a>
+              {% endif %}
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="7">{% include "admin_panel/components/empty_state.html" with icon="🎯" title="No landing pages yet" message="Create your first ad landing page." %}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -69,6 +69,11 @@ urlpatterns = [
     path("pricing/<uuid:product_pk>/create/",     views.pricing_create, name="pricing_create"),
     path("pricing/<uuid:pk>/edit/",               views.pricing_edit,   name="pricing_edit"),
 
+    # Landing Pages
+    path("landing-pages/",                views.landing_pages_list,  name="landing_pages_list"),
+    path("landing-pages/create/",         views.landing_page_create, name="landing_page_create"),
+    path("landing-pages/<uuid:pk>/edit/", views.landing_page_edit,   name="landing_page_edit"),
+
     # Settings
     path("settings/",              views.site_settings,      name="settings"),
     path("settings/advanced/",     views.advanced_settings,  name="advanced_settings"),

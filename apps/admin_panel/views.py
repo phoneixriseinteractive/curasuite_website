@@ -1255,3 +1255,136 @@ def pricing_edit(request, pk):
         "page_title": f"Edit — {tier.tier_name}",
         "active_nav": "pricing",
     })
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# LANDING PAGES  — /manage/landing-pages/
+# ═══════════════════════════════════════════════════════════════════════════════
+
+@admin_required
+def landing_pages_list(request):
+    from apps.landing_pages.models import LandingPage
+    pages = LandingPage.all_objects.select_related("product").order_by("product__sort_order", "slug")
+    return render(request, "admin_panel/landing_pages/list.html", {
+        "pages": pages,
+        "stats": get_dashboard_stats(),
+        "page_title": "Landing Pages", "active_nav": "landing_pages",
+    })
+
+
+@admin_required
+@require_http_methods(["GET", "POST"])
+def landing_page_create(request):
+    from apps.landing_pages.models import LandingPage
+    from apps.products.models import Product
+    error = None
+    if request.method == "POST":
+        slug = request.POST.get("slug", "").strip().lower().replace(" ", "-")
+        headline = request.POST.get("headline", "").strip()
+        product_id = request.POST.get("product")
+        if not slug or not headline or not product_id:
+            error = "Slug, headline, and product are required."
+        elif LandingPage.all_objects.filter(slug=slug).exists():
+            error = f"A landing page with slug '{slug}' already exists."
+        else:
+            lp = LandingPage.objects.create(
+                slug=slug, headline=headline,
+                product_id=product_id,
+                subheadline=request.POST.get("subheadline", ""),
+                target_audience_label=request.POST.get("target_audience_label", ""),
+                specialty=request.POST.get("specialty", ""),
+                social_proof_note=request.POST.get("social_proof_note", ""),
+                whatsapp_message_template=request.POST.get("whatsapp_message_template", ""),
+                default_utm_campaign=request.POST.get("default_utm_campaign", ""),
+                noindex="noindex" in request.POST,
+            )
+            _toast(request, f'Landing page "{headline}" created.')
+            return redirect("admin_panel:landing_page_edit", pk=lp.pk)
+
+    return render(request, "admin_panel/landing_pages/form.html", {
+        "action": "Create", "lp": None, "error": error,
+        "products": Product.objects.order_by("sort_order"),
+        "specialty_choices": _lead_specialty_choices(),
+        "stats": get_dashboard_stats(),
+        "page_title": "New Landing Page", "active_nav": "landing_pages",
+    })
+
+
+def _lead_specialty_choices():
+    from apps.crm.models import Lead
+    return Lead.Specialty.choices
+
+
+@admin_required
+@require_http_methods(["GET", "POST"])
+def landing_page_edit(request, pk):
+    from apps.landing_pages.models import LandingPage, LandingPainPoint, LandingBenefit
+    from apps.products.models import Product
+    lp = get_object_or_404(LandingPage.all_objects, pk=pk)
+
+    if request.method == "POST":
+        action = request.POST.get("action", "save")
+
+        if action == "save_details":
+            lp.headline               = request.POST.get("headline", lp.headline)
+            lp.subheadline            = request.POST.get("subheadline", lp.subheadline)
+            lp.target_audience_label  = request.POST.get("target_audience_label", lp.target_audience_label)
+            lp.specialty              = request.POST.get("specialty", lp.specialty)
+            lp.social_proof_note      = request.POST.get("social_proof_note", lp.social_proof_note)
+            lp.whatsapp_message_template = request.POST.get("whatsapp_message_template", lp.whatsapp_message_template)
+            lp.default_utm_campaign   = request.POST.get("default_utm_campaign", lp.default_utm_campaign)
+            lp.noindex                = "noindex" in request.POST
+            if "hero_image" in request.FILES:
+                lp.hero_image = request.FILES["hero_image"]
+            lp.save()
+            _toast(request, "Landing page details saved.")
+
+        elif action == "add_pain_point":
+            text = request.POST.get("pain_text", "").strip()
+            if text:
+                LandingPainPoint.objects.create(landing_page=lp, text=text, sort_order=lp.pain_points.count())
+                _toast(request, "Pain point added.")
+
+        elif action == "delete_pain_point":
+            LandingPainPoint.objects.filter(pk=request.POST.get("pain_pk"), landing_page=lp).delete()
+            _toast(request, "Pain point removed.")
+
+        elif action == "add_benefit":
+            LandingBenefit.objects.create(
+                landing_page=lp,
+                icon=request.POST.get("benefit_icon", "✓"),
+                title=request.POST.get("benefit_title", ""),
+                description=request.POST.get("benefit_description", ""),
+                sort_order=lp.benefits.count(),
+            )
+            _toast(request, "Benefit added.")
+
+        elif action == "delete_benefit":
+            LandingBenefit.objects.filter(pk=request.POST.get("benefit_pk"), landing_page=lp).delete()
+            _toast(request, "Benefit removed.")
+
+        elif action == "publish":
+            lp.publish(published_by=request.user)
+            _toast(request, f'"{lp.headline}" published — live at /lp/{lp.slug}/')
+
+        elif action == "unpublish":
+            lp.unpublish()
+            _toast(request, "Landing page unpublished.")
+
+        elif action == "delete":
+            headline = lp.headline
+            lp.soft_delete()
+            _toast(request, f'"{headline}" deleted.')
+            return redirect("admin_panel:landing_pages_list")
+
+        return redirect("admin_panel:landing_page_edit", pk=pk)
+
+    return render(request, "admin_panel/landing_pages/form.html", {
+        "action": "Edit", "lp": lp, "error": None,
+        "products": Product.objects.order_by("sort_order"),
+        "specialty_choices": _lead_specialty_choices(),
+        "pain_points": lp.pain_points.all(),
+        "benefits": lp.benefits.all(),
+        "stats": get_dashboard_stats(),
+        "page_title": f"Landing Page — {lp.headline}", "active_nav": "landing_pages",
+    })

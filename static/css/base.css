@@ -406,3 +406,7 @@ p + p { margin-top: var(--space-4); }
   opacity: .5; filter: grayscale(1);
 }
 .logo-strip:hover { opacity: .7; }
+
+
+/* Alpine.js — hide elements until Alpine has initialized (prevents flash) */
+[x-cloak] { display: none !important; }
