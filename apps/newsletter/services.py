@@ -133,7 +133,9 @@ def _get_base_url() -> str:
 def send_campaign(campaign: NewsletterCampaign) -> int:
     """
     Queue delivery records for all confirmed subscribers.
-    Actual email sending is handled by a Celery task.
+    NOTE: This only creates NewsletterSend records — actual sending is not
+    yet wired up (no Celery/async pipeline on this deployment). Implement a
+    synchronous sender before using this in production.
     Returns the number of queued sends.
     """
     if campaign.status != NewsletterCampaign.Status.DRAFT:
