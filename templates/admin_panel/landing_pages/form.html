@@ -1,0 +1,216 @@
+{% extends "admin_panel/base.html" %}
+{% block content %}
+
+<div class="adm-page-header">
+  <div>
+    <h1 class="adm-page-title">{{ action }} Landing Page</h1>
+    <div class="adm-breadcrumb">
+      <a href="{% url 'admin_panel:dashboard' %}">Dashboard</a> ›
+      <a href="{% url 'admin_panel:landing_pages_list' %}">Landing Pages</a> › {{ action }}
+    </div>
+  </div>
+  {% if lp %}
+  <div style="display:flex;gap:8px;align-items:center;">
+    {% load admin_tags %}{% status_badge lp.status %}
+    {% if lp.is_published %}
+    <a href="{{ lp.get_absolute_url }}" target="_blank" class="adm-btn adm-btn-secondary">↗ View Live</a>
+    <form method="post" action="{% url 'admin_panel:landing_page_edit' lp.pk %}">{% csrf_token %}<input type="hidden" name="action" value="unpublish"><button type="submit" class="adm-btn adm-btn-ghost">Unpublish</button></form>
+    {% else %}
+    <form method="post" action="{% url 'admin_panel:landing_page_edit' lp.pk %}">{% csrf_token %}<input type="hidden" name="action" value="publish"><button type="submit" class="adm-btn adm-btn-primary">✓ Publish</button></form>
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
+
+{% if error %}<div class="adm-alert adm-alert-error">{{ error }}</div>{% endif %}
+
+{% if not lp %}
+<!-- CREATE MODE — single form -->
+<div class="adm-card" style="max-width:720px;">
+  <div class="adm-card-header"><span class="adm-card-title">New Landing Page</span></div>
+  <div class="adm-card-body">
+    <form method="post">
+      {% csrf_token %}
+      <div class="adm-form-grid-2">
+        <div class="adm-form-group">
+          <label class="adm-label">URL Slug * <span style="font-weight:400;color:var(--adm-text-muted);">(e.g. dentist)</span></label>
+          <input type="text" name="slug" class="adm-input" required placeholder="dentist" pattern="[a-z0-9-]+">
+          <span style="font-size:11px;color:var(--adm-text-muted);">Will be live at /lp/&lt;slug&gt;/</span>
+        </div>
+        <div class="adm-form-group">
+          <label class="adm-label">Product *</label>
+          <select name="product" class="adm-select" required>
+            <option value="">Select product…</option>
+            {% for p in products %}<option value="{{ p.pk }}">{{ p.name }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="adm-form-group adm-form-full">
+          <label class="adm-label">Headline *</label>
+          <input type="text" name="headline" class="adm-input" required placeholder="Grow Your Dental Practice Online — Free Demo">
+        </div>
+        <div class="adm-form-group adm-form-full">
+          <label class="adm-label">Subheadline</label>
+          <input type="text" name="subheadline" class="adm-input" placeholder="Professional website, online booking, and AI chatbot for dentists across India.">
+        </div>
+        <div class="adm-form-group">
+          <label class="adm-label">Audience Label <span style="font-weight:400;color:var(--adm-text-muted);">(pill badge)</span></label>
+          <input type="text" name="target_audience_label" class="adm-input" placeholder="For Dentists">
+        </div>
+        <div class="adm-form-group">
+          <label class="adm-label">Auto-fill Specialty <span style="font-weight:400;color:var(--adm-text-muted);">(skips asking visitor)</span></label>
+          <select name="specialty" class="adm-select">
+            <option value="">— None —</option>
+            {% for val,label in specialty_choices %}<option value="{{ val }}">{{ label }}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="adm-form-group adm-form-full">
+          <label class="adm-label">Social Proof Note</label>
+          <input type="text" name="social_proof_note" class="adm-input" placeholder="Trusted by 120+ dental clinics across India">
+        </div>
+        <div class="adm-form-group adm-form-full">
+          <label class="adm-label">WhatsApp Message Template</label>
+          <textarea name="whatsapp_message_template" class="adm-textarea" rows="2" placeholder="Hi! I saw your ad and I'm interested in CuraCMS for my dental clinic.">Hi! I saw your ad and I'm interested in learning more.</textarea>
+        </div>
+        <div class="adm-form-group">
+          <label class="adm-label">Default UTM Campaign</label>
+          <input type="text" name="default_utm_campaign" class="adm-input" placeholder="dentist-jan2026">
+        </div>
+        <div class="adm-form-group">
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;margin-top:26px;">
+            <input type="checkbox" name="noindex" checked style="accent-color:var(--adm-accent);"> No-index (recommended for ad pages)
+          </label>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:8px;">
+        <button type="submit" class="adm-btn adm-btn-primary">Create Landing Page</button>
+        <a href="{% url 'admin_panel:landing_pages_list' %}" class="adm-btn adm-btn-ghost">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% else %}
+<!-- EDIT MODE — full page with sections -->
+<div style="display:flex;flex-direction:column;gap:20px;">
+
+  <!-- Details -->
+  <div class="adm-card">
+    <div class="adm-card-header"><span class="adm-card-title">Page Details</span></div>
+    <div class="adm-card-body">
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="save_details">
+        <div class="adm-form-grid-2">
+          <div class="adm-form-group adm-form-full">
+            <label class="adm-label">Headline</label>
+            <input type="text" name="headline" class="adm-input" value="{{ lp.headline }}">
+          </div>
+          <div class="adm-form-group adm-form-full">
+            <label class="adm-label">Subheadline</label>
+            <input type="text" name="subheadline" class="adm-input" value="{{ lp.subheadline }}">
+          </div>
+          <div class="adm-form-group">
+            <label class="adm-label">Audience Label</label>
+            <input type="text" name="target_audience_label" class="adm-input" value="{{ lp.target_audience_label }}">
+          </div>
+          <div class="adm-form-group">
+            <label class="adm-label">Auto-fill Specialty</label>
+            <select name="specialty" class="adm-select">
+              <option value="">— None —</option>
+              {% for val,label in specialty_choices %}<option value="{{ val }}" {% if lp.specialty == val %}selected{% endif %}>{{ label }}</option>{% endfor %}
+            </select>
+          </div>
+          <div class="adm-form-group adm-form-full">
+            <label class="adm-label">Social Proof Note</label>
+            <input type="text" name="social_proof_note" class="adm-input" value="{{ lp.social_proof_note }}">
+          </div>
+          <div class="adm-form-group adm-form-full">
+            <label class="adm-label">WhatsApp Message Template</label>
+            <textarea name="whatsapp_message_template" class="adm-textarea" rows="2">{{ lp.whatsapp_message_template }}</textarea>
+          </div>
+          <div class="adm-form-group">
+            <label class="adm-label">Default UTM Campaign</label>
+            <input type="text" name="default_utm_campaign" class="adm-input" value="{{ lp.default_utm_campaign }}">
+          </div>
+          <div class="adm-form-group">
+            <label class="adm-label">Hero Image</label>
+            <input type="file" name="hero_image" class="adm-input" accept="image/*" style="padding:6px;">
+            {% if lp.hero_image %}<img src="{{ lp.hero_image.url }}" style="width:100px;margin-top:8px;border-radius:6px;">{% endif %}
+          </div>
+          <div class="adm-form-group adm-form-full">
+            <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;">
+              <input type="checkbox" name="noindex" {% if lp.noindex %}checked{% endif %} style="accent-color:var(--adm-accent);"> No-index this page
+            </label>
+          </div>
+        </div>
+        <button type="submit" class="adm-btn adm-btn-primary">Save Details</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Pain Points -->
+  <div class="adm-card">
+    <div class="adm-card-header"><span class="adm-card-title">Pain Points</span></div>
+    <div>
+      {% for pp in pain_points %}
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 20px;border-bottom:1px solid var(--adm-border);">
+        <span style="font-size:13px;">✕ {{ pp.text }}</span>
+        <form method="post" onsubmit="return confirm('Remove?')">{% csrf_token %}<input type="hidden" name="action" value="delete_pain_point"><input type="hidden" name="pain_pk" value="{{ pp.pk }}"><button type="submit" class="adm-btn adm-btn-ghost" style="font-size:11px;padding:3px 8px;color:var(--adm-red);">Remove</button></form>
+      </div>
+      {% empty %}<div class="adm-card-body"><p style="font-size:13px;color:var(--adm-text-muted);">No pain points yet.</p></div>{% endfor %}
+    </div>
+    <div class="adm-card-body" style="border-top:1px solid var(--adm-border);">
+      <form method="post" style="display:flex;gap:10px;">
+        {% csrf_token %}<input type="hidden" name="action" value="add_pain_point">
+        <input type="text" name="pain_text" class="adm-input" placeholder="e.g. Losing patients to clinics with better online presence?" required>
+        <button type="submit" class="adm-btn adm-btn-primary" style="white-space:nowrap;">Add</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Benefits -->
+  <div class="adm-card">
+    <div class="adm-card-header"><span class="adm-card-title">Benefits</span></div>
+    <div class="adm-table-wrap">
+      <table class="adm-table">
+        <thead><tr><th>Icon</th><th>Title</th><th>Description</th><th></th></tr></thead>
+        <tbody>
+          {% for b in benefits %}
+          <tr>
+            <td style="font-size:20px;">{{ b.icon }}</td>
+            <td style="font-weight:500;">{{ b.title }}</td>
+            <td style="font-size:12px;color:var(--adm-text-secondary);">{{ b.description|truncatechars:60 }}</td>
+            <td><form method="post" onsubmit="return confirm('Remove?')">{% csrf_token %}<input type="hidden" name="action" value="delete_benefit"><input type="hidden" name="benefit_pk" value="{{ b.pk }}"><button type="submit" class="adm-btn adm-btn-ghost" style="font-size:11px;padding:3px 8px;color:var(--adm-red);">Remove</button></form></td>
+          </tr>
+          {% empty %}<tr><td colspan="4"><p style="font-size:13px;color:var(--adm-text-muted);padding:16px 0;">No benefits yet.</p></td></tr>{% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="adm-card-body" style="border-top:1px solid var(--adm-border);">
+      <form method="post">
+        {% csrf_token %}<input type="hidden" name="action" value="add_benefit">
+        <div class="adm-form-grid-2">
+          <div class="adm-form-group"><label class="adm-label">Icon (emoji)</label><input type="text" name="benefit_icon" class="adm-input" value="✓" maxlength="10"></div>
+          <div class="adm-form-group"><label class="adm-label">Title *</label><input type="text" name="benefit_title" class="adm-input" required placeholder="Online Appointment Booking"></div>
+          <div class="adm-form-group adm-form-full"><label class="adm-label">Description *</label><textarea name="benefit_description" class="adm-textarea" rows="2" required placeholder="Patients book slots 24/7 without calling your clinic."></textarea></div>
+        </div>
+        <button type="submit" class="adm-btn adm-btn-primary">Add Benefit</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Danger zone -->
+  <div class="adm-card" style="border-color:var(--adm-red-light);">
+    <div class="adm-card-header"><span class="adm-card-title" style="color:var(--adm-red);">Danger Zone</span></div>
+    <div class="adm-card-body">
+      <form method="post" onsubmit="return confirm('Delete this landing page permanently?')">
+        {% csrf_token %}<input type="hidden" name="action" value="delete">
+        <button type="submit" class="adm-btn adm-btn-danger">Delete Landing Page</button>
+      </form>
+    </div>
+  </div>
+
+</div>
+{% endif %}
+
+{% endblock %}

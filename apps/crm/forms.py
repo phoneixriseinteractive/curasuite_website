@@ -61,3 +61,43 @@ class DemoRequestForm(ContactForm):
         ],
         label="Preferred Time",
     )
+
+
+class AppointmentForm(forms.Form):
+    """
+    Global appointment/demo booking widget form.
+    Used by the 2-step modal: product selection → this form.
+    Email is intentionally optional; name, phone, city, clinic name, and
+    specialty are mandatory per the appointment booking flow.
+    """
+    product      = forms.CharField(max_length=50, widget=forms.HiddenInput())  # CuraCMS / CuraLabs / CuraSuite
+    full_name    = forms.CharField(max_length=200, label="Full Name")
+    phone        = forms.CharField(max_length=20, label="Phone Number")
+    email        = forms.EmailField(required=False, label="Email Address")
+    city         = forms.CharField(max_length=100, label="City")
+    organization = forms.CharField(max_length=200, label="Clinic Name")
+    specialty    = forms.ChoiceField(choices=Lead.Specialty.choices, label="Specialty")
+
+    # Attribution — hidden, filled by JS from URL params
+    source       = forms.CharField(max_length=20, required=False, widget=forms.HiddenInput())
+    utm_source   = forms.CharField(max_length=100, required=False, widget=forms.HiddenInput())
+    utm_medium   = forms.CharField(max_length=100, required=False, widget=forms.HiddenInput())
+    utm_campaign = forms.CharField(max_length=100, required=False, widget=forms.HiddenInput())
+    utm_content  = forms.CharField(max_length=100, required=False, widget=forms.HiddenInput())
+
+    def clean_full_name(self):
+        name = self.cleaned_data["full_name"].strip()
+        if len(name) < 2:
+            raise forms.ValidationError("Please enter your full name.")
+        return name
+
+    def clean_phone(self):
+        phone = self.cleaned_data["phone"].strip()
+        digits = "".join(c for c in phone if c.isdigit())
+        if len(digits) < 10:
+            raise forms.ValidationError("Please enter a valid phone number.")
+        return phone
+
+    def clean_email(self):
+        email = self.cleaned_data.get("email", "")
+        return email.lower().strip() if email else ""

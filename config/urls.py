@@ -24,6 +24,7 @@ urlpatterns = [
     path("newsletter/",  include("apps.newsletter.urls", namespace="newsletter")),
     path("search/",      include("apps.core.urls",       namespace="core")),
     path("api/v1/",      include("apps.api.urls",        namespace="api_v1")),
+    path("lp/",           include("apps.landing_pages.urls", namespace="landing_pages")),
 
     # ── Pages app LAST — catches / (home) and all other slugs ──────────────
     # Must be last because <path:slug> matches anything not caught above.

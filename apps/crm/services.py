@@ -19,12 +19,13 @@ def _log_activity(lead: Lead, activity_type: str, description: str = "", perform
 def capture_lead(
     *,
     full_name: str,
-    email: str,
+    email: str = "",
     phone: str = "",
     organization: str = "",
     city: str = "",
     message: str = "",
     business_type: str = "",
+    specialty: str = "",
     product_interest: str = "",
     source: str = Lead.Source.OTHER,
     utm_source: str = "",
@@ -36,33 +37,42 @@ def capture_lead(
     """
     Create or update a lead from a form submission.
     Returns (lead, created) tuple.
-    If email already exists, updates contact details and logs the re-submission.
+
+    Deduplication: matches on email first (if provided), then falls back to
+    phone number. This supports appointment forms where email is optional.
     """
-    existing = get_lead_by_email(email)
+    existing = None
+    if email:
+        existing = get_lead_by_email(email)
+    if not existing and phone:
+        existing = Lead.objects.filter(phone=phone).first()
 
     if existing:
         # Update fields that may have changed
+        existing.email        = email or existing.email
         existing.phone        = phone or existing.phone
         existing.organization = organization or existing.organization
         existing.city         = city or existing.city
+        existing.specialty    = specialty or existing.specialty
         if message:
             existing.message  = message
-        existing.save(update_fields=["phone", "organization", "city", "message", "updated_at"])
+        existing.save(update_fields=["email", "phone", "organization", "city", "specialty", "message", "updated_at"])
         _log_activity(existing, LeadActivity.ActivityType.NOTE_ADDED,
                       f"Re-submitted form from source: {source}")
-        logger.info("Lead updated: %s", email)
+        logger.info("Lead updated: %s", email or phone)
         return existing, False
 
     lead = Lead.objects.create(
         full_name=full_name, email=email, phone=phone,
         organization=organization, city=city, message=message,
-        business_type=business_type, product_interest=product_interest,
+        business_type=business_type, specialty=specialty,
+        product_interest=product_interest,
         source=source, utm_source=utm_source, utm_medium=utm_medium,
         utm_campaign=utm_campaign, utm_content=utm_content,
         referrer_url=referrer_url,
     )
     _log_activity(lead, LeadActivity.ActivityType.CREATED, f"Lead captured via {source}")
-    logger.info("Lead created: %s", email)
+    logger.info("Lead created: %s", email or phone)
     return lead, True
 
 

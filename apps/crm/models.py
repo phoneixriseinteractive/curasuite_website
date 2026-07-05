@@ -57,9 +57,18 @@ class Lead(AuditedModel):
         HOSPITAL         = "hospital",         _("Hospital")
         OTHER            = "other",            _("Other")
 
+    class Specialty(models.TextChoices):
+        """Doctor / practice specialty — shown as icon cards in the appointment widget."""
+        GENERAL_PHYSICIAN = "general_physician", _("General Physician")
+        DENTIST           = "dentist",           _("Dentist")
+        PHYSIOTHERAPIST   = "physiotherapist",   _("Physiotherapist")
+        OPHTHALMOLOGIST   = "ophthalmologist",   _("Ophthalmologist")
+        PATHOLOGY_LAB     = "pathology_lab",     _("Pathology Lab")
+        OTHER             = "other",             _("Other")
+
     # ── Contact details ───────────────────────────────────────────────────────
     full_name    = models.CharField(max_length=200, verbose_name=_("Full name"))
-    email        = models.EmailField(db_index=True, verbose_name=_("Email"))
+    email        = models.EmailField(db_index=True, blank=True, verbose_name=_("Email"))
     phone        = models.CharField(max_length=20, blank=True, verbose_name=_("Phone"))
     organization = models.CharField(max_length=200, blank=True, verbose_name=_("Organization"))
     city         = models.CharField(max_length=100, blank=True, verbose_name=_("City"))
@@ -69,6 +78,11 @@ class Lead(AuditedModel):
     business_type = models.CharField(
         max_length=30, choices=BusinessType.choices,
         blank=True, verbose_name=_("Business type"),
+    )
+    specialty = models.CharField(
+        max_length=30, choices=Specialty.choices,
+        blank=True, verbose_name=_("Specialty"),
+        help_text=_("Doctor / practice specialty — captured via icon-based selector."),
     )
     product_interest = models.CharField(
         max_length=100, blank=True,
