@@ -8,8 +8,15 @@ def navigation(request):
     except Exception:
         social_links = None
 
+    try:
+        from apps.products.models import Product
+        all_products = list(Product.objects.order_by("sort_order"))
+    except Exception:
+        all_products = []
+
     return {
         "SOCIAL_LINKS": social_links,
+        "ALL_PRODUCTS": all_products,
         "PRIMARY_NAV": [
             {
                 "label": "Products",
