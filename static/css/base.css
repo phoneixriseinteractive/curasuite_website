@@ -170,6 +170,80 @@ p + p { margin-top: var(--space-4); }
 .grid-3 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
 .grid-4 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
 
+/* ── Responsive Split Layouts ──────────────────────────────────────────────── */
+/* Two-column layouts (hero copy+image, content+visual) — stack on mobile. */
+.split-hero {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: var(--space-10);
+  align-items: center;
+}
+.split-even {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-10);
+  align-items: center;
+}
+@media (max-width: 768px) {
+  .split-hero, .split-even { grid-template-columns: 1fr; }
+}
+
+/* Main content + fixed-width side column (blog sidebar, contact aside, product
+   spec panel). Override the side column's width per-instance with
+   style="--sidebar-w:380px" — falls back to 320px. Stacks below 900px. */
+.split-sidebar {
+  display: grid;
+  grid-template-columns: 1fr var(--sidebar-w, 320px);
+  gap: var(--space-10);
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .split-sidebar { grid-template-columns: 1fr; }
+}
+
+/* Two-field form rows (phone/email, city/clinic) — stack on narrow phones. */
+.form-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+@media (max-width: 480px) {
+  .form-row-2 { grid-template-columns: 1fr; }
+}
+
+/* Footer: wide brand column + 4 equal nav columns. */
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2.5fr 1fr 1fr 1fr 1fr;
+  gap: var(--space-10);
+}
+@media (max-width: 900px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 560px) { .footer-grid { grid-template-columns: 1fr; } }
+
+/* Decorative connecting line between "how it works" steps — only meaningful
+   when all steps sit in a single row (.grid-4 at full width). */
+@media (max-width: 900px) { .how-it-works-line { display: none; } }
+
+/* Sticky sidebar (solutions page demo form) — disable sticky once
+   .split-sidebar has stacked to one column, or the sidebar floats over the
+   content stacked below it while scrolling. */
+@media (max-width: 900px) {
+  .solutions-sidebar-sticky { position: static !important; top: auto !important; }
+}
+
+/* ── Site Header — Mobile Navigation ───────────────────────────────────────── */
+.desktop-nav { display: flex; }
+.mobile-nav-toggle { display: none; }
+.mobile-nav-panel { display: none; }
+@media (max-width: 900px) {
+  .desktop-nav { display: none !important; }
+  .mobile-nav-toggle { display: flex !important; }
+}
+@media (min-width: 901px) {
+  .mobile-nav-panel { display: none !important; }
+}
+.mobile-nav-panel a:hover { background: var(--color-primary-50); color: var(--color-primary-600); border-radius: var(--radius); }
+
 /* ── HTMX Loading Indicator ────────────────────────────────────────────────── */
 .htmx-indicator { opacity: 0; transition: opacity var(--transition); }
 .htmx-request .htmx-indicator { opacity: 1; }

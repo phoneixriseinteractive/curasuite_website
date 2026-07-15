@@ -24,7 +24,7 @@
 <!-- ═══ CONTACT CARDS ═══════════════════════════════════════════════════════ -->
 <section style="padding:var(--space-8) 0;background:var(--surface-card);border-bottom:1px solid var(--border-default);">
   <div class="container">
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-6);">
+    <div class="grid grid-3">
       <div style="display:flex;align-items:center;gap:var(--space-4);padding:var(--space-5);background:white;border-radius:var(--radius-lg);border:1px solid var(--border-default);">
         <div style="width:48px;height:48px;background:var(--color-primary-50);border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">📧</div>
         <div>
@@ -37,7 +37,9 @@
         <div style="width:48px;height:48px;background:var(--color-secondary-50);border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">💬</div>
         <div>
           <div style="font-size:var(--text-xs);color:var(--text-muted);font-weight:var(--font-semi);text-transform:uppercase;letter-spacing:.06em;">WhatsApp</div>
-          <a href="https://wa.me/919876543210" target="_blank" style="font-size:var(--text-sm);font-weight:var(--font-semi);color:var(--text-primary);">+91 98765 43210</a>
+          {% if SITE_SETTINGS.whatsapp_phone %}
+          <a href="https://wa.me/{{ SITE_SETTINGS.whatsapp_phone }}" target="_blank" style="font-size:var(--text-sm);font-weight:var(--font-semi);color:var(--text-primary);">+{{ SITE_SETTINGS.whatsapp_phone|slice:":2" }} {{ SITE_SETTINGS.whatsapp_phone|slice:"2:7" }} {{ SITE_SETTINGS.whatsapp_phone|slice:"7:12" }}</a>
+          {% endif %}
           <div style="font-size:var(--text-xs);color:var(--text-muted);">Mon–Sat, 9 AM–7 PM IST</div>
         </div>
       </div>
@@ -56,7 +58,7 @@
 <!-- ═══ MAIN FORM SECTION ═══════════════════════════════════════════════════ -->
 <section class="section">
   <div class="container">
-    <div style="display:grid;grid-template-columns:1fr 400px;gap:var(--space-12);align-items:start;">
+    <div class="split-sidebar" style="--sidebar-w:400px;gap:var(--space-12);">
 
       <!-- Left: Form -->
       <div>
@@ -79,7 +81,7 @@
               </div>
               {% endif %}
 
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);">
+              <div class="grid grid-2" style="gap:var(--space-4);">
 
                 <!-- Full name -->
                 <div style="display:flex;flex-direction:column;gap:var(--space-2);">
@@ -272,11 +274,13 @@
               <span style="color:var(--text-secondary);">Sunday</span>
               <span style="color:var(--text-muted);">Email only</span>
             </div>
+            {% if SITE_SETTINGS.whatsapp_phone %}
             <div style="padding-top:var(--space-3);border-top:1px solid var(--border-default);">
-              <a href="https://wa.me/919876543210" target="_blank" class="btn btn-secondary" style="width:100%;justify-content:center;font-size:var(--text-sm);">
+              <a href="https://wa.me/{{ SITE_SETTINGS.whatsapp_phone }}" target="_blank" class="btn btn-secondary" style="width:100%;justify-content:center;font-size:var(--text-sm);">
                 💬 Chat on WhatsApp
               </a>
             </div>
+            {% endif %}
           </div>
         </div>
 
@@ -299,12 +303,14 @@
         <p style="color:var(--text-secondary);font-size:var(--text-sm);margin-bottom:var(--space-4);">For general enquiries, support, or partnership opportunities.</p>
         <a href="mailto:hello@curasuite.com" class="btn btn-secondary" style="width:100%;justify-content:center;">hello@curasuite.com</a>
       </div>
+      {% if SITE_SETTINGS.whatsapp_phone %}
       <div class="card card-hover" style="padding:var(--space-8);text-align:center;">
         <div style="font-size:36px;margin-bottom:var(--space-4);">💬</div>
         <h4 style="margin-bottom:var(--space-2);">WhatsApp</h4>
         <p style="color:var(--text-secondary);font-size:var(--text-sm);margin-bottom:var(--space-4);">Fastest response for sales enquiries and quick questions.</p>
-        <a href="https://wa.me/919876543210?text=Hi%2C+I%27d+like+to+know+more+about+CuraSuite" target="_blank" class="btn btn-secondary" style="width:100%;justify-content:center;">+91 98765 43210</a>
+        <a href="https://wa.me/{{ SITE_SETTINGS.whatsapp_phone }}?text=Hi%2C+I%27d+like+to+know+more+about+CuraSuite" target="_blank" class="btn btn-secondary" style="width:100%;justify-content:center;">+{{ SITE_SETTINGS.whatsapp_phone|slice:":2" }} {{ SITE_SETTINGS.whatsapp_phone|slice:"2:7" }} {{ SITE_SETTINGS.whatsapp_phone|slice:"7:12" }}</a>
       </div>
+      {% endif %}
       <div class="card card-hover" style="padding:var(--space-8);text-align:center;">
         <div style="font-size:36px;margin-bottom:var(--space-4);">🎯</div>
         <h4 style="margin-bottom:var(--space-2);">For Partnerships</h4>

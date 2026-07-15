@@ -5,7 +5,7 @@
     Thank you{% if lead %}, {{ lead.first_name }}{% endif %}! Our team will reach out within one business day to confirm your demo slot.
   </p>
   <p style="font-size:var(--text-sm);color:var(--text-muted);margin-bottom:var(--space-6);">
-    In the meantime, feel free to explore our products or WhatsApp us at <a href="https://wa.me/919876543210">+91 98765 43210</a> for immediate assistance.
+    In the meantime, feel free to explore our products{% if SITE_SETTINGS.whatsapp_phone %} or WhatsApp us at <a href="https://wa.me/{{ SITE_SETTINGS.whatsapp_phone }}">+{{ SITE_SETTINGS.whatsapp_phone|slice:":2" }} {{ SITE_SETTINGS.whatsapp_phone|slice:"2:7" }} {{ SITE_SETTINGS.whatsapp_phone|slice:"7:12" }}</a> for immediate assistance{% endif %}.
   </p>
   <div style="display:flex;gap:var(--space-3);justify-content:center;flex-wrap:wrap;">
     <a href="/products/" class="btn btn-secondary" style="font-size:var(--text-sm);">Explore Products</a>

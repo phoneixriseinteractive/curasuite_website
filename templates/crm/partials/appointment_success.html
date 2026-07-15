@@ -5,9 +5,11 @@
     Thank you{% if lead %}, {{ lead.full_name }}{% endif %}! We've received your request for
     <strong>{{ product }}</strong>. Our team will call you within 1 business day to confirm the time.
   </p>
+  {% if SITE_SETTINGS.whatsapp_phone %}
   <p style="font-size:var(--text-xs);color:var(--text-muted);margin-bottom:20px;">
-    Prefer WhatsApp? <a href="https://wa.me/919876543210?text=Hi%2C%20I%20just%20booked%20a%20demo%20for%20{{ product|urlencode }}" target="_blank">Message us instantly →</a>
+    Prefer WhatsApp? <a href="https://wa.me/{{ SITE_SETTINGS.whatsapp_phone }}?text=Hi%2C%20I%20just%20booked%20a%20demo%20for%20{{ product|urlencode }}" target="_blank">Message us instantly →</a>
   </p>
+  {% endif %}
   <button type="button" onclick="this.closest('[x-data]').__x.$data.close()" class="btn btn-secondary" style="width:100%;justify-content:center;">
     Close
   </button>

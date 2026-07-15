@@ -22,7 +22,7 @@
 <section class="section">
   <div class="container">
     {% for product in products %}
-    <div style="display:grid;grid-template-columns:{% if forloop.even %}1fr 1fr{% else %}1fr 1fr{% endif %};gap:var(--space-16);align-items:center;margin-bottom:var(--space-20);{% if not forloop.last %}padding-bottom:var(--space-20);border-bottom:1px solid var(--border-default);{% endif %}">
+    <div class="split-even" style="gap:var(--space-16);margin-bottom:var(--space-20);{% if not forloop.last %}padding-bottom:var(--space-20);border-bottom:1px solid var(--border-default);{% endif %}">
 
       {% if forloop.even %}
       <!-- Image first on even rows -->

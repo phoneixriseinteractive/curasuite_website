@@ -1,6 +1,6 @@
 <!-- CuraSuite — Site Header -->
 {% load static %}
-<header id="site-header" style="position:sticky;top:0;z-index:var(--z-sticky);background:white;border-bottom:1px solid var(--border-default);box-shadow:var(--shadow-sm);">
+<header id="site-header" x-data="{ mobileOpen: false }" style="position:sticky;top:0;z-index:var(--z-sticky);background:white;border-bottom:1px solid var(--border-default);box-shadow:var(--shadow-sm);">
   <div class="container" style="display:flex;align-items:center;justify-content:space-between;height:64px;">
 
     <!-- Logo -->
@@ -9,7 +9,7 @@
     </a>
 
     <!-- Desktop nav -->
-    <nav aria-label="Primary navigation" style="display:flex;align-items:center;gap:var(--space-6);">
+    <nav class="desktop-nav" aria-label="Primary navigation" style="align-items:center;gap:var(--space-6);">
       {% for item in PRIMARY_NAV %}
         {% if item.has_dropdown and item.children %}
         <!-- Dropdown item -->
@@ -42,6 +42,39 @@
       {% endfor %}
     </nav>
 
-    <a href="/contact/" class="btn btn-primary btn-sm">Book Demo</a>
+    <div style="display:flex;align-items:center;gap:var(--space-3);">
+      <a href="/contact/" class="btn btn-primary btn-sm desktop-nav" style="display:inline-flex;">Book Demo</a>
+
+      <!-- Mobile menu toggle -->
+      <button class="mobile-nav-toggle" @click="mobileOpen = !mobileOpen" aria-label="Toggle menu" :aria-expanded="mobileOpen"
+              style="align-items:center;justify-content:center;background:none;border:none;cursor:pointer;padding:8px;color:var(--text-primary);">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" x-show="!mobileOpen"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" x-show="mobileOpen" x-cloak><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile nav panel -->
+  <div class="mobile-nav-panel" x-show="mobileOpen" x-cloak @click.outside="mobileOpen = false"
+       style="flex-direction:column;gap:2px;padding:var(--space-4);border-top:1px solid var(--border-default);background:white;">
+    {% for item in PRIMARY_NAV %}
+      {% if item.has_dropdown and item.children %}
+      <div x-data="{ subOpen: false }">
+        <button @click="subOpen = !subOpen"
+                style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:var(--space-3) var(--space-2);background:none;border:none;cursor:pointer;font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--text-primary);">
+          {{ item.label }}
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" :style="subOpen ? 'transform:rotate(180deg);transition:.15s' : 'transition:.15s'"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div x-show="subOpen" x-collapse style="padding-left:var(--space-4);display:flex;flex-direction:column;">
+          {% for child in item.children %}
+          <a href="{{ child.url }}" style="padding:var(--space-2);font-size:var(--text-sm);color:var(--text-secondary);text-decoration:none;">{{ child.label }}</a>
+          {% endfor %}
+        </div>
+      </div>
+      {% else %}
+      <a href="{{ item.url }}" style="padding:var(--space-3) var(--space-2);font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--text-primary);text-decoration:none;">{{ item.label }}</a>
+      {% endif %}
+    {% endfor %}
+    <a href="/contact/" class="btn btn-primary" style="margin-top:var(--space-3);justify-content:center;">Book Demo</a>
   </div>
 </header>

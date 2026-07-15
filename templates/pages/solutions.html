@@ -32,7 +32,7 @@
 <!-- ═══ PAGE CONTENT ════════════════════════════════════════════════════════ -->
 <section class="section">
   <div class="container">
-    <div style="display:grid;grid-template-columns:1fr 360px;gap:var(--space-16);align-items:start;">
+    <div class="split-sidebar" style="--sidebar-w:360px;gap:var(--space-16);">
 
       <!-- Main content from CMS -->
       <div>
@@ -41,8 +41,8 @@
         </div>
       </div>
 
-      <!-- Sticky demo form sidebar -->
-      <div style="position:sticky;top:80px;">
+      <!-- Sticky demo form sidebar (sticky disabled on mobile, where it stacks below the content) -->
+      <div class="solutions-sidebar-sticky" style="position:sticky;top:80px;">
         <div class="card" style="padding:var(--space-8);border:2px solid var(--color-primary-100);background:var(--color-primary-50);">
           <h3 style="margin-bottom:var(--space-2);">Book Your Free Demo</h3>
           <p style="font-size:var(--text-sm);color:var(--text-secondary);margin-bottom:var(--space-6);">
@@ -208,7 +208,7 @@
 <!-- ═══ STATS ROW ════════════════════════════════════════════════════════════ -->
 <section style="background:var(--color-primary-600);padding:var(--space-10) 0;">
   <div class="container">
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-8);text-align:center;">
+    <div class="grid grid-4" style="gap:var(--space-8);text-align:center;">
       {% if "doctors" in page.slug %}
       <div><div style="font-size:var(--text-4xl);font-weight:800;color:white;margin-bottom:4px;">300%</div><div style="color:rgba(255,255,255,.75);font-size:var(--text-sm);">Avg increase in online enquiries</div></div>
       <div><div style="font-size:var(--text-4xl);font-weight:800;color:white;margin-bottom:4px;">40%</div><div style="color:rgba(255,255,255,.75);font-size:var(--text-sm);">Bookings outside working hours</div></div>

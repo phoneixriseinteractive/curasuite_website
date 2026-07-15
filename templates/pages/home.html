@@ -22,7 +22,7 @@
 <!-- ═══ HERO ════════════════════════════════════════════════════════════════ -->
 <section style="position:relative;overflow:hidden;padding:var(--space-20) 0 var(--space-16);" class="hero-pattern">
   <div class="pattern-fade-light" style="position:absolute;inset:0;pointer-events:none;"></div>
-  <div class="container" style="position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:var(--space-16);align-items:center;">
+  <div class="container split-even" style="position:relative;z-index:1;gap:var(--space-16);">
     <div>
       <div class="pill">🏥 Built for Indian Healthcare</div>
       <h1 style="margin-bottom:var(--space-6);line-height:1.15;">Healthcare Technology That Helps Your Practice <span style="color:var(--color-primary-600);">Grow</span></h1>
@@ -108,7 +108,7 @@
 <!-- ═══ WHY CURASUITE ══════════════════════════════════════════════════════ -->
 <section class="section">
   <div class="container">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-16);align-items:center;">
+    <div class="split-even" style="gap:var(--space-16);">
       <div>
         <div class="section-label">Why CuraSuite</div>
         <h2 style="margin-bottom:var(--space-6);">Built from the Ground Up for Indian Healthcare</h2>
@@ -178,9 +178,9 @@
       <h2>From Demo to Live in 4 Simple Steps</h2>
       <p style="font-size:var(--text-lg);color:var(--text-secondary);margin-top:var(--space-4);">We handle the heavy lifting. You focus on your patients.</p>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-6);position:relative;">
-      <!-- Connecting line -->
-      <div style="position:absolute;top:22px;left:12.5%;right:12.5%;height:2px;background:linear-gradient(90deg,var(--color-primary-200),var(--color-primary-400));z-index:0;"></div>
+    <div class="grid grid-4" style="gap:var(--space-6);position:relative;">
+      <!-- Connecting line — desktop only; a stacked 1-column mobile layout doesn't have a row to connect -->
+      <div class="how-it-works-line" style="position:absolute;top:22px;left:12.5%;right:12.5%;height:2px;background:linear-gradient(90deg,var(--color-primary-200),var(--color-primary-400));z-index:0;"></div>
       {% for step in steps %}
       <div style="text-align:center;position:relative;z-index:1;">
         <div style="width:44px;height:44px;background:var(--color-primary-600);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:var(--text-lg);margin:0 auto var(--space-5);border:3px solid white;box-shadow:var(--shadow);">{{ forloop.counter }}</div>
@@ -198,7 +198,7 @@
 <!-- ═══ STATS BAR ═══════════════════════════════════════════════════════════ -->
 <section style="background:var(--color-primary-600);padding:var(--space-10) 0;">
   <div class="container">
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-8);text-align:center;">
+    <div class="grid grid-4" style="gap:var(--space-8);text-align:center;">
       <div>
         <div style="font-size:var(--text-4xl);font-weight:800;color:white;margin-bottom:var(--space-1);">500+</div>
         <div style="color:rgba(255,255,255,.75);font-size:var(--text-sm);">Healthcare Providers</div>

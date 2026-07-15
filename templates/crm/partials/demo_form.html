@@ -5,7 +5,7 @@
     </div>
   {% endif %}
 
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-5);">
+  <div class="grid grid-2" style="gap:var(--space-5);">
     {% for field in form %}
       <div class="form-group" style="{% if field.name == 'message' %}grid-column:1/-1;{% endif %}">
         <label class="form-label" for="{{ field.id_for_label }}">
