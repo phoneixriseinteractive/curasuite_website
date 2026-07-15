@@ -314,34 +314,36 @@ class Command(BaseCommand):
             self.stdout.write("    (already seeded, skipping)")
             return
 
+        # specialty values match apps.crm.models.Lead.Specialty / apps.landing_pages LandingPage.specialty —
+        # keeps each landing page's testimonial pool restricted to its own vertical (see get_testimonials_for_landing_page).
         testimonials = [
-            ("Dr. Priya Nair",    "General Physician",      "Nair Family Clinic",           "Kochi",       5, "CuraCMS",
+            ("Dr. Priya Nair",    "General Physician",      "Nair Family Clinic",           "Kochi",       5, "CuraCMS",  "general_physician",
              "CuraCMS transformed how patients find us. Our online appointment bookings increased by 300% in the first month. The setup was fast and the support team was exceptional."),
-            ("Dr. Rajesh Sharma", "Dental Surgeon",         "Sharma Dental Care",           "Jaipur",      5, "CuraCMS",
+            ("Dr. Rajesh Sharma", "Dental Surgeon",         "Sharma Dental Care",           "Jaipur",      5, "CuraCMS",  "dentist",
              "We moved from a poorly designed website to CuraCMS and saw immediate results. Patient enquiries doubled and our Google ranking improved significantly within 60 days."),
-            ("Dr. Meera Pillai",  "Physiotherapist",        "Pillai Physiotherapy Centre",  "Bangalore",   5, "CuraCMS",
+            ("Dr. Meera Pillai",  "Physiotherapist",        "Pillai Physiotherapy Centre",  "Bangalore",   5, "CuraCMS",  "physiotherapist",
              "The blog feature helped us publish health content regularly. We now rank on page 1 for physiotherapy Bangalore. The AI chatbot handles patient queries even at night."),
-            ("Mr. Suresh Kumar",  "Lab Director",           "Kumar Diagnostics",            "Hyderabad",   5, "CuraLabs",
+            ("Mr. Suresh Kumar",  "Lab Director",           "Kumar Diagnostics",            "Hyderabad",   5, "CuraLabs", "pathology_lab",
              "CuraLabs gave our pathology lab a professional digital presence. Patients can now book tests online and download reports without calling us. Our call volume dropped by 60%."),
-            ("Dr. Anjali Mehta",  "Managing Director",      "Mehta Diagnostic Centre",      "Ahmedabad",   5, "CuraLabs",
+            ("Dr. Anjali Mehta",  "Managing Director",      "Mehta Diagnostic Centre",      "Ahmedabad",   5, "CuraLabs", "pathology_lab",
              "The home collection booking feature was a game-changer. We now manage home collection requests efficiently and send automated WhatsApp confirmations. Highly recommended."),
-            ("Dr. Vikram Singh",  "Medical Director",       "Singh Multi-Specialty Clinic", "Lucknow",     5, "CuraSuite",
+            ("Dr. Vikram Singh",  "Medical Director",       "Singh Multi-Specialty Clinic", "Lucknow",     5, "CuraSuite", "",
              "CuraSuite CMS streamlined our entire clinic operations. Reception, billing, and doctor workflows are now on one platform. We save 3 hours of administrative work every day."),
-            ("Dr. Sunita Reddy",  "Gynecologist",           "Reddy Women's Clinic",         "Pune",        4, "CuraCMS",
+            ("Dr. Sunita Reddy",  "Gynecologist",           "Reddy Women's Clinic",         "Pune",        4, "CuraCMS",  "other",
              "Professional website, easy to manage, and excellent SEO performance. Our clinic now gets 15-20 new patient enquiries every week through the website alone."),
-            ("Mr. Arun Patel",    "Operations Manager",     "Patel Lab Network",            "Surat",       5, "CuraLabs",
+            ("Mr. Arun Patel",    "Operations Manager",     "Patel Lab Network",            "Surat",       5, "CuraLabs", "pathology_lab",
              "We have 3 lab branches and CuraLabs manages all of them. Patient data, test catalogues, and report downloads work seamlessly across all locations."),
-            ("Dr. Kavitha Iyer",  "Ayurvedic Practitioner", "Iyer Ayurveda Clinic",        "Chennai",     5, "CuraCMS",
+            ("Dr. Kavitha Iyer",  "Ayurvedic Practitioner", "Iyer Ayurveda Clinic",        "Chennai",     5, "CuraCMS",  "other",
              "I was skeptical about going digital, but CuraCMS made it easy. My patients love booking appointments online and the website looks beautiful on all devices."),
-            ("Dr. Ravi Malhotra", "Orthopedic Surgeon",     "Malhotra Orthopedic Centre",   "Delhi",       5, "CuraSuite",
+            ("Dr. Ravi Malhotra", "Orthopedic Surgeon",     "Malhotra Orthopedic Centre",   "Delhi",       5, "CuraSuite", "",
              "From patient registration to billing — everything is digitized. The prescription module with our medicine templates saves 20 minutes per patient consultation."),
         ]
 
-        for i, (name, designation, clinic, loc, rating, product, feedback) in enumerate(testimonials):
+        for i, (name, designation, clinic, loc, rating, product, specialty, feedback) in enumerate(testimonials):
             Testimonial.objects.create(
                 customer_name=name, designation=designation,
                 clinic_name=clinic, location=loc,
-                rating=rating, product=product, feedback=feedback,
+                rating=rating, product=product, specialty=specialty, feedback=feedback,
                 status="approved",
                 is_featured=(i < 6),
                 sort_order=i,

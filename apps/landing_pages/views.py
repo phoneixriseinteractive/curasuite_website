@@ -1,7 +1,7 @@
 """CuraSuite — Landing Pages Public Views"""
 from django.http import Http404
 from django.shortcuts import render
-from .selectors import get_landing_page_by_slug
+from .selectors import get_landing_page_by_slug, get_testimonials_for_landing_page
 
 
 def landing_page_detail(request, slug: str):
@@ -9,17 +9,7 @@ def landing_page_detail(request, slug: str):
     if not page or not page.is_published:
         raise Http404(f"Landing page '{slug}' not found.")
 
-    try:
-        from apps.settings_app.models import Testimonial
-        testimonials = Testimonial.objects.filter(
-            status="approved", product=page.product.name
-        ).order_by("sort_order")[:3]
-        if not testimonials:
-            testimonials = Testimonial.objects.filter(
-                status="approved", is_featured=True
-            ).order_by("sort_order")[:3]
-    except Exception:
-        testimonials = []
+    testimonials = get_testimonials_for_landing_page(page)
 
     return render(request, page.template_name, {
         "lp": page,

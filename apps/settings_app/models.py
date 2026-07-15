@@ -60,6 +60,13 @@ class Testimonial(TimeStampedModel):
     rating        = models.PositiveIntegerField(default=5, choices=[(i, f"{i} Star{'s' if i>1 else ''}") for i in range(1, 6)])
     feedback      = models.TextField(verbose_name=_("Testimonial text"))
     product       = models.CharField(max_length=50, blank=True, verbose_name=_("Product"), help_text=_("CuraCMS, CuraLabs, CuraSuite, or blank for general"))
+    specialty     = models.CharField(
+        max_length=30, blank=True, verbose_name=_("Specialty"),
+        help_text=_("Matches Lead.Specialty / LandingPage.specialty values, e.g. 'dentist'. "
+                    "Leave blank for a general testimonial not tied to one vertical. Used to make sure "
+                    "a landing page only ever shows same-niche testimonials (never a physiotherapist "
+                    "quote on a dentist page)."),
+    )
     status        = models.CharField(max_length=10, choices=Status.choices, default=Status.PENDING, db_index=True)
     is_featured   = models.BooleanField(default=False, verbose_name=_("Featured on homepage"))
     sort_order    = models.PositiveIntegerField(default=0, db_index=True)

@@ -12,7 +12,10 @@
         {% if lp.target_audience_label %}
         <div class="pill" style="background:{{ product.color }}12;color:{{ product.color }};border-color:{{ product.color }}30;">{{ lp.target_audience_label }}</div>
         {% endif %}
-        <h1 style="margin-bottom:16px;font-size:clamp(28px,5vw,44px);line-height:1.15;">{{ lp.headline }}</h1>
+        <h1 style="margin-bottom:8px;font-size:clamp(28px,5vw,44px);line-height:1.15;">{{ lp.headline }}</h1>
+        <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">
+          🖥️ Website &amp; practice-management software for clinics — not a medical or patient-facing service.
+        </p>
         {% if lp.subheadline %}
         <p style="font-size:var(--text-lg);color:var(--text-secondary);margin-bottom:20px;line-height:var(--leading-relaxed);">{{ lp.subheadline }}</p>
         {% endif %}
@@ -21,14 +24,17 @@
           <a href="#lp-form" class="btn btn-primary btn-lg" style="background:{{ product.color }};border-color:{{ product.color }};">
             Book Free Demo →
           </a>
-          <a href="https://wa.me/919876543210?text={{ lp.whatsapp_message_template|urlencode }}" target="_blank"
+          {% if SITE_SETTINGS.whatsapp_phone %}
+          <a href="https://wa.me/{{ SITE_SETTINGS.whatsapp_phone }}?text={{ lp.whatsapp_message_template|urlencode }}" target="_blank"
+             data-wa-placement="hero"
              class="btn btn-lg" style="background:#25D366;color:white;border-color:#25D366;">
             💬 WhatsApp Us
           </a>
+          {% endif %}
         </div>
 
         <p style="font-size:var(--text-sm);color:{{ product.color }};font-weight:var(--font-semi);margin-bottom:16px;">
-          🔥 Free setup this month — onboarding slots are limited.
+          🔥 Free setup this {% now "F" %} — onboarding slots are limited.
         </p>
 
         {% if lp.social_proof_note %}
@@ -329,7 +335,8 @@
 {% if testimonials %}
 <section style="padding:48px 0;">
   <div class="container">
-    <h2 style="text-align:center;margin-bottom:32px;font-size:var(--text-2xl);">Trusted by Doctors Like You</h2>
+    <h2 style="text-align:center;margin-bottom:8px;font-size:var(--text-2xl);">Trusted by Clinics Like Yours</h2>
+    <p style="text-align:center;color:var(--text-muted);font-size:12px;margin-bottom:32px;">Individual results vary — figures below are customer-reported and specific to their practice.</p>
     <div class="grid grid-3" style="gap:20px;">
       {% for t in testimonials %}
       <div class="testimonial-card">
@@ -422,18 +429,10 @@
           <div style="display:flex;flex-direction:column;gap:14px;">
             <input type="text" name="full_name" required placeholder="Full Name *"
               style="width:100%;padding:12px 14px;border:1px solid var(--border-default);border-radius:var(--radius);font-size:var(--text-sm);font-family:inherit;">
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
-              <input type="tel" name="phone" required placeholder="Phone Number *"
-                style="width:100%;padding:12px 14px;border:1px solid var(--border-default);border-radius:var(--radius);font-size:var(--text-sm);font-family:inherit;">
-              <input type="email" name="email" placeholder="Email (optional)"
-                style="width:100%;padding:12px 14px;border:1px solid var(--border-default);border-radius:var(--radius);font-size:var(--text-sm);font-family:inherit;">
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
-              <input type="text" name="city" required placeholder="City *"
-                style="width:100%;padding:12px 14px;border:1px solid var(--border-default);border-radius:var(--radius);font-size:var(--text-sm);font-family:inherit;">
-              <input type="text" name="organization" required placeholder="Clinic Name *"
-                style="width:100%;padding:12px 14px;border:1px solid var(--border-default);border-radius:var(--radius);font-size:var(--text-sm);font-family:inherit;">
-            </div>
+            <input type="tel" name="phone" required placeholder="Phone Number *"
+              style="width:100%;padding:12px 14px;border:1px solid var(--border-default);border-radius:var(--radius);font-size:var(--text-sm);font-family:inherit;">
+            <input type="text" name="organization" required placeholder="Clinic Name *"
+              style="width:100%;padding:12px 14px;border:1px solid var(--border-default);border-radius:var(--radius);font-size:var(--text-sm);font-family:inherit;">
             <input type="hidden" name="specialty" value="{{ lp.specialty }}">
           </div>
 

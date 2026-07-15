@@ -56,10 +56,12 @@
   <div class="lp-sticky-cta" style="background:white;border-bottom:1px solid var(--border-default);">
     <div class="container" style="display:flex;align-items:center;justify-content:space-between;height:56px;">
       <span style="font-size:var(--text-lg);font-weight:var(--font-bold);color:var(--color-primary-600);">CuraSuite</span>
-      <a href="tel:+919876543210" style="display:flex;align-items:center;gap:6px;font-size:var(--text-sm);font-weight:var(--font-semi);color:var(--text-primary);">
+      {% if SITE_SETTINGS.whatsapp_phone %}
+      <a href="tel:+{{ SITE_SETTINGS.whatsapp_phone }}" style="display:flex;align-items:center;gap:6px;font-size:var(--text-sm);font-weight:var(--font-semi);color:var(--text-primary);">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-        <span class="lp-phone-text">+91 98765 43210</span>
+        <span class="lp-phone-text">+{{ SITE_SETTINGS.whatsapp_phone|slice:":2" }} {{ SITE_SETTINGS.whatsapp_phone|slice:"2:7" }} {{ SITE_SETTINGS.whatsapp_phone|slice:"7:12" }}</span>
       </a>
+      {% endif %}
     </div>
   </div>
 
@@ -67,13 +69,25 @@
 
   <!-- Mobile sticky CTA bar -->
   <div class="lp-mobile-bar">
-    <a href="https://wa.me/919876543210?text={{ lp.whatsapp_message_template|urlencode }}" target="_blank"
+    {% if SITE_SETTINGS.whatsapp_phone %}
+    <a href="https://wa.me/{{ SITE_SETTINGS.whatsapp_phone }}?text={{ lp.whatsapp_message_template|urlencode }}" target="_blank"
+       data-wa-placement="mobile_bar"
        class="btn" style="flex:1;justify-content:center;background:#25D366;color:white;border-color:#25D366;font-size:var(--text-sm);">
       💬 WhatsApp
     </a>
+    {% endif %}
     <a href="#lp-form" class="btn btn-primary" style="flex:1;justify-content:center;font-size:var(--text-sm);">
       Book Demo
     </a>
+  </div>
+
+  <!-- Minimal legal footer — required for lead-form data collection, doesn't reintroduce exit links to the rest of the site -->
+  <div style="padding:20px 0;text-align:center;border-top:1px solid var(--border-default);">
+    <p style="font-size:12px;color:var(--text-muted);">
+      © {% now "Y" %} PhoenixRise Interactive Pvt. Ltd. ·
+      <a href="/privacy-policy/" style="color:var(--text-muted);text-decoration:underline;">Privacy Policy</a> ·
+      <a href="/terms/" style="color:var(--text-muted);text-decoration:underline;">Terms of Use</a>
+    </p>
   </div>
 
   {% whatsapp_widget %}
@@ -100,11 +114,14 @@
       });
     });
 
-    // Fire a lead/contact event before opening WhatsApp — keeps ad platforms informed
+    // Fire a lead/contact event before opening WhatsApp — keeps ad platforms informed.
+    // `placement` lets Google Ads / GA4 report hero vs. mobile-bar vs. floating-widget
+    // clicks as distinct conversion actions instead of one blended "whatsapp" number.
     document.querySelectorAll('a[href^="https://wa.me/"]').forEach(link => {
       link.addEventListener('click', function() {
-        if (typeof gtag === 'function') gtag('event', 'generate_lead', { method: 'whatsapp' });
-        if (typeof fbq === 'function') fbq('track', 'Contact');
+        const placement = link.dataset.waPlacement || 'unknown';
+        if (typeof gtag === 'function') gtag('event', 'generate_lead', { method: 'whatsapp', placement: placement });
+        if (typeof fbq === 'function') fbq('track', 'Contact', { placement: placement });
       });
     });
   </script>

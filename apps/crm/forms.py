@@ -66,15 +66,17 @@ class DemoRequestForm(ContactForm):
 class AppointmentForm(forms.Form):
     """
     Global appointment/demo booking widget form.
-    Used by the 2-step modal: product selection → this form.
-    Email is intentionally optional; name, phone, city, clinic name, and
-    specialty are mandatory per the appointment booking flow.
+    Used by the 2-step modal: product selection → this form, and by the ad landing pages
+    (apps/landing_pages), which intentionally show only 3 fields (name, phone, clinic) to
+    minimize lead-form friction. Email and city are optional — collected on the follow-up
+    call instead — since name, phone, clinic name, and specialty are the only fields that
+    matter for a callback.
     """
     product      = forms.CharField(max_length=50, widget=forms.HiddenInput())  # CuraCMS / CuraLabs / CuraSuite
     full_name    = forms.CharField(max_length=200, label="Full Name")
     phone        = forms.CharField(max_length=20, label="Phone Number")
     email        = forms.EmailField(required=False, label="Email Address")
-    city         = forms.CharField(max_length=100, label="City")
+    city         = forms.CharField(max_length=100, required=False, label="City")
     organization = forms.CharField(max_length=200, label="Clinic Name")
     specialty    = forms.ChoiceField(choices=Lead.Specialty.choices, label="Specialty")
 
