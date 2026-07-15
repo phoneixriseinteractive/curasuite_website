@@ -56,7 +56,7 @@
 
   <!-- Mobile nav panel -->
   <div class="mobile-nav-panel" x-show="mobileOpen" x-cloak @click.outside="mobileOpen = false"
-       style="flex-direction:column;gap:2px;padding:var(--space-4);border-top:1px solid var(--border-default);background:white;">
+       style="display:flex;flex-direction:column;gap:2px;padding:var(--space-4);border-top:1px solid var(--border-default);background:white;">
     {% for item in PRIMARY_NAV %}
       {% if item.has_dropdown and item.children %}
       <div x-data="{ subOpen: false }">

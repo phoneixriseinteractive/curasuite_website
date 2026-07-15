@@ -232,9 +232,11 @@ p + p { margin-top: var(--space-4); }
 }
 
 /* ── Site Header — Mobile Navigation ───────────────────────────────────────── */
+/* .mobile-nav-panel has no unconditional `display:none` here — Alpine's
+   x-show/x-cloak fully own its visibility. A CSS rule hiding it by default
+   would win once Alpine clears its own inline style to reveal the panel. */
 .desktop-nav { display: flex; }
 .mobile-nav-toggle { display: none; }
-.mobile-nav-panel { display: none; }
 @media (max-width: 900px) {
   .desktop-nav { display: none !important; }
   .mobile-nav-toggle { display: flex !important; }
