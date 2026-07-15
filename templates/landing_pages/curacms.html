@@ -14,10 +14,10 @@
         {% endif %}
         <h1 style="margin-bottom:16px;font-size:clamp(28px,5vw,44px);line-height:1.15;">{{ lp.headline }}</h1>
         {% if lp.subheadline %}
-        <p style="font-size:var(--text-lg);color:var(--text-secondary);margin-bottom:24px;line-height:var(--leading-relaxed);">{{ lp.subheadline }}</p>
+        <p style="font-size:var(--text-lg);color:var(--text-secondary);margin-bottom:20px;line-height:var(--leading-relaxed);">{{ lp.subheadline }}</p>
         {% endif %}
 
-        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px;">
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;">
           <a href="#lp-form" class="btn btn-primary btn-lg" style="background:{{ product.color }};border-color:{{ product.color }};">
             Book Free Demo →
           </a>
@@ -27,16 +27,26 @@
           </a>
         </div>
 
+        <p style="font-size:var(--text-sm);color:{{ product.color }};font-weight:var(--font-semi);margin-bottom:16px;">
+          🔥 Free setup this month — onboarding slots are limited.
+        </p>
+
         {% if lp.social_proof_note %}
-        <p style="font-size:var(--text-sm);color:var(--text-muted);display:flex;align-items:center;gap:6px;">
+        <p style="font-size:var(--text-sm);color:var(--text-muted);display:flex;align-items:center;gap:6px;margin-bottom:14px;">
           <span style="color:#F59E0B;">★★★★★</span> {{ lp.social_proof_note }}
         </p>
         {% endif %}
+
+        <div style="display:flex;flex-wrap:wrap;gap:10px 18px;">
+          <span style="font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:5px;">🔒 Bank-grade security</span>
+          <span style="font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:5px;">⚡ Sub-second page loads</span>
+          <span style="font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:5px;">🇮🇳 Built for Indian clinics</span>
+        </div>
       </div>
 
       <div>
         {% if lp.hero_image %}
-        <img src="{{ lp.hero_image.url }}" alt="{{ lp.headline }}" style="border-radius:var(--radius-xl);box-shadow:var(--shadow-xl);width:100%;" loading="eager">
+        <img src="{{ lp.hero_image.url }}" alt="{{ lp.headline }}" style="border-radius:var(--radius-xl);box-shadow:var(--shadow-xl);width:100%;" loading="eager" fetchpriority="high">
         {% else %}
         <div style="aspect-ratio:4/3;background:{{ product.color }}10;border-radius:var(--radius-xl);border:2px dashed {{ product.color }}35;display:flex;align-items:center;justify-content:center;">
           {% if product.icon %}<img src="{{ product.icon.url }}" style="width:72px;height:72px;object-fit:contain;opacity:.5;">{% else %}<span style="font-size:56px;color:{{ product.color }}50;font-weight:800;">{{ product.name|slice:":1" }}</span>{% endif %}
@@ -47,9 +57,33 @@
   </div>
 </section>
 
+<!-- ═══ TRUST / STATS STRIP ═════════════════════════════════════════════════ -->
+<section style="padding:28px 0;background:var(--surface-card);border-top:1px solid var(--border-default);border-bottom:1px solid var(--border-default);">
+  <div class="container">
+    <div class="grid grid-4" style="gap:16px;">
+      <div class="stat-card">
+        <div class="stat-number">7–14</div>
+        <div class="stat-label">Days to Go Live</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">&lt;1s</div>
+        <div class="stat-label">Average Page Load</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">12+</div>
+        <div class="stat-label">Modules Included</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">24/7</div>
+        <div class="stat-label">AI + WhatsApp Coverage</div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ═══ PAIN POINTS ═════════════════════════════════════════════════════════ -->
 {% if pain_points %}
-<section style="padding:40px 0;background:var(--surface-card);">
+<section style="padding:48px 0;">
   <div class="container">
     <h2 style="text-align:center;margin-bottom:32px;font-size:var(--text-2xl);">Sound Familiar?</h2>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;max-width:900px;margin-inline:auto;">
@@ -64,11 +98,12 @@
 </section>
 {% endif %}
 
-<!-- ═══ BENEFITS ════════════════════════════════════════════════════════════ -->
+<!-- ═══ QUICK BENEFITS ══════════════════════════════════════════════════════ -->
 {% if benefits %}
-<section style="padding:48px 0;">
+<section style="padding:48px 0;background:var(--surface-card);">
   <div class="container">
-    <h2 style="text-align:center;margin-bottom:8px;font-size:var(--text-2xl);">What You Get with {{ product.name }}</h2>
+    <div class="section-label" style="text-align:center;">Why Doctors Choose CuraCMS</div>
+    <h2 style="text-align:center;margin-bottom:8px;font-size:var(--text-2xl);">One Platform, Zero Guesswork</h2>
     <p style="text-align:center;color:var(--text-secondary);margin-bottom:36px;">Everything you need to grow your practice online.</p>
     <div class="grid grid-3" style="gap:20px;">
       {% for b in benefits %}
@@ -83,26 +118,118 @@
 </section>
 {% endif %}
 
-<!-- ═══ FULL FEATURE LIST ═══════════════════════════════════════════════════ -->
-{% if product_features %}
-<section style="padding:48px 0;background:var(--surface-card);">
+<!-- ═══ COMPLETE FEATURE SHOWCASE — 12 MODULES ═════════════════════════════ -->
+<section style="padding:56px 0;">
   <div class="container">
-    <h2 style="text-align:center;margin-bottom:8px;font-size:var(--text-2xl);">Everything Included with {{ product.name }}</h2>
-    <p style="text-align:center;color:var(--text-secondary);margin-bottom:36px;">No hidden add-ons. No surprise charges.</p>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;max-width:960px;margin-inline:auto;">
-      {% for feat in product_features %}
-      <div style="display:flex;gap:10px;align-items:flex-start;background:white;padding:14px 16px;border-radius:var(--radius-lg);border:1px solid var(--border-default);">
-        <span style="color:{{ product.color }};font-weight:700;flex-shrink:0;margin-top:1px;">✓</span>
-        <div>
-          <div style="font-size:var(--text-sm);font-weight:var(--font-semi);color:var(--text-primary);">{{ feat.title }}</div>
-          <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">{{ feat.description|truncatechars:70 }}</div>
-        </div>
+    <div class="section-label" style="text-align:center;">Everything Included</div>
+    <h2 style="text-align:center;margin-bottom:8px;font-size:var(--text-2xl);">12 Modules. One CuraCMS Subscription.</h2>
+    <p style="text-align:center;color:var(--text-secondary);margin-bottom:40px;max-width:640px;margin-inline:auto;">
+      No plugins to install, no agencies to hire, no hidden add-ons. Every module below ships standard with
+      {{ product.name }} — built specifically for clinics, hospitals, and diagnostic practices.
+    </p>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:20px;">
+
+      <div class="card card-hover" style="padding:24px;">
+        <div class="feature-icon" style="background:{{ product.color }}15;color:{{ product.color }};">🌐</div>
+        <h4 style="margin-bottom:8px;">Marketing-Ready CMS</h4>
+        <p style="font-size:var(--text-sm);color:var(--text-secondary);line-height:var(--leading-relaxed);">Publish SEO-optimized landing, service, and location pages in minutes — no developer or agency required.</p>
       </div>
-      {% endfor %}
+
+      <div class="card card-hover" style="padding:24px;">
+        <div class="feature-icon" style="background:{{ product.color }}15;color:{{ product.color }};">✍️</div>
+        <h4 style="margin-bottom:8px;">Blog &amp; Content Marketing</h4>
+        <p style="font-size:var(--text-sm);color:var(--text-secondary);line-height:var(--leading-relaxed);">Publish health articles under custom categories with one-click social sharing and patient comments to build authority and organic traffic.</p>
+      </div>
+
+      <div class="card card-hover" style="padding:24px;">
+        <div class="feature-icon" style="background:{{ product.color }}15;color:{{ product.color }};">🩺</div>
+        <h4 style="margin-bottom:8px;">Treatment &amp; Services Listing</h4>
+        <p style="font-size:var(--text-sm);color:var(--text-secondary);line-height:var(--leading-relaxed);">List every procedure you offer with clear descriptions, so patients arrive informed and ready to book.</p>
+      </div>
+
+      <div class="card card-hover" style="padding:24px;">
+        <div class="feature-icon" style="background:{{ product.color }}15;color:{{ product.color }};">🎬</div>
+        <h4 style="margin-bottom:8px;">Patient Education Videos</h4>
+        <p style="font-size:var(--text-sm);color:var(--text-secondary);line-height:var(--leading-relaxed);">Embed videos that explain conditions and procedures, easing patient anxiety and cutting repetitive phone questions.</p>
+      </div>
+
+      <div class="card card-hover" style="padding:24px;">
+        <div class="feature-icon" style="background:{{ product.color }}15;color:{{ product.color }};">👨‍⚕️</div>
+        <h4 style="margin-bottom:8px;">Doctor Profile Pages</h4>
+        <p style="font-size:var(--text-sm);color:var(--text-secondary);line-height:var(--leading-relaxed);">Showcase qualifications, experience, and specializations with rich profile pages that build instant credibility.</p>
+      </div>
+
+      <div class="card card-hover" style="padding:24px;">
+        <div class="feature-icon" style="background:{{ product.color }}15;color:{{ product.color }};">📅</div>
+        <h4 style="margin-bottom:8px;">Online Appointment Booking</h4>
+        <p style="font-size:var(--text-sm);color:var(--text-secondary);line-height:var(--leading-relaxed);">Real-time slot management with instant confirmations — capture patients even outside clinic hours.</p>
+      </div>
+
+      <div class="card card-hover" style="padding:24px;">
+        <div class="feature-icon" style="background:{{ product.color }}15;color:{{ product.color }};">👥</div>
+        <h4 style="margin-bottom:8px;">Patient CRM &amp; Remarketing</h4>
+        <p style="font-size:var(--text-sm);color:var(--text-secondary);line-height:var(--leading-relaxed);">Automatically track every visitor and follow up with the ones who didn't book — turn browsers into booked patients.</p>
+      </div>
+
+      <div class="card card-hover" style="padding:24px;">
+        <div class="feature-icon" style="background:{{ product.color }}15;color:{{ product.color }};">🔍</div>
+        <h4 style="margin-bottom:8px;">Built-in SEO Controls</h4>
+        <p style="font-size:var(--text-sm);color:var(--text-secondary);line-height:var(--leading-relaxed);">Meta titles, descriptions, schema markup, and redirects for every page — rank higher without an SEO agency.</p>
+      </div>
+
+      <div class="card card-hover" style="padding:24px;">
+        <div class="feature-icon" style="background:{{ product.color }}15;color:{{ product.color }};">🔑</div>
+        <h4 style="margin-bottom:8px;">Role-Based User Access</h4>
+        <p style="font-size:var(--text-sm);color:var(--text-secondary);line-height:var(--leading-relaxed);">Give your receptionist, doctors, and marketing staff their own logins with exactly the permissions they need.</p>
+      </div>
+
+      <div class="card card-hover" style="padding:24px;">
+        <div class="feature-icon" style="background:{{ product.color }}15;color:{{ product.color }};">⚙️</div>
+        <h4 style="margin-bottom:8px;">Full Site Control</h4>
+        <p style="font-size:var(--text-sm);color:var(--text-secondary);line-height:var(--leading-relaxed);">Decide exactly what's public — hours, contact details, social links — updated instantly, no code required.</p>
+      </div>
+
+      <div class="card card-hover" style="padding:24px;border:1px solid {{ product.color }}30;">
+        <div class="feature-icon" style="background:{{ product.color }}15;color:{{ product.color }};">🤖</div>
+        <h4 style="margin-bottom:8px;">24/7 AI Chat Assistant</h4>
+        <p style="font-size:var(--text-sm);color:var(--text-secondary);line-height:var(--leading-relaxed);">An always-on AI assistant answers patient questions and captures leads even when your front desk is closed. Try it — bottom-left of this page.</p>
+      </div>
+
+      <div class="card card-hover" style="padding:24px;border:1px solid {{ product.color }}30;">
+        <div class="feature-icon" style="background:{{ product.color }}15;color:{{ product.color }};">💬</div>
+        <h4 style="margin-bottom:8px;">WhatsApp &amp; Messenger Integration</h4>
+        <p style="font-size:var(--text-sm);color:var(--text-secondary);line-height:var(--leading-relaxed);">Patients reach you instantly on the apps they already use — WhatsApp and Facebook Messenger, built right in.</p>
+      </div>
+
     </div>
   </div>
 </section>
-{% endif %}
+
+<!-- ═══ SECURITY & PERFORMANCE ══════════════════════════════════════════════ -->
+<section style="padding:48px 0;background:var(--surface-card);">
+  <div class="container">
+    <h2 style="text-align:center;margin-bottom:8px;font-size:var(--text-2xl);">Enterprise-Grade Under the Hood</h2>
+    <p style="text-align:center;color:var(--text-secondary);margin-bottom:36px;">Your patients' trust depends on it — so we don't cut corners.</p>
+    <div class="grid grid-3" style="gap:20px;">
+      <div class="card" style="padding:28px;">
+        <div class="feature-icon" style="background:var(--color-primary-50);color:var(--color-primary-600);">🔒</div>
+        <h4 style="margin-bottom:8px;">Secure by Design</h4>
+        <p style="font-size:var(--text-sm);color:var(--text-secondary);line-height:var(--leading-relaxed);">Built on Python &amp; Django, hardened against the OWASP Top 10, with Argon2 password hashing, HTTPS/SSL encryption, and CSRF protection on every form.</p>
+      </div>
+      <div class="card" style="padding:28px;">
+        <div class="feature-icon" style="background:var(--color-accent-50);color:var(--color-accent-600);">⚡</div>
+        <h4 style="margin-bottom:8px;">Blazing-Fast Pages</h4>
+        <p style="font-size:var(--text-sm);color:var(--text-secondary);line-height:var(--leading-relaxed);">Optimized queries and compressed static assets mean sub-second loads — better Google &amp; Meta ad quality scores, and patients who don't bounce.</p>
+      </div>
+      <div class="card" style="padding:28px;">
+        <div class="feature-icon" style="background:var(--color-secondary-50);color:var(--color-secondary-600);">🌍</div>
+        <h4 style="margin-bottom:8px;">Always-On Digital Presence</h4>
+        <p style="font-size:var(--text-sm);color:var(--text-secondary);line-height:var(--leading-relaxed);">Your website, WhatsApp, Messenger, and AI chatbot all work together — so your clinic is reachable on every channel patients use.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- ═══ SCREENSHOTS / PREVIEW ═══════════════════════════════════════════════ -->
 <section style="padding:48px 0;overflow:hidden;">
@@ -121,11 +248,71 @@
   </div>
 </section>
 
+<!-- ═══ COMPARISON TABLE ════════════════════════════════════════════════════ -->
+<section style="padding:48px 0;background:var(--surface-card);">
+  <div class="container" style="max-width:900px;">
+    <h2 style="text-align:center;margin-bottom:8px;font-size:var(--text-2xl);">A Basic Website vs. {{ product.name }}</h2>
+    <p style="text-align:center;color:var(--text-secondary);margin-bottom:32px;">See exactly what you're missing without a purpose-built platform.</p>
+    <div style="overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;background:white;border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm);min-width:560px;">
+        <thead>
+          <tr style="background:{{ product.color }};">
+            <th style="text-align:left;padding:14px 18px;color:white;font-size:var(--text-sm);font-weight:var(--font-semi);">Capability</th>
+            <th style="text-align:center;padding:14px 18px;color:rgba(255,255,255,.85);font-size:var(--text-sm);font-weight:var(--font-semi);">Typical Website</th>
+            <th style="text-align:center;padding:14px 18px;color:white;font-size:var(--text-sm);font-weight:var(--font-semi);">{{ product.name }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--border-default);"><td style="padding:12px 18px;font-size:var(--text-sm);color:var(--text-primary);">SEO-friendly marketing pages</td><td style="text-align:center;color:var(--text-muted);font-size:var(--text-sm);">Static, rarely updated</td><td style="text-align:center;color:var(--color-success);font-size:18px;">✓</td></tr>
+          <tr style="border-bottom:1px solid var(--border-default);"><td style="padding:12px 18px;font-size:var(--text-sm);color:var(--text-primary);">Blog &amp; content marketing</td><td style="text-align:center;color:#DC2626;font-size:16px;">✕</td><td style="text-align:center;color:var(--color-success);font-size:18px;">✓</td></tr>
+          <tr style="border-bottom:1px solid var(--border-default);background:var(--surface-card);"><td style="padding:12px 18px;font-size:var(--text-sm);color:var(--text-primary);">Online appointment booking</td><td style="text-align:center;color:var(--text-muted);font-size:var(--text-sm);">Phone calls only</td><td style="text-align:center;color:var(--color-success);font-size:18px;">✓</td></tr>
+          <tr style="border-bottom:1px solid var(--border-default);"><td style="padding:12px 18px;font-size:var(--text-sm);color:var(--text-primary);">Patient CRM &amp; remarketing</td><td style="text-align:center;color:#DC2626;font-size:16px;">✕</td><td style="text-align:center;color:var(--color-success);font-size:18px;">✓</td></tr>
+          <tr style="border-bottom:1px solid var(--border-default);background:var(--surface-card);"><td style="padding:12px 18px;font-size:var(--text-sm);color:var(--text-primary);">24/7 AI chat assistant</td><td style="text-align:center;color:#DC2626;font-size:16px;">✕</td><td style="text-align:center;color:var(--color-success);font-size:18px;">✓</td></tr>
+          <tr style="border-bottom:1px solid var(--border-default);"><td style="padding:12px 18px;font-size:var(--text-sm);color:var(--text-primary);">WhatsApp / Messenger integration</td><td style="text-align:center;color:var(--text-muted);font-size:var(--text-sm);">Manual, unlinked</td><td style="text-align:center;color:var(--color-success);font-size:18px;">✓</td></tr>
+          <tr style="border-bottom:1px solid var(--border-default);background:var(--surface-card);"><td style="padding:12px 18px;font-size:var(--text-sm);color:var(--text-primary);">Doctor &amp; treatment pages</td><td style="text-align:center;color:var(--text-muted);font-size:var(--text-sm);">Basic, static</td><td style="text-align:center;color:var(--color-success);font-size:18px;">✓</td></tr>
+          <tr style="border-bottom:1px solid var(--border-default);"><td style="padding:12px 18px;font-size:var(--text-sm);color:var(--text-primary);">Security (framework, hashing, SSL)</td><td style="text-align:center;color:var(--text-muted);font-size:var(--text-sm);">Varies, often outdated</td><td style="text-align:center;color:var(--color-success);font-size:18px;">✓</td></tr>
+          <tr style="border-bottom:1px solid var(--border-default);background:var(--surface-card);"><td style="padding:12px 18px;font-size:var(--text-sm);color:var(--text-primary);">Page load speed</td><td style="text-align:center;color:var(--text-muted);font-size:var(--text-sm);">Often slow</td><td style="text-align:center;color:var(--color-success);font-size:18px;">✓ &lt;1s</td></tr>
+          <tr><td style="padding:12px 18px;font-size:var(--text-sm);color:var(--text-primary);">Setup time</td><td style="text-align:center;color:var(--text-muted);font-size:var(--text-sm);">Weeks to months</td><td style="text-align:center;color:var(--color-success);font-size:18px;">✓ 7–14 days</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
 <!-- ═══ WHO IT'S FOR ════════════════════════════════════════════════════════ -->
-<section style="padding:40px 0;background:var(--surface-card);">
+<section style="padding:40px 0;">
   <div class="container" style="max-width:760px;text-align:center;">
     <h2 style="margin-bottom:16px;font-size:var(--text-2xl);">Built Specifically for {{ lp.target_audience_label|default:"Your Practice" }}</h2>
     <p style="color:var(--text-secondary);font-size:var(--text-base);line-height:var(--leading-relaxed);">{{ product.long_description|default:product.short_description }}</p>
+  </div>
+</section>
+
+<!-- ═══ HOW IT WORKS ════════════════════════════════════════════════════════ -->
+<section style="padding:48px 0;background:var(--surface-card);">
+  <div class="container">
+    <h2 style="text-align:center;margin-bottom:36px;font-size:var(--text-2xl);">From Sign-Up to Live in 4 Simple Steps</h2>
+    <div class="grid grid-4" style="gap:24px;text-align:center;">
+      <div>
+        <div class="step-number">1</div>
+        <h4 style="margin-bottom:6px;font-size:var(--text-base);">Book a Free Demo</h4>
+        <p style="font-size:var(--text-sm);color:var(--text-secondary);">Tell us about your clinic — takes 30 seconds.</p>
+      </div>
+      <div>
+        <div class="step-number">2</div>
+        <h4 style="margin-bottom:6px;font-size:var(--text-base);">We Configure Everything</h4>
+        <p style="font-size:var(--text-sm);color:var(--text-secondary);">Pages, doctors, treatments, and branding set up for you.</p>
+      </div>
+      <div>
+        <div class="step-number">3</div>
+        <h4 style="margin-bottom:6px;font-size:var(--text-base);">Go Live in 7–14 Days</h4>
+        <p style="font-size:var(--text-sm);color:var(--text-secondary);">Your fully secure, fast website goes live for patients.</p>
+      </div>
+      <div>
+        <div class="step-number">4</div>
+        <h4 style="margin-bottom:6px;font-size:var(--text-base);">Ongoing Support</h4>
+        <p style="font-size:var(--text-sm);color:var(--text-secondary);">Training, updates, and help — included, always.</p>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -140,7 +327,7 @@
 
 <!-- ═══ TESTIMONIALS ════════════════════════════════════════════════════════ -->
 {% if testimonials %}
-<section style="padding:48px 0;background:var(--surface-card);">
+<section style="padding:48px 0;">
   <div class="container">
     <h2 style="text-align:center;margin-bottom:32px;font-size:var(--text-2xl);">Trusted by Doctors Like You</h2>
     <div class="grid grid-3" style="gap:20px;">
@@ -159,7 +346,7 @@
 
 <!-- ═══ PRICING SNAPSHOT ════════════════════════════════════════════════════ -->
 {% if pricing_tiers %}
-<section style="padding:48px 0;">
+<section style="padding:48px 0;background:var(--surface-card);">
   <div class="container">
     <h2 style="text-align:center;margin-bottom:8px;font-size:var(--text-2xl);">Simple, Transparent Pricing</h2>
     <p style="text-align:center;color:var(--text-secondary);margin-bottom:36px;">No setup fees. Cancel anytime. 30-day free trial.</p>
@@ -180,6 +367,20 @@
   </div>
 </section>
 {% endif %}
+
+<!-- ═══ TRUST / GUARANTEE STRIP ═════════════════════════════════════════════ -->
+<section style="padding:32px 0;">
+  <div class="container">
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:14px 28px;">
+      <span style="display:flex;align-items:center;gap:6px;font-size:var(--text-sm);color:var(--text-secondary);">🔒 Bank-grade security</span>
+      <span style="display:flex;align-items:center;gap:6px;font-size:var(--text-sm);color:var(--text-secondary);">⚡ Sub-second load times</span>
+      <span style="display:flex;align-items:center;gap:6px;font-size:var(--text-sm);color:var(--text-secondary);">🎓 Free onboarding &amp; training</span>
+      <span style="display:flex;align-items:center;gap:6px;font-size:var(--text-sm);color:var(--text-secondary);">💾 Daily automated backups</span>
+      <span style="display:flex;align-items:center;gap:6px;font-size:var(--text-sm);color:var(--text-secondary);">🔄 Cancel anytime</span>
+      <span style="display:flex;align-items:center;gap:6px;font-size:var(--text-sm);color:var(--text-secondary);">📞 Dedicated support</span>
+    </div>
+  </div>
+</section>
 
 <!-- ═══ FAQ ══════════════════════════════════════════════════════════════════ -->
 {% if product_faqs %}
@@ -239,7 +440,7 @@
           <button type="submit" class="btn btn-lg" style="width:100%;justify-content:center;margin-top:20px;background:{{ product.color }};border-color:{{ product.color }};color:white;">
             Confirm Booking →
           </button>
-          <p style="font-size:11px;color:var(--text-muted);text-align:center;margin-top:10px;">No credit card required · Free consultation</p>
+          <p style="font-size:11px;color:var(--text-muted);text-align:center;margin-top:10px;">🔒 Your information is 100% secure &amp; confidential · No credit card required · Free consultation</p>
         </form>
       </div>
     </div>

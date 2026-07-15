@@ -6,8 +6,21 @@
   <title>{{ lp.headline }} | CuraSuite</title>
   <meta name="description" content="{{ lp.subheadline|default:lp.headline }}">
   {% if lp.noindex %}<meta name="robots" content="noindex, nofollow">{% endif %}
+  <link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+  {# Open Graph / Twitter — controls the preview card when this URL is shared or used as a Meta ad destination #}
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{ lp.headline }}">
+  <meta property="og:description" content="{{ lp.subheadline|default:lp.headline }}">
+  <meta property="og:url" content="{{ request.build_absolute_uri }}">
+  <meta property="og:site_name" content="CuraSuite">
+  {% if lp.hero_image %}<meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{{ lp.hero_image.url }}">{% endif %}
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ lp.headline }}">
+  <meta name="twitter:description" content="{{ lp.subheadline|default:lp.headline }}">
 
   {% load static %}
+  <link rel="preconnect" href="https://unpkg.com">
   <link rel="stylesheet" href="{% static 'css/tokens.css' %}">
   <link rel="stylesheet" href="{% static 'css/base.css' %}">
 
@@ -64,6 +77,7 @@
   </div>
 
   {% whatsapp_widget %}
+  {% chatbot_widget %}
 
   <script src="https://unpkg.com/htmx.org@2.0.3" defer></script>
   <script defer src="https://unpkg.com/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
