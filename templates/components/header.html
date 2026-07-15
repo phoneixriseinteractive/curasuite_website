@@ -1,10 +1,11 @@
 <!-- CuraSuite — Site Header -->
+{% load static %}
 <header id="site-header" style="position:sticky;top:0;z-index:var(--z-sticky);background:white;border-bottom:1px solid var(--border-default);box-shadow:var(--shadow-sm);">
   <div class="container" style="display:flex;align-items:center;justify-content:space-between;height:64px;">
 
     <!-- Logo -->
-    <a href="/" style="font-size:var(--text-xl);font-weight:var(--font-bold);color:var(--color-primary-600);text-decoration:none;">
-      {{ SITE_NAME }}
+    <a href="/" style="display:flex;align-items:center;text-decoration:none;">
+      <img src="{% static 'img/curasuite-logo-header.png' %}" alt="{{ SITE_NAME }}" style="height:38px;width:auto;display:block;">
     </a>
 
     <!-- Desktop nav -->

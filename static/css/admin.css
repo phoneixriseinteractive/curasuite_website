@@ -118,19 +118,18 @@ body.admin-body.sidebar-collapsed .adm-sidebar {
 }
 .adm-sidebar-logo-mark {
   width: 32px; height: 32px;
-  background: var(--adm-accent);
   border-radius: var(--adm-radius-sm);
-  display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
-  color: white; font-weight: 700; font-size: 13px;
+  display: none;
+  object-fit: cover;
 }
 .adm-sidebar-logo-text {
-  font-weight: 700; font-size: 15px;
-  white-space: nowrap;
-  opacity: 1;
-  transition: opacity var(--adm-transition);
+  height: 26px; width: auto;
+  display: block;
+  flex-shrink: 0;
 }
-body.admin-body.sidebar-collapsed .adm-sidebar-logo-text { opacity: 0; }
+body.admin-body.sidebar-collapsed .adm-sidebar-logo-mark { display: block; }
+body.admin-body.sidebar-collapsed .adm-sidebar-logo-text { display: none; }
 
 /* Nav scroll area */
 .adm-sidebar-nav {

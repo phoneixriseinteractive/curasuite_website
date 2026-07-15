@@ -28,8 +28,10 @@
 <body class="admin-body">
 <div class="login-page">
   <div class="login-brand">
-    <div style="width:48px;height:48px;background:rgba(255,255,255,.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;margin-bottom:40px;">CS</div>
-    <h1 style="font-size:36px;font-weight:800;margin-bottom:16px;line-height:1.2;color:white;">CuraSuite<br>Admin Panel</h1>
+    <div style="display:inline-block;background:#F7F7F7;border-radius:12px;padding:10px 16px;margin-bottom:40px;">
+      <img src="{% static 'img/curasuite-logo-footer.png' %}" alt="CuraSuite" style="height:28px;width:auto;display:block;">
+    </div>
+    <h1 style="font-size:36px;font-weight:800;margin-bottom:16px;line-height:1.2;color:white;">Admin Panel</h1>
     <p style="font-size:16px;opacity:.75;max-width:340px;line-height:1.6;">Manage content, leads, campaigns, and integrations from one place.</p>
     <div style="margin-top:48px;display:flex;flex-direction:column;gap:14px;">
       {% for feat in "Pages & Blog Management,Lead CRM & Demo Requests,Newsletter Campaigns,Site Integrations & Settings" %}
