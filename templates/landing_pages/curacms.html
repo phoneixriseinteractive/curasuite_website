@@ -13,6 +13,7 @@
 <!-- ═══ HERO ════════════════════════════════════════════════════════════════ -->
 <section class="hero-pattern" style="position:relative;overflow:hidden;padding:48px 0 40px;">
   <div class="pattern-fade-light" style="position:absolute;inset:0;pointer-events:none;"></div>
+  {% include "landing_pages/_specialty_hero_icons.html" %}
   <div class="container" style="position:relative;z-index:1;">
     <div class="split-hero" style="gap:48px;">
       <div>
@@ -71,7 +72,7 @@
 </section>
 
 <!-- ═══ TRUST / STATS STRIP ═════════════════════════════════════════════════ -->
-<section style="padding:28px 0;background:var(--surface-card);border-top:1px solid var(--border-default);border-bottom:1px solid var(--border-default);">
+<section class="lp-pattern-{{ lp.specialty }}" style="padding:28px 0;background-color:var(--surface-card);border-top:1px solid var(--border-default);border-bottom:1px solid var(--border-default);">
   <div class="container">
     <div class="grid grid-4" style="gap:16px;">
       <div class="stat-card">
@@ -113,7 +114,7 @@
 
 <!-- ═══ QUICK BENEFITS ══════════════════════════════════════════════════════ -->
 {% if benefits %}
-<section style="padding:48px 0;background:var(--surface-card);">
+<section class="lp-pattern-{{ lp.specialty }}" style="padding:48px 0;background-color:var(--surface-card);">
   <div class="container">
     <div class="section-label" style="text-align:center;">Why Doctors Choose CuraCMS</div>
     <h2 style="text-align:center;margin-bottom:8px;font-size:var(--text-2xl);">One Platform, Zero Guesswork</h2>
@@ -220,7 +221,7 @@
 </section>
 
 <!-- ═══ SECURITY & PERFORMANCE ══════════════════════════════════════════════ -->
-<section style="padding:48px 0;background:var(--surface-card);">
+<section class="lp-pattern-{{ lp.specialty }}" style="padding:48px 0;background-color:var(--surface-card);">
   <div class="container">
     <h2 style="text-align:center;margin-bottom:8px;font-size:var(--text-2xl);">Enterprise-Grade Under the Hood</h2>
     <p style="text-align:center;color:var(--text-secondary);margin-bottom:36px;">Your patients' trust depends on it — so we don't cut corners.</p>
@@ -307,7 +308,7 @@ function cmsShotSlider() {
 </script>
 
 <!-- ═══ COMPARISON TABLE ════════════════════════════════════════════════════ -->
-<section style="padding:48px 0;background:var(--surface-card);">
+<section class="lp-pattern-{{ lp.specialty }}" style="padding:48px 0;background-color:var(--surface-card);">
   <div class="container" style="max-width:900px;">
     <h2 style="text-align:center;margin-bottom:8px;font-size:var(--text-2xl);">A Basic Website vs. {{ product.name }}</h2>
     <p style="text-align:center;color:var(--text-secondary);margin-bottom:32px;">See exactly what you're missing without a purpose-built platform.</p>
@@ -346,7 +347,7 @@ function cmsShotSlider() {
 </section>
 
 <!-- ═══ HOW IT WORKS ════════════════════════════════════════════════════════ -->
-<section style="padding:48px 0;background:var(--surface-card);">
+<section class="lp-pattern-{{ lp.specialty }}" style="padding:48px 0;background-color:var(--surface-card);">
   <div class="container">
     <h2 style="text-align:center;margin-bottom:36px;font-size:var(--text-2xl);">From Sign-Up to Live in 4 Simple Steps</h2>
     <div class="grid grid-4" style="gap:24px;text-align:center;">
@@ -405,7 +406,7 @@ function cmsShotSlider() {
 
 <!-- ═══ PRICING SNAPSHOT ════════════════════════════════════════════════════ -->
 {% if pricing_tiers %}
-<section style="padding:48px 0;background:var(--surface-card);">
+<section class="lp-pattern-{{ lp.specialty }}" style="padding:48px 0;background-color:var(--surface-card);">
   <div class="container">
     <h2 style="text-align:center;margin-bottom:8px;font-size:var(--text-2xl);">Simple, Transparent Pricing</h2>
     <p style="text-align:center;color:var(--text-secondary);margin-bottom:36px;">No setup fees. Cancel anytime. 30-day free trial.</p>
@@ -443,7 +444,7 @@ function cmsShotSlider() {
 
 <!-- ═══ FAQ ══════════════════════════════════════════════════════════════════ -->
 {% if product_faqs %}
-<section style="padding:48px 0;background:var(--surface-card);">
+<section class="lp-pattern-{{ lp.specialty }}" style="padding:48px 0;background-color:var(--surface-card);">
   <div class="container" style="max-width:720px;">
     <h2 style="text-align:center;margin-bottom:32px;font-size:var(--text-2xl);">Frequently Asked Questions</h2>
     {% for faq in product_faqs %}
