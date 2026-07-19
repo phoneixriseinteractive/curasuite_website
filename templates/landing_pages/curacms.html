@@ -5,6 +5,21 @@
 <style>
   .cms-shot-card { flex: 0 0 360px; }
   @media (max-width: 480px) { .cms-shot-card { flex: 0 0 88vw; } }
+
+  @keyframes lp-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+  .lp-collage-card {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16/10;
+    object-fit: cover;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    border: 1px solid rgba(0,0,0,.06);
+    animation: lp-float 3.4s ease-in-out infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .lp-collage-card { animation: none; }
+  }
 </style>
 {% endblock %}
 
@@ -61,11 +76,16 @@
         {% if lp.hero_image %}
         <img src="{{ lp.hero_image.url }}" alt="{{ lp.headline }}" style="border-radius:var(--radius-xl);box-shadow:var(--shadow-xl);width:100%;" loading="eager" fetchpriority="high">
         {% else %}
-        <div style="aspect-ratio:4/3;border-radius:var(--radius-xl);box-shadow:var(--shadow-xl);overflow:hidden;">
-          <video autoplay muted loop playsinline disablepictureinpicture preload="auto"
-                 style="width:100%;height:100%;object-fit:cover;display:block;">
-            <source src="{% static 'img/Hero-Transition-Video.mp4' %}" type="video/mp4">
-          </video>
+        <div style="position:relative;aspect-ratio:4/3.4;">
+          <div style="position:absolute;top:4%;left:0;width:68%;z-index:1;transform:rotate(-4deg);">
+            <img src="{% static 'img/CuraCms/Admin_Panel/dashboard.png' %}" alt="CuraCMS admin dashboard" class="lp-collage-card" style="animation-delay:0s;" loading="eager">
+          </div>
+          <div style="position:absolute;top:20%;right:0;width:54%;z-index:2;transform:rotate(3deg);">
+            <img src="{% static 'img/CuraCms/Admin_Panel/appointment-module.png' %}" alt="CuraCMS appointment booking module" class="lp-collage-card" style="animation-delay:.8s;" loading="eager">
+          </div>
+          <div style="position:absolute;bottom:0;left:10%;width:46%;z-index:3;transform:rotate(-6deg);">
+            <img src="{% static 'img/CuraCms/Admin_Panel/Ai-chat-assistant-1.png' %}" alt="CuraCMS AI chatbot assistant" class="lp-collage-card" style="animation-delay:1.6s;" loading="eager">
+          </div>
         </div>
         {% endif %}
       </div>
