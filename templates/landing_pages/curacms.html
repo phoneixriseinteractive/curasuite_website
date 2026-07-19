@@ -61,8 +61,11 @@
         {% if lp.hero_image %}
         <img src="{{ lp.hero_image.url }}" alt="{{ lp.headline }}" style="border-radius:var(--radius-xl);box-shadow:var(--shadow-xl);width:100%;" loading="eager" fetchpriority="high">
         {% else %}
-        <div style="aspect-ratio:4/3;background:{{ product.color }}10;border-radius:var(--radius-xl);border:2px dashed {{ product.color }}35;display:flex;align-items:center;justify-content:center;">
-          {% if product.icon %}<img src="{{ product.icon.url }}" style="width:72px;height:72px;object-fit:contain;opacity:.5;">{% else %}<span style="font-size:56px;color:{{ product.color }}50;font-weight:800;">{{ product.name|slice:":1" }}</span>{% endif %}
+        <div style="aspect-ratio:4/3;border-radius:var(--radius-xl);box-shadow:var(--shadow-xl);overflow:hidden;">
+          <video autoplay muted loop playsinline disablepictureinpicture preload="auto"
+                 style="width:100%;height:100%;object-fit:cover;display:block;">
+            <source src="{% static 'img/Hero-Transition-Video.mp4' %}" type="video/mp4">
+          </video>
         </div>
         {% endif %}
       </div>
