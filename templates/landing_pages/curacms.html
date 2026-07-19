@@ -3,8 +3,26 @@
 
 {% block extra_head %}
 <style>
-  .cms-shot-card { flex: 0 0 360px; }
-  @media (max-width: 480px) { .cms-shot-card { flex: 0 0 88vw; } }
+  /* Screenshot spotlight — one large featured screenshot + small rotating thumbnails */
+  .lp-spotlight { display: flex; gap: 24px; align-items: center; }
+  .lp-spotlight-thumbs { display: flex; flex-direction: column; gap: 16px; flex-shrink: 0; }
+  .lp-spotlight-thumb {
+    width: 76px; height: 76px; padding: 0; flex-shrink: 0; cursor: pointer;
+    border-radius: 50%; overflow: hidden; border: 3px solid white;
+    box-shadow: var(--shadow-md); background: none; transition: transform .25s ease;
+  }
+  .lp-spotlight-thumb:hover { transform: scale(1.08); }
+  .lp-spotlight-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .lp-spotlight-main { flex: 1; min-width: 0; }
+  @keyframes lp-spot-in { from { opacity: 0; transform: scale(.95); } to { opacity: 1; transform: scale(1); } }
+  .lp-spot-img { animation: lp-spot-in .5s ease; }
+  @media (max-width: 640px) {
+    .lp-spotlight { flex-direction: column-reverse; }
+    .lp-spotlight-thumbs { flex-direction: row; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .lp-spot-img { animation: none; }
+  }
 
   @keyframes lp-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
   @keyframes lp-float-sm { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
@@ -292,54 +310,53 @@
     <h2 style="text-align:center;margin-bottom:8px;font-size:var(--text-2xl);">See {{ product.name }} in Action</h2>
     <p style="text-align:center;color:var(--text-secondary);margin-bottom:36px;">A clean, modern interface your patients will love.</p>
 
-    <div x-data="cmsShotSlider()" x-init="start()" @mouseenter="stop()" @mouseleave="start()" style="position:relative;">
+    <script>
+      window.__cmsShots = [
+        {% for file, caption in cms_screenshots %}
+        { src: "{% static 'img/CuraCms/'|add:file %}", caption: "{{ caption|escapejs }}" }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+      ];
+    </script>
 
-      <div style="overflow:hidden;">
-        <div x-ref="track" :style="`display:flex;gap:20px;transition:transform .6s cubic-bezier(.4,0,.2,1);transform:translateX(-${offset}px);`">
+    <div x-data="cmsSpotlight()" x-init="start()" @mouseenter="stop()" @mouseleave="start()" class="lp-spotlight">
 
-          {% for file, caption in cms_screenshots %}
-          <div class="cms-shot-card">
-            <img src="{% static 'img/CuraCms/'|add:file %}" alt="{{ caption }} — {{ product.name }}"
-                 style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:var(--radius-lg);border:1px solid var(--border-default);box-shadow:var(--shadow-sm);" loading="lazy">
-            <p style="margin-top:10px;text-align:center;font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--text-secondary);">{{ caption }}</p>
-          </div>
-          {% endfor %}
-
-        </div>
+      <!-- Small rotating thumbnails — click one to bring it to the spotlight -->
+      <div class="lp-spotlight-thumbs">
+        <template x-for="(item, i) in items.slice(1, 4)" :key="item.src">
+          <button type="button" class="lp-spotlight-thumb" @click="select(i + 1)" :aria-label="'Show ' + item.caption">
+            <img :src="item.src" :alt="item.caption" loading="lazy">
+          </button>
+        </template>
       </div>
 
-      <!-- Prev / Next -->
-      <button type="button" @click="stop(); prev(); start();" aria-label="Previous screenshots"
-        style="position:absolute;top:90px;left:-8px;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;background:white;border:1px solid var(--border-default);box-shadow:var(--shadow-md);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-      </button>
-      <button type="button" @click="stop(); next(); start();" aria-label="Next screenshots"
-        style="position:absolute;top:90px;right:-8px;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;background:white;border:1px solid var(--border-default);box-shadow:var(--shadow-md);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
+      <!-- Large featured screenshot -->
+      <div class="lp-spotlight-main">
+        <template x-for="item in [items[0]]" :key="item.src">
+          <div class="lp-spot-img">
+            <img :src="item.src" :alt="item.caption + ' — {{ product.name }}'"
+                 style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:var(--radius-xl);border:1px solid var(--border-default);box-shadow:var(--shadow-xl);">
+          </div>
+        </template>
+        <p x-text="items[0].caption" style="margin-top:12px;text-align:center;font-size:var(--text-sm);font-weight:var(--font-semi);color:var(--text-secondary);"></p>
+      </div>
 
     </div>
   </div>
 </section>
 
 <script>
-function cmsShotSlider() {
+function cmsSpotlight() {
   return {
-    index: 0,
-    total: {{ cms_screenshots|length }},
+    items: window.__cmsShots.slice(),
     timer: null,
-    cardStep() {
-      const track = this.$refs.track;
-      if (!track || !track.firstElementChild) return 380;
-      const gap = parseFloat(getComputedStyle(track).gap) || 0;
-      return track.firstElementChild.offsetWidth + gap;
+    rotate() { this.items.push(this.items.shift()); },
+    select(i) {
+      for (let k = 0; k < i; k++) this.items.push(this.items.shift());
+      this.start();
     },
-    get offset() { return this.index * this.cardStep(); },
-    next() { this.index = this.index >= this.total - 1 ? 0 : this.index + 1; },
-    prev() { this.index = this.index <= 0 ? this.total - 1 : this.index - 1; },
     start() {
       this.stop();
-      this.timer = setInterval(() => this.next(), 3000);
+      this.timer = setInterval(() => this.rotate(), 3500);
     },
     stop() {
       if (this.timer) { clearInterval(this.timer); this.timer = null; }
