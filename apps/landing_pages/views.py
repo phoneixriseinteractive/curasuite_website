@@ -4,25 +4,26 @@ from django.shortcuts import render
 from .selectors import get_landing_page_by_slug, get_testimonials_for_landing_page
 
 # Real CuraCMS product screenshots for the "See CuraCMS in Action" slider on
-# curacms.html — (filename in static/img/cms-screen-shots/, caption).
+# curacms.html — (filename relative to static/img/CuraCms/, caption).
 CMS_SCREENSHOTS = [
-    ("homepage-section-1.png",    "Patient-Facing Website Homepage"),
-    ("homepage-doctor-profile.png","Doctor Bio Shown on the Homepage"),
-    ("doctor-profile.png",         "Manage Doctor Profiles"),
-    ("doctor-profile-page-2.png",  "Doctor Profile — Public Page"),
-    ("treatments.png",             "Treatment & Services Management"),
-    ("homepage-treatment.png",     "Treatments Showcased to Patients"),
-    ("book-appointment-widget.png","Patient Appointment Booking Widget"),
-    ("appointment-time-slots.png", "Weekly Slot Management"),
-    ("booked-appointments.png",    "Appointments Dashboard"),
-    ("contact-page.png",           "Contact & Location Page"),
-    ("contact-page-2.png",         "Contact Page — Alternate Layout"),
-    ("homepage-how-it-works.png",  "How It Works — Patient Journey"),
-    ("ai-chatbot.png",             "AI Chatbot Configuration"),
-    ("pages.png",                  "CMS Page Manager"),
-    ("user-management.png",        "Role-Based User Access"),
-    ("site-settings.png",          "Site Settings Panel"),
-    ("site-settings-2.png",        "Site Settings — Advanced Options"),
+    ("Front_Pages/index-hero-section.png",   "Patient-Facing Website Homepage"),
+    ("Front_Pages/profile-hero-section.png", "Doctor Profile — Public Page"),
+    ("Front_Pages/dr-profile.png",           "Detailed Doctor Biography & Credentials"),
+    ("Front_Pages/treatments.png",           "Treatments & Services Listing"),
+    ("Front_Pages/videos.png",               "Patient Education Video Library"),
+    ("Front_Pages/contact-us.png",           "Contact & Enquiry Page"),
+    ("Admin_Panel/dashboard.png",            "Admin Dashboard & Analytics"),
+    ("Admin_Panel/pages-module.png",         "CMS Page Manager"),
+    ("Admin_Panel/treatment-module.png",     "Manage Treatments & Services"),
+    ("Admin_Panel/video-module.png",         "Video Library Management"),
+    ("Admin_Panel/doctor-profile.png",       "Manage Doctor Profiles"),
+    ("Admin_Panel/appointment-module.png",   "Appointments & Booking Calendar"),
+    ("Admin_Panel/user-module.png",          "Role-Based User Access"),
+    ("Admin_Panel/seo-settings.png",         "Built-in SEO Controls"),
+    ("Admin_Panel/website-settings.png",     "Site Branding & Settings"),
+    ("Admin_Panel/Ai-chat-assistant-1.png",  "AI Chatbot Configuration"),
+    ("Admin_Panel/social-chat-assistant.png","WhatsApp & Messenger Integration"),
+    ("Admin_Panel/login-panel.png",          "Secure Admin Login"),
 ]
 
 
