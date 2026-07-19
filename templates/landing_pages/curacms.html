@@ -76,14 +76,14 @@
         {% if lp.hero_image %}
         <img src="{{ lp.hero_image.url }}" alt="{{ lp.headline }}" style="border-radius:var(--radius-xl);box-shadow:var(--shadow-xl);width:100%;" loading="eager" fetchpriority="high">
         {% else %}
-        <div style="position:relative;aspect-ratio:4/3.4;">
-          <div style="position:absolute;top:4%;left:0;width:68%;z-index:1;transform:rotate(-4deg);">
+        <div style="position:relative;aspect-ratio:4/4.2;">
+          <div style="position:absolute;top:2%;left:0;width:86%;z-index:1;transform:rotate(-4deg);">
             <img src="{% static 'img/CuraCms/Admin_Panel/dashboard.png' %}" alt="CuraCMS admin dashboard" class="lp-collage-card" style="animation-delay:0s;" loading="eager">
           </div>
-          <div style="position:absolute;top:20%;right:0;width:54%;z-index:2;transform:rotate(3deg);">
+          <div style="position:absolute;top:30%;right:0;width:70%;z-index:2;transform:rotate(3deg);">
             <img src="{% static 'img/CuraCms/Admin_Panel/appointment-module.png' %}" alt="CuraCMS appointment booking module" class="lp-collage-card" style="animation-delay:.8s;" loading="eager">
           </div>
-          <div style="position:absolute;bottom:0;left:10%;width:46%;z-index:3;transform:rotate(-6deg);">
+          <div style="position:absolute;bottom:0;left:4%;width:62%;z-index:3;transform:rotate(-6deg);">
             <img src="{% static 'img/CuraCms/Admin_Panel/Ai-chat-assistant-1.png' %}" alt="CuraCMS AI chatbot assistant" class="lp-collage-card" style="animation-delay:1.6s;" loading="eager">
           </div>
         </div>
