@@ -7,11 +7,11 @@
   .lp-orbit-wrap {
     position: relative;
     width: 100%;
-    max-width: 460px;
+    max-width: 600px;
     aspect-ratio: 1/1;
     margin-inline: auto;
-    --orbit-r: 165px;
-    --orbit-size: 60px;
+    --orbit-r: 215px;
+    --orbit-size: 78px;
   }
   .lp-orbit-ring {
     position: absolute; inset: 0;
@@ -38,7 +38,7 @@
   @keyframes lp-spot-in { from { opacity: 0; transform: scale(.95); } to { opacity: 1; transform: scale(1); } }
   .lp-spot-img { animation: lp-spot-in .5s ease; }
   @media (max-width: 640px) {
-    .lp-orbit-wrap { --orbit-r: 118px; --orbit-size: 46px; max-width: 320px; }
+    .lp-orbit-wrap { --orbit-r: 153px; --orbit-size: 60px; max-width: 416px; }
   }
   @media (prefers-reduced-motion: reduce) {
     .lp-orbit-ring, .lp-orbit-thumb, .lp-spot-img { animation: none; }
