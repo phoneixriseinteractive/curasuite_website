@@ -4,8 +4,11 @@
 {% block extra_head %}
 <style>
   /* Screenshot spotlight — one large featured screenshot + small rotating thumbnails */
-  .lp-spotlight { display: flex; gap: 24px; align-items: center; }
-  .lp-spotlight-thumbs { display: flex; flex-direction: column; gap: 16px; flex-shrink: 0; }
+  .lp-spotlight { display: flex; gap: 24px; align-items: stretch; }
+  .lp-spotlight-thumbs {
+    display: flex; flex-direction: column; gap: 16px; flex-shrink: 0;
+    overflow-y: auto; padding: 4px; margin: -4px;
+  }
   .lp-spotlight-thumb {
     width: 76px; height: 76px; padding: 0; flex-shrink: 0; cursor: pointer;
     border-radius: 50%; overflow: hidden; border: 3px solid white;
@@ -13,12 +16,13 @@
   }
   .lp-spotlight-thumb:hover { transform: scale(1.08); }
   .lp-spotlight-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .lp-spotlight-main { flex: 1; min-width: 0; }
+  .lp-spotlight-main { flex: 0 1 50%; max-width: 50%; min-width: 0; }
   @keyframes lp-spot-in { from { opacity: 0; transform: scale(.95); } to { opacity: 1; transform: scale(1); } }
   .lp-spot-img { animation: lp-spot-in .5s ease; }
   @media (max-width: 640px) {
     .lp-spotlight { flex-direction: column-reverse; }
-    .lp-spotlight-thumbs { flex-direction: row; }
+    .lp-spotlight-main { max-width: 100%; }
+    .lp-spotlight-thumbs { flex-direction: row; overflow-y: visible; overflow-x: auto; max-height: none; }
   }
   @media (prefers-reduced-motion: reduce) {
     .lp-spot-img { animation: none; }
@@ -322,7 +326,7 @@
 
       <!-- Small rotating thumbnails — click one to bring it to the spotlight -->
       <div class="lp-spotlight-thumbs">
-        <template x-for="(item, i) in items.slice(1, 4)" :key="item.src">
+        <template x-for="(item, i) in items.slice(1)" :key="item.src">
           <button type="button" class="lp-spotlight-thumb" @click="select(i + 1)" :aria-label="'Show ' + item.caption">
             <img :src="item.src" :alt="item.caption" loading="lazy">
           </button>
