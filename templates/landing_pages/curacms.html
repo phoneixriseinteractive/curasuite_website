@@ -7,18 +7,25 @@
   @media (max-width: 480px) { .cms-shot-card { flex: 0 0 88vw; } }
 
   @keyframes lp-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
-  .lp-collage-card {
+  @keyframes lp-float-sm { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+  .lp-collage-frame {
+    display: block;
+    padding: 10px;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-xl);
+    animation: lp-float 3.4s ease-in-out infinite;
+  }
+  .lp-collage-frame img {
     display: block;
     width: 100%;
     aspect-ratio: 16/10;
     object-fit: cover;
     border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-xl);
     border: 1px solid rgba(0,0,0,.06);
-    animation: lp-float 3.4s ease-in-out infinite;
   }
+  .lp-collage-dot { animation: lp-float-sm 2.6s ease-in-out infinite; }
   @media (prefers-reduced-motion: reduce) {
-    .lp-collage-card { animation: none; }
+    .lp-collage-frame, .lp-collage-dot { animation: none; }
   }
 </style>
 {% endblock %}
@@ -77,14 +84,26 @@
         <img src="{{ lp.hero_image.url }}" alt="{{ lp.headline }}" style="border-radius:var(--radius-xl);box-shadow:var(--shadow-xl);width:100%;" loading="eager" fetchpriority="high">
         {% else %}
         <div style="position:relative;aspect-ratio:4/4.2;">
-          <div style="position:absolute;top:2%;left:0;width:86%;z-index:1;transform:rotate(-4deg);">
-            <img src="{% static 'img/CuraCms/Admin_Panel/dashboard.png' %}" alt="CuraCMS admin dashboard" class="lp-collage-card" style="animation-delay:0s;" loading="eager">
+
+          <!-- decorative floating accents, matching-theme dots + sparkle -->
+          <svg class="lp-collage-dot" style="position:absolute;top:0;left:8%;width:22px;height:22px;color:{{ product.color }}55;z-index:4;animation-delay:.3s;" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0l2.3 8.7L23 11l-8.7 2.3L12 22l-2.3-8.7L1 11l8.7-2.3z"/></svg>
+          <div class="lp-collage-dot" style="position:absolute;top:8%;right:2%;width:16px;height:16px;border-radius:50%;background:var(--color-accent-400);z-index:4;animation-delay:1.1s;"></div>
+          <div class="lp-collage-dot" style="position:absolute;bottom:14%;left:-2%;width:12px;height:12px;border-radius:50%;background:var(--color-secondary-500);z-index:4;animation-delay:1.8s;"></div>
+
+          <div style="position:absolute;top:2%;left:0;width:74%;z-index:1;transform:rotate(-3deg);">
+            <div class="lp-collage-frame" style="background:{{ product.color }}12;animation-delay:0s;">
+              <img src="{% static 'img/CuraCms/Admin_Panel/dashboard.png' %}" alt="CuraCMS admin dashboard" loading="eager">
+            </div>
           </div>
-          <div style="position:absolute;top:30%;right:0;width:70%;z-index:2;transform:rotate(3deg);">
-            <img src="{% static 'img/CuraCms/Admin_Panel/appointment-module.png' %}" alt="CuraCMS appointment booking module" class="lp-collage-card" style="animation-delay:.8s;" loading="eager">
+          <div style="position:absolute;top:28%;right:0;width:62%;z-index:2;transform:rotate(4deg);">
+            <div class="lp-collage-frame" style="background:var(--color-accent-100);animation-delay:.8s;">
+              <img src="{% static 'img/CuraCms/Admin_Panel/appointment-module.png' %}" alt="CuraCMS appointment booking module" loading="eager">
+            </div>
           </div>
-          <div style="position:absolute;bottom:0;left:4%;width:62%;z-index:3;transform:rotate(-6deg);">
-            <img src="{% static 'img/CuraCms/Admin_Panel/Ai-chat-assistant-1.png' %}" alt="CuraCMS AI chatbot assistant" class="lp-collage-card" style="animation-delay:1.6s;" loading="eager">
+          <div style="position:absolute;bottom:0;left:14%;width:56%;z-index:3;transform:rotate(-2deg);">
+            <div class="lp-collage-frame" style="background:var(--color-secondary-100);animation-delay:1.6s;">
+              <img src="{% static 'img/CuraCms/Admin_Panel/Ai-chat-assistant-1.png' %}" alt="CuraCMS AI chatbot assistant" loading="eager">
+            </div>
           </div>
         </div>
         {% endif %}
