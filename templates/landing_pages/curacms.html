@@ -257,7 +257,7 @@
 
           {% for file, caption in cms_screenshots %}
           <div class="cms-shot-card">
-            <img src="{% static 'img/cms-screen-shots/'|add:file %}" alt="{{ caption }} — {{ product.name }}"
+            <img src="{% static 'img/CuraCms/'|add:file %}" alt="{{ caption }} — {{ product.name }}"
                  style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:var(--radius-lg);border:1px solid var(--border-default);box-shadow:var(--shadow-sm);" loading="lazy">
             <p style="margin-top:10px;text-align:center;font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--text-secondary);">{{ caption }}</p>
           </div>
