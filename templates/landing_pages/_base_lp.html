@@ -52,6 +52,7 @@
 <body>
   {% gtm_body %}
 
+  {% block topbar %}
   <!-- Minimal top bar — logo only, no nav links, no way to leave the funnel -->
   <div class="lp-sticky-cta" style="background:white;border-bottom:1px solid var(--border-default);">
     <div class="container" style="display:flex;align-items:center;justify-content:space-between;height:56px;">
@@ -64,6 +65,7 @@
       {% endif %}
     </div>
   </div>
+  {% endblock %}
 
   {% block content %}{% endblock %}
 

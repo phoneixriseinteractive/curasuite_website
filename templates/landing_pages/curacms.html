@@ -3,457 +3,411 @@
 
 {% block extra_head %}
 <style>
-  .cms-shot-card { flex: 0 0 360px; }
-  @media (max-width: 480px) { .cms-shot-card { flex: 0 0 88vw; } }
+  /* ── Scoped palette for this redesign — not the sitewide token set, deliberately
+     matching the client-provided mockup's indigo/navy/teal palette. ── */
+  #lp-content {
+    --np-primary: #221dd0;
+    --np-primary-dark: #1a17ad;
+    --np-navy: #0F172A;
+    --np-teal: #006b5b;
+    --np-teal-bright: #2adec0;
+    --np-mint: #53f8d9;
+    --np-mint-tint: #eafffb;
+    --np-orange: #9c3f00;
+    --np-orange-tint: #ffdbcc;
+    --np-orange-text: #7a3000;
+    --np-red: #ba1a1a;
+    --np-surface-low: #eff4ff;
+    --np-surface-high: #dce9ff;
+    --np-border: #E2E8F0;
+    --np-whatsapp: #25D366;
+  }
+
+  /* Nav — links/phone/demo-link progressively hide on narrower screens; Book Demo always stays */
+  .np-nav-links { display: flex; align-items: center; gap: 32px; }
+  .np-nav-phone { display: flex; }
+  .np-nav-demo { display: flex; }
+  @media (max-width: 900px) { .np-nav-links, .np-nav-phone { display: none; } }
+  @media (max-width: 560px) { .np-nav-demo { display: none; } }
+
+  /* Bento benefits grid */
+  .np-bento { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  .np-bento-wide { grid-column: span 2; }
+  @media (max-width: 900px) {
+    .np-bento { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 640px) {
+    .np-bento { grid-template-columns: 1fr; }
+    .np-bento-wide { grid-column: span 1; }
+  }
+
+  .np-modules { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 32px; }
+  .np-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+
+  .np-faq summary::-webkit-details-marker { display: none; }
+  .np-faq svg { transition: transform .2s ease; }
+  .np-faq[open] svg { transform: rotate(180deg); }
+
+  .np-code {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: var(--np-mint);
+    white-space: pre;
+    overflow-x: auto;
+  }
 </style>
 {% endblock %}
 
+{% block topbar %}
+<!-- ═══ NAV — in-page anchors only, no exit links off this landing page ══════ -->
+<nav style="background:rgba(248,249,255,.92);backdrop-filter:blur(8px);position:sticky;top:0;z-index:var(--z-sticky);border-bottom:1px solid var(--np-border, #E2E8F0);">
+  <div class="container" style="display:flex;justify-content:space-between;align-items:center;height:72px;">
+    <img src="{% static 'img/curasuite-logo-header.png' %}" alt="CuraSuite" style="height:34px;width:auto;display:block;">
+
+    <div class="np-nav-links" style="font-size:14px;font-weight:500;color:var(--text-secondary);">
+      {% if benefits %}<a href="#features" style="color:inherit;text-decoration:none;">Features</a>{% endif %}
+      <a href="#modules" style="color:inherit;text-decoration:none;">Modules</a>
+      <a href="#security" style="color:inherit;text-decoration:none;">Security</a>
+      {% if pricing_tiers %}<a href="#pricing" style="color:inherit;text-decoration:none;">Pricing</a>{% endif %}
+      {% if product_faqs %}<a href="#faq" style="color:inherit;text-decoration:none;">FAQ</a>{% endif %}
+    </div>
+
+    <div style="display:flex;align-items:center;gap:16px;">
+      {% if SITE_SETTINGS.whatsapp_phone %}
+      <a class="np-nav-phone" href="tel:+{{ SITE_SETTINGS.whatsapp_phone }}" style="align-items:center;gap:6px;font-size:14px;font-weight:600;color:var(--np-primary);text-decoration:none;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        +{{ SITE_SETTINGS.whatsapp_phone|slice:":2" }} {{ SITE_SETTINGS.whatsapp_phone|slice:"2:7" }} {{ SITE_SETTINGS.whatsapp_phone|slice:"7:12" }}
+      </a>
+      {% endif %}
+      <a class="np-nav-demo" href="#gallery" style="align-items:center;gap:6px;border:2px solid var(--np-primary);color:var(--np-primary);padding:9px 18px;border-radius:8px;font-size:14px;font-weight:600;text-decoration:none;">
+        See It In Action
+      </a>
+      <a href="#lp-form" style="background:var(--np-primary);color:white;padding:11px 20px;border-radius:8px;font-size:14px;font-weight:600;text-decoration:none;">Book Free Demo</a>
+    </div>
+  </div>
+</nav>
+{% endblock %}
+
 {% block content %}
+<div id="lp-content">
 
 <!-- ═══ HERO ════════════════════════════════════════════════════════════════ -->
-<section class="hero-pattern" style="position:relative;overflow:hidden;padding:48px 0 40px;">
-  <div class="pattern-fade-light" style="position:absolute;inset:0;pointer-events:none;"></div>
-  <div class="container" style="position:relative;z-index:1;">
-    <div class="split-hero" style="gap:48px;">
-      <div>
-        {% if lp.target_audience_label %}
-        <div class="pill" style="background:{{ product.color }}12;color:{{ product.color }};border-color:{{ product.color }}30;">{{ lp.target_audience_label }}</div>
+<header style="position:relative;overflow:hidden;padding:64px 0 96px;background:radial-gradient(circle at top right, #e1e0ff, transparent 55%), radial-gradient(circle at bottom left, var(--np-surface-high), transparent 55%);">
+  <div class="container split-hero" style="position:relative;z-index:1;gap:48px;">
+    <div>
+      {% if lp.target_audience_label %}
+      <div style="display:inline-flex;align-items:center;gap:8px;background:var(--np-primary)10;color:var(--np-primary);padding:7px 16px;border-radius:999px;margin-bottom:20px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l7 4v6c0 5-3.5 8-7 9-3.5-1-7-4-7-9V6l7-4z"/><polyline points="9 12 11 14 15 10"/></svg>
+        <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;">{{ lp.target_audience_label }}</span>
+      </div>
+      {% endif %}
+      <h1 style="font-size:clamp(30px,5vw,46px);line-height:1.2;font-weight:800;letter-spacing:-0.02em;color:var(--np-navy);margin-bottom:20px;">{{ lp.headline }}</h1>
+      <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">
+        🖥️ Website &amp; practice-management software for clinics — not a medical or patient-facing service.
+      </p>
+      {% if lp.subheadline %}
+      <p style="font-size:18px;line-height:1.6;color:var(--text-secondary);margin-bottom:36px;max-width:520px;">{{ lp.subheadline }}</p>
+      {% endif %}
+
+      <div style="display:flex;flex-wrap:wrap;gap:14px;margin-bottom:20px;">
+        <a href="#lp-form" style="display:inline-flex;align-items:center;gap:8px;background:var(--np-primary);color:white;padding:16px 28px;border-radius:12px;font-size:16px;font-weight:700;text-decoration:none;box-shadow:0 12px 24px -8px rgba(34,29,208,.35);">
+          Book Free Demo
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+        {% if SITE_SETTINGS.whatsapp_phone %}
+        <a href="https://wa.me/{{ SITE_SETTINGS.whatsapp_phone }}?text={{ lp.whatsapp_message_template|urlencode }}" target="_blank" data-wa-placement="hero"
+           style="display:inline-flex;align-items:center;gap:8px;background:var(--np-whatsapp);color:white;padding:16px 28px;border-radius:12px;font-size:16px;font-weight:700;text-decoration:none;box-shadow:0 12px 24px -8px rgba(37,211,102,.35);">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347M12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0012.05 0z"/></svg>
+          WhatsApp Us
+        </a>
         {% endif %}
-        <h1 style="margin-bottom:8px;font-size:clamp(28px,5vw,44px);line-height:1.15;">{{ lp.headline }}</h1>
-        <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">
-          🖥️ Website &amp; practice-management software for clinics — not a medical or patient-facing service.
-        </p>
-        {% if lp.subheadline %}
-        <p style="font-size:var(--text-lg);color:var(--text-secondary);margin-bottom:20px;line-height:var(--leading-relaxed);">{{ lp.subheadline }}</p>
-        {% endif %}
-
-        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;">
-          <a href="#lp-form" class="btn btn-primary btn-lg" style="background:{{ product.color }};border-color:{{ product.color }};">
-            Book Free Demo →
-          </a>
-          {% if SITE_SETTINGS.whatsapp_phone %}
-          <a href="https://wa.me/{{ SITE_SETTINGS.whatsapp_phone }}?text={{ lp.whatsapp_message_template|urlencode }}" target="_blank"
-             data-wa-placement="hero"
-             class="btn btn-lg" style="background:#25D366;color:white;border-color:#25D366;">
-            💬 WhatsApp Us
-          </a>
-          {% endif %}
-        </div>
-
-        <p style="font-size:var(--text-sm);color:{{ product.color }};font-weight:var(--font-semi);margin-bottom:16px;">
-          🔥 Free setup this {% now "F" %} — onboarding slots are limited.
-        </p>
-
-        {% if lp.social_proof_note %}
-        <p style="font-size:var(--text-sm);color:var(--text-muted);display:flex;align-items:center;gap:6px;margin-bottom:14px;">
-          <span style="color:#F59E0B;">★★★★★</span> {{ lp.social_proof_note }}
-        </p>
-        {% endif %}
-
-        <div style="display:flex;flex-wrap:wrap;gap:10px 18px;">
-          <span style="font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:5px;">🔒 Bank-grade security</span>
-          <span style="font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:5px;">⚡ Sub-second page loads</span>
-          <span style="font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:5px;">🇮🇳 Built for Indian clinics</span>
-        </div>
       </div>
 
-      <div>
+      <p style="font-size:14px;color:var(--np-primary);font-weight:600;margin-bottom:24px;">
+        🔥 Free setup this {% now "F" %} — onboarding slots are limited.
+      </p>
+
+      <div style="display:flex;flex-wrap:wrap;gap:10px 24px;color:var(--text-muted);font-size:12px;">
+        <span style="display:flex;align-items:center;gap:6px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--np-primary)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Bank-grade security</span>
+        <span style="display:flex;align-items:center;gap:6px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="var(--np-primary)" stroke="none"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Sub-second load times</span>
+        <span style="display:flex;align-items:center;gap:6px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--np-primary)" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg> Built for Indian clinics</span>
+      </div>
+    </div>
+
+    <div style="position:relative;">
+      <div style="position:absolute;inset:-16px;background:linear-gradient(135deg, var(--np-primary)25, var(--np-mint)25);filter:blur(48px);opacity:.4;"></div>
+      <div style="position:relative;border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,.5);box-shadow:var(--shadow-xl);">
         {% if lp.hero_image %}
-        <img src="{{ lp.hero_image.url }}" alt="{{ lp.headline }}" style="border-radius:var(--radius-xl);box-shadow:var(--shadow-xl);width:100%;" loading="eager" fetchpriority="high">
+        <img src="{{ lp.hero_image.url }}" alt="{{ lp.headline }}" style="width:100%;display:block;" loading="eager" fetchpriority="high">
         {% else %}
-        <div style="aspect-ratio:4/3;background:{{ product.color }}10;border-radius:var(--radius-xl);border:2px dashed {{ product.color }}35;display:flex;align-items:center;justify-content:center;">
-          {% if product.icon %}<img src="{{ product.icon.url }}" style="width:72px;height:72px;object-fit:contain;opacity:.5;">{% else %}<span style="font-size:56px;color:{{ product.color }}50;font-weight:800;">{{ product.name|slice:":1" }}</span>{% endif %}
-        </div>
+        <img src="{% static 'img/CuraCms/Front_Pages/profile-hero-section.png' %}" alt="{{ product.name }} doctor profile page" style="width:100%;display:block;" loading="eager" fetchpriority="high">
         {% endif %}
       </div>
+      <!-- Floating trust badge -->
+      <div class="lp-collage-dot-hide-mobile" style="position:absolute;bottom:-24px;left:-24px;background:white;padding:16px;border-radius:14px;box-shadow:var(--shadow-xl);display:flex;align-items:center;gap:12px;border:1px solid var(--np-border);">
+        <div style="display:flex;">
+          <div style="width:38px;height:38px;border-radius:50%;border:2px solid white;background:#CBD5E1;margin-right:-12px;"></div>
+          <div style="width:38px;height:38px;border-radius:50%;border:2px solid white;background:#94A3B8;margin-right:-12px;"></div>
+          <div style="width:38px;height:38px;border-radius:50%;border:2px solid white;background:#64748B;"></div>
+        </div>
+        <div>
+          <p style="font-size:18px;font-weight:800;color:var(--np-navy);line-height:1;">500+</p>
+          <p style="font-size:11px;color:var(--text-muted);">Healthcare Providers</p>
+        </div>
+      </div>
     </div>
   </div>
-</section>
+</header>
 
-<!-- ═══ TRUST / STATS STRIP ═════════════════════════════════════════════════ -->
-<section style="padding:28px 0;background:var(--surface-card);border-top:1px solid var(--border-default);border-bottom:1px solid var(--border-default);">
-  <div class="container">
-    <div class="grid grid-4" style="gap:16px;">
-      <div class="stat-card">
-        <div class="stat-number">7–14</div>
-        <div class="stat-label">Days to Go Live</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number">&lt;1s</div>
-        <div class="stat-label">Average Page Load</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number">12+</div>
-        <div class="stat-label">Modules Included</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number">24/7</div>
-        <div class="stat-label">AI + WhatsApp Coverage</div>
-      </div>
+<!-- ═══ TRUST STATS BAR ═════════════════════════════════════════════════════ -->
+<div class="container" style="margin-top:-56px;position:relative;z-index:2;">
+  <div style="background:var(--np-navy);border-radius:20px;padding:36px 24px;">
+    <div class="grid grid-4" style="gap:16px;text-align:center;">
+      <div><p style="font-size:clamp(24px,4vw,32px);font-weight:800;color:var(--np-mint);margin-bottom:4px;">7–14</p><p style="font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.6);">Days to Go Live</p></div>
+      <div><p style="font-size:clamp(24px,4vw,32px);font-weight:800;color:var(--np-mint);margin-bottom:4px;">&lt;1s</p><p style="font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.6);">Avg Page Load</p></div>
+      <div><p style="font-size:clamp(24px,4vw,32px);font-weight:800;color:var(--np-mint);margin-bottom:4px;">12+</p><p style="font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.6);">Modules Included</p></div>
+      <div><p style="font-size:clamp(24px,4vw,32px);font-weight:800;color:var(--np-mint);margin-bottom:4px;">24/7</p><p style="font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.6);">AI Support</p></div>
     </div>
   </div>
-</section>
+</div>
 
 <!-- ═══ PAIN POINTS ═════════════════════════════════════════════════════════ -->
 {% if pain_points %}
-<section style="padding:48px 0;">
-  <div class="container">
-    <h2 style="text-align:center;margin-bottom:32px;font-size:var(--text-2xl);">Sound Familiar?</h2>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;max-width:900px;margin-inline:auto;">
-      {% for pp in pain_points %}
-      <div style="display:flex;gap:12px;align-items:flex-start;background:white;padding:16px;border-radius:var(--radius-lg);border:1px solid var(--border-default);">
-        <span style="color:#DC2626;font-size:18px;flex-shrink:0;">✕</span>
-        <span style="font-size:var(--text-sm);color:var(--text-secondary);">{{ pp.text }}</span>
-      </div>
-      {% endfor %}
+<section style="padding:96px 0 48px;">
+  <div class="container" style="text-align:center;margin-bottom:48px;">
+    <h2 style="font-size:28px;font-weight:700;color:var(--np-navy);margin-bottom:12px;">Sound Familiar?</h2>
+    <p style="color:var(--text-secondary);">Traditional ways of managing a clinic are holding you back.</p>
+  </div>
+  <div class="container grid grid-4" style="gap:20px;">
+    {% for pp in pain_points %}
+    <div style="padding:24px;background:white;border:1px solid var(--np-border);border-radius:14px;">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--np-red)" stroke-width="2" style="margin-bottom:14px;"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+      <p style="color:var(--text-primary);font-size:15px;line-height:1.5;">{{ pp.text }}</p>
     </div>
+    {% endfor %}
   </div>
 </section>
 {% endif %}
 
-<!-- ═══ QUICK BENEFITS ══════════════════════════════════════════════════════ -->
+<!-- ═══ BENTO BENEFITS ══════════════════════════════════════════════════════ -->
 {% if benefits %}
-<section style="padding:48px 0;background:var(--surface-card);">
-  <div class="container">
-    <div class="section-label" style="text-align:center;">Why Doctors Choose CuraCMS</div>
-    <h2 style="text-align:center;margin-bottom:8px;font-size:var(--text-2xl);">One Platform, Zero Guesswork</h2>
-    <p style="text-align:center;color:var(--text-secondary);margin-bottom:36px;">Everything you need to grow your practice online.</p>
-    <div class="grid grid-3" style="gap:20px;">
-      {% for b in benefits %}
-      <div class="card card-hover" style="padding:28px;text-align:center;">
-        <div style="font-size:32px;margin-bottom:12px;">{{ b.icon }}</div>
-        <h4 style="margin-bottom:8px;font-size:var(--text-base);">{{ b.title }}</h4>
-        <p style="color:var(--text-secondary);font-size:var(--text-sm);line-height:var(--leading-relaxed);">{{ b.description }}</p>
-      </div>
-      {% endfor %}
-    </div>
+<section style="padding:64px 0;background:var(--np-surface-low);" id="features">
+  <div class="container" style="margin-bottom:48px;">
+    <p style="color:var(--np-primary);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">Why Doctors Choose {{ product.name }}</p>
+    <h2 style="font-size:32px;font-weight:800;color:var(--np-navy);">One Platform, Zero Guesswork</h2>
   </div>
-</section>
-{% endif %}
-
-<!-- ═══ COMPLETE FEATURE SHOWCASE — 12 MODULES ═════════════════════════════ -->
-<section style="padding:56px 0;">
-  <div class="container">
-    <div class="section-label" style="text-align:center;">Everything Included</div>
-    <h2 style="text-align:center;margin-bottom:8px;font-size:var(--text-2xl);">12 Modules. One CuraCMS Subscription.</h2>
-    <p style="text-align:center;color:var(--text-secondary);margin-bottom:40px;max-width:640px;margin-inline:auto;">
-      No plugins to install, no agencies to hire, no hidden add-ons. Every module below ships standard with
-      {{ product.name }} — built specifically for clinics, hospitals, and diagnostic practices.
-    </p>
-
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:20px;">
-
-      <div class="card card-hover" style="padding:24px;">
-        <div class="feature-icon" style="background:{{ product.color }}15;color:{{ product.color }};">🌐</div>
-        <h4 style="margin-bottom:8px;">Marketing-Ready CMS</h4>
-        <p style="font-size:var(--text-sm);color:var(--text-secondary);line-height:var(--leading-relaxed);">Publish SEO-optimized landing, service, and location pages in minutes — no developer or agency required.</p>
-      </div>
-
-      <div class="card card-hover" style="padding:24px;">
-        <div class="feature-icon" style="background:{{ product.color }}15;color:{{ product.color }};">✍️</div>
-        <h4 style="margin-bottom:8px;">Blog &amp; Content Marketing</h4>
-        <p style="font-size:var(--text-sm);color:var(--text-secondary);line-height:var(--leading-relaxed);">Publish health articles under custom categories with one-click social sharing and patient comments to build authority and organic traffic.</p>
-      </div>
-
-      <div class="card card-hover" style="padding:24px;">
-        <div class="feature-icon" style="background:{{ product.color }}15;color:{{ product.color }};">🩺</div>
-        <h4 style="margin-bottom:8px;">Treatment &amp; Services Listing</h4>
-        <p style="font-size:var(--text-sm);color:var(--text-secondary);line-height:var(--leading-relaxed);">List every procedure you offer with clear descriptions, so patients arrive informed and ready to book.</p>
-      </div>
-
-      <div class="card card-hover" style="padding:24px;">
-        <div class="feature-icon" style="background:{{ product.color }}15;color:{{ product.color }};">🎬</div>
-        <h4 style="margin-bottom:8px;">Patient Education Videos</h4>
-        <p style="font-size:var(--text-sm);color:var(--text-secondary);line-height:var(--leading-relaxed);">Embed videos that explain conditions and procedures, easing patient anxiety and cutting repetitive phone questions.</p>
-      </div>
-
-      <div class="card card-hover" style="padding:24px;">
-        <div class="feature-icon" style="background:{{ product.color }}15;color:{{ product.color }};">👨‍⚕️</div>
-        <h4 style="margin-bottom:8px;">Doctor Profile Pages</h4>
-        <p style="font-size:var(--text-sm);color:var(--text-secondary);line-height:var(--leading-relaxed);">Showcase qualifications, experience, and specializations with rich profile pages that build instant credibility.</p>
-      </div>
-
-      <div class="card card-hover" style="padding:24px;">
-        <div class="feature-icon" style="background:{{ product.color }}15;color:{{ product.color }};">📅</div>
-        <h4 style="margin-bottom:8px;">Online Appointment Booking</h4>
-        <p style="font-size:var(--text-sm);color:var(--text-secondary);line-height:var(--leading-relaxed);">Real-time slot management with instant confirmations — capture patients even outside clinic hours.</p>
-      </div>
-
-      <div class="card card-hover" style="padding:24px;">
-        <div class="feature-icon" style="background:{{ product.color }}15;color:{{ product.color }};">👥</div>
-        <h4 style="margin-bottom:8px;">Patient CRM &amp; Remarketing</h4>
-        <p style="font-size:var(--text-sm);color:var(--text-secondary);line-height:var(--leading-relaxed);">Automatically track every visitor and follow up with the ones who didn't book — turn browsers into booked patients.</p>
-      </div>
-
-      <div class="card card-hover" style="padding:24px;">
-        <div class="feature-icon" style="background:{{ product.color }}15;color:{{ product.color }};">🔍</div>
-        <h4 style="margin-bottom:8px;">Built-in SEO Controls</h4>
-        <p style="font-size:var(--text-sm);color:var(--text-secondary);line-height:var(--leading-relaxed);">Meta titles, descriptions, schema markup, and redirects for every page — rank higher without an SEO agency.</p>
-      </div>
-
-      <div class="card card-hover" style="padding:24px;">
-        <div class="feature-icon" style="background:{{ product.color }}15;color:{{ product.color }};">🔑</div>
-        <h4 style="margin-bottom:8px;">Role-Based User Access</h4>
-        <p style="font-size:var(--text-sm);color:var(--text-secondary);line-height:var(--leading-relaxed);">Give your receptionist, doctors, and marketing staff their own logins with exactly the permissions they need.</p>
-      </div>
-
-      <div class="card card-hover" style="padding:24px;">
-        <div class="feature-icon" style="background:{{ product.color }}15;color:{{ product.color }};">⚙️</div>
-        <h4 style="margin-bottom:8px;">Full Site Control</h4>
-        <p style="font-size:var(--text-sm);color:var(--text-secondary);line-height:var(--leading-relaxed);">Decide exactly what's public — hours, contact details, social links — updated instantly, no code required.</p>
-      </div>
-
-      <div class="card card-hover" style="padding:24px;border:1px solid {{ product.color }}30;">
-        <div class="feature-icon" style="background:{{ product.color }}15;color:{{ product.color }};">🤖</div>
-        <h4 style="margin-bottom:8px;">24/7 AI Chat Assistant</h4>
-        <p style="font-size:var(--text-sm);color:var(--text-secondary);line-height:var(--leading-relaxed);">An always-on AI assistant answers patient questions and captures leads even when your front desk is closed. Try it — bottom-left of this page.</p>
-      </div>
-
-      <div class="card card-hover" style="padding:24px;border:1px solid {{ product.color }}30;">
-        <div class="feature-icon" style="background:{{ product.color }}15;color:{{ product.color }};">💬</div>
-        <h4 style="margin-bottom:8px;">WhatsApp &amp; Messenger Integration</h4>
-        <p style="font-size:var(--text-sm);color:var(--text-secondary);line-height:var(--leading-relaxed);">Patients reach you instantly on the apps they already use — WhatsApp and Facebook Messenger, built right in.</p>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- ═══ SECURITY & PERFORMANCE ══════════════════════════════════════════════ -->
-<section style="padding:48px 0;background:var(--surface-card);">
-  <div class="container">
-    <h2 style="text-align:center;margin-bottom:8px;font-size:var(--text-2xl);">Enterprise-Grade Under the Hood</h2>
-    <p style="text-align:center;color:var(--text-secondary);margin-bottom:36px;">Your patients' trust depends on it — so we don't cut corners.</p>
-    <div class="grid grid-3" style="gap:20px;">
-      <div class="card" style="padding:28px;">
-        <div class="feature-icon" style="background:var(--color-primary-50);color:var(--color-primary-600);">🔒</div>
-        <h4 style="margin-bottom:8px;">Secure by Design</h4>
-        <p style="font-size:var(--text-sm);color:var(--text-secondary);line-height:var(--leading-relaxed);">Built on Python &amp; Django, hardened against the OWASP Top 10, with Argon2 password hashing, HTTPS/SSL encryption, and CSRF protection on every form.</p>
-      </div>
-      <div class="card" style="padding:28px;">
-        <div class="feature-icon" style="background:var(--color-accent-50);color:var(--color-accent-600);">⚡</div>
-        <h4 style="margin-bottom:8px;">Blazing-Fast Pages</h4>
-        <p style="font-size:var(--text-sm);color:var(--text-secondary);line-height:var(--leading-relaxed);">Optimized queries and compressed static assets mean sub-second loads — better Google &amp; Meta ad quality scores, and patients who don't bounce.</p>
-      </div>
-      <div class="card" style="padding:28px;">
-        <div class="feature-icon" style="background:var(--color-secondary-50);color:var(--color-secondary-600);">🌍</div>
-        <h4 style="margin-bottom:8px;">Always-On Digital Presence</h4>
-        <p style="font-size:var(--text-sm);color:var(--text-secondary);line-height:var(--leading-relaxed);">Your website, WhatsApp, Messenger, and AI chatbot all work together — so your clinic is reachable on every channel patients use.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══ SCREENSHOTS / PREVIEW ═══════════════════════════════════════════════ -->
-<section style="padding:48px 0;overflow:hidden;">
-  <div class="container">
-    <h2 style="text-align:center;margin-bottom:8px;font-size:var(--text-2xl);">See {{ product.name }} in Action</h2>
-    <p style="text-align:center;color:var(--text-secondary);margin-bottom:36px;">A clean, modern interface your patients will love.</p>
-
-    <div x-data="cmsShotSlider()" x-init="start()" @mouseenter="stop()" @mouseleave="start()" style="position:relative;">
-
-      <div style="overflow:hidden;">
-        <div x-ref="track" :style="`display:flex;gap:20px;transition:transform .6s cubic-bezier(.4,0,.2,1);transform:translateX(-${offset}px);`">
-
-          {% for file, caption in cms_screenshots %}
-          <div class="cms-shot-card">
-            <img src="{% static 'img/CuraCms/'|add:file %}" alt="{{ caption }} — {{ product.name }}"
-                 style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:var(--radius-lg);border:1px solid var(--border-default);box-shadow:var(--shadow-sm);" loading="lazy">
-            <p style="margin-top:10px;text-align:center;font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--text-secondary);">{{ caption }}</p>
+  <div class="container np-bento">
+    {% for b in benefits %}
+      {% if forloop.counter0 == 0 %}
+      <div class="np-bento-wide" style="padding:32px;background:white;border-radius:20px;border:1px solid var(--np-border);box-shadow:var(--shadow-sm);display:flex;flex-direction:column;justify-content:space-between;">
+        <div>
+          <div style="width:48px;height:48px;border-radius:12px;background:var(--np-mint-tint);color:var(--np-teal);display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
+            <span style="font-size:26px;">{{ b.icon }}</span>
           </div>
-          {% endfor %}
-
+          <h3 style="font-size:22px;font-weight:700;color:var(--np-navy);margin-bottom:10px;">{{ b.title }}</h3>
+          <p style="color:var(--text-secondary);max-width:460px;">{{ b.description }}</p>
+        </div>
+        <div style="margin-top:28px;border-radius:14px;overflow:hidden;border:1px solid var(--np-border);">
+          <img src="{% static 'img/CuraCms/Admin_Panel/appointment-module.png' %}" alt="Appointment management" style="width:100%;display:block;" loading="lazy">
         </div>
       </div>
+      {% elif forloop.counter0 == 1 %}
+      <div style="padding:32px;background:var(--np-primary);color:white;border-radius:20px;box-shadow:var(--shadow-lg);display:flex;flex-direction:column;justify-content:space-between;">
+        <div>
+          <div style="width:48px;height:48px;border-radius:12px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
+            <span style="font-size:26px;">{{ b.icon }}</span>
+          </div>
+          <h3 style="font-size:22px;font-weight:700;margin-bottom:10px;">{{ b.title }}</h3>
+          <p style="color:rgba(255,255,255,.8);">{{ b.description }}</p>
+        </div>
+        <div style="margin-top:28px;background:rgba(255,255,255,.1);padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,.15);font-style:italic;font-size:13px;">"Thinking…"</div>
+      </div>
+      {% else %}
+      <div style="padding:32px;background:white;border-radius:20px;border:1px solid var(--np-border);box-shadow:var(--shadow-sm);">
+        <div style="width:44px;height:44px;border-radius:12px;background:var(--np-surface-high);color:var(--np-primary);display:flex;align-items:center;justify-content:center;margin-bottom:18px;">
+          <span style="font-size:22px;">{{ b.icon }}</span>
+        </div>
+        <h3 style="font-size:18px;font-weight:700;color:var(--np-navy);margin-bottom:8px;">{{ b.title }}</h3>
+        <p style="color:var(--text-secondary);font-size:14px;line-height:1.6;">{{ b.description }}</p>
+      </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
 
-      <!-- Prev / Next -->
-      <button type="button" @click="stop(); prev(); start();" aria-label="Previous screenshots"
-        style="position:absolute;top:90px;left:-8px;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;background:white;border:1px solid var(--border-default);box-shadow:var(--shadow-md);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-      </button>
-      <button type="button" @click="stop(); next(); start();" aria-label="Next screenshots"
-        style="position:absolute;top:90px;right:-8px;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;background:white;border:1px solid var(--border-default);box-shadow:var(--shadow-md);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>
+<!-- ═══ MODULES GRID — 12 MODULES ═══════════════════════════════════════════ -->
+<section style="padding:80px 0;" id="modules">
+  <div class="container" style="text-align:center;margin-bottom:48px;">
+    <p style="color:var(--np-primary);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">Everything Included</p>
+    <h2 style="font-size:28px;font-weight:800;color:var(--np-navy);margin-bottom:12px;">12 Modules. One {{ product.name }} Subscription.</h2>
+    <p style="color:var(--text-secondary);max-width:640px;margin-inline:auto;">No plugins to install, no agencies to hire, no hidden add-ons. Built specifically for clinics, hospitals, and diagnostic practices.</p>
+  </div>
+  <div class="container np-modules">
 
+    <div>
+      <div style="width:40px;height:40px;border-radius:10px;background:var(--np-surface-low);color:var(--np-primary);display:flex;align-items:center;justify-content:center;margin-bottom:16px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+      <h4 style="font-size:16px;font-weight:700;color:var(--np-navy);margin-bottom:8px;">Marketing CMS</h4>
+      <p style="font-size:14px;color:var(--text-secondary);line-height:1.6;">Publish SEO-optimized landing, service, and location pages in minutes.</p>
+    </div>
+
+    <div>
+      <div style="width:40px;height:40px;border-radius:10px;background:var(--np-surface-low);color:var(--np-primary);display:flex;align-items:center;justify-content:center;margin-bottom:16px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3h6a1 1 0 0 1 1 1v2H8V4a1 1 0 0 1 1-1z"/><rect x="3" y="6" width="18" height="14" rx="2"/><line x1="12" y1="10" x2="12" y2="16"/><line x1="9" y1="13" x2="15" y2="13"/></svg></div>
+      <h4 style="font-size:16px;font-weight:700;color:var(--np-navy);margin-bottom:8px;">Treatment Listings</h4>
+      <p style="font-size:14px;color:var(--text-secondary);line-height:1.6;">List every procedure you offer with clear, patient-friendly descriptions.</p>
+    </div>
+
+    <div>
+      <div style="width:40px;height:40px;border-radius:10px;background:var(--np-surface-low);color:var(--np-primary);display:flex;align-items:center;justify-content:center;margin-bottom:16px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M6 16c0-1.7 1.3-3 3-3s3 1.3 3 3"/><line x1="14" y1="8" x2="18" y2="8"/><line x1="14" y1="12" x2="18" y2="12"/></svg></div>
+      <h4 style="font-size:16px;font-weight:700;color:var(--np-navy);margin-bottom:8px;">Doctor Profiles</h4>
+      <p style="font-size:14px;color:var(--text-secondary);line-height:1.6;">Showcase qualifications and specializations with rich profile pages.</p>
+    </div>
+
+    <div>
+      <div style="width:40px;height:40px;border-radius:10px;background:var(--np-surface-low);color:var(--np-primary);display:flex;align-items:center;justify-content:center;margin-bottom:16px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+      <h4 style="font-size:16px;font-weight:700;color:var(--np-navy);margin-bottom:8px;">Social Integration</h4>
+      <p style="font-size:14px;color:var(--text-secondary);line-height:1.6;">WhatsApp and Facebook Messenger built directly into your site.</p>
+    </div>
+
+    <div>
+      <div style="width:40px;height:40px;border-radius:10px;background:var(--np-surface-low);color:var(--np-primary);display:flex;align-items:center;justify-content:center;margin-bottom:16px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="14" height="14" rx="2"/><polygon points="9 9 14 12 9 15"/></svg></div>
+      <h4 style="font-size:16px;font-weight:700;color:var(--np-navy);margin-bottom:8px;">Patient Education Videos</h4>
+      <p style="font-size:14px;color:var(--text-secondary);line-height:1.6;">Embed videos explaining procedures to ease patient anxiety.</p>
+    </div>
+
+    <div>
+      <div style="width:40px;height:40px;border-radius:10px;background:var(--np-surface-low);color:var(--np-primary);display:flex;align-items:center;justify-content:center;margin-bottom:16px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 11a4 4 0 1 0-4-4"/><path d="M17 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/><path d="M2 21v-2a4 4 0 0 1 4-4h2a4 4 0 0 1 4 4v2"/></svg></div>
+      <h4 style="font-size:16px;font-weight:700;color:var(--np-navy);margin-bottom:8px;">Patient CRM</h4>
+      <p style="font-size:14px;color:var(--text-secondary);line-height:1.6;">Automatically track visitors and follow up with those who didn't book.</p>
+    </div>
+
+    <div>
+      <div style="width:40px;height:40px;border-radius:10px;background:var(--np-surface-low);color:var(--np-primary);display:flex;align-items:center;justify-content:center;margin-bottom:16px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="15" r="4"/><line x1="10.5" y1="12.5" x2="19" y2="4"/><line x1="16" y1="8" x2="19" y2="5"/><line x1="18" y1="10" x2="21" y2="7"/></svg></div>
+      <h4 style="font-size:16px;font-weight:700;color:var(--np-navy);margin-bottom:8px;">Role-Based Access</h4>
+      <p style="font-size:14px;color:var(--text-secondary);line-height:1.6;">Separate logins for receptionists, doctors, and staff.</p>
+    </div>
+
+    <div>
+      <div style="width:40px;height:40px;border-radius:10px;background:var(--np-surface-low);color:var(--np-primary);display:flex;align-items:center;justify-content:center;margin-bottom:16px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+      <h4 style="font-size:16px;font-weight:700;color:var(--np-navy);margin-bottom:8px;">Built-in SEO</h4>
+      <p style="font-size:14px;color:var(--text-secondary);line-height:1.6;">Meta controls and schema markup for every single page.</p>
+    </div>
+
+    <div>
+      <div style="width:40px;height:40px;border-radius:10px;background:var(--np-surface-low);color:var(--np-primary);display:flex;align-items:center;justify-content:center;margin-bottom:16px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><polyline points="9 16 11 18 15 14"/></svg></div>
+      <h4 style="font-size:16px;font-weight:700;color:var(--np-navy);margin-bottom:8px;">Online Booking</h4>
+      <p style="font-size:14px;color:var(--text-secondary);line-height:1.6;">Real-time slots with instant confirmations, 24/7.</p>
+    </div>
+
+    <div>
+      <div style="width:40px;height:40px;border-radius:10px;background:var(--np-surface-low);color:var(--np-primary);display:flex;align-items:center;justify-content:center;margin-bottom:16px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></div>
+      <h4 style="font-size:16px;font-weight:700;color:var(--np-navy);margin-bottom:8px;">Blog &amp; Content</h4>
+      <p style="font-size:14px;color:var(--text-secondary);line-height:1.6;">Publish health articles to build authority and organic traffic.</p>
+    </div>
+
+    <div>
+      <div style="width:40px;height:40px;border-radius:10px;background:var(--np-surface-low);color:var(--np-primary);display:flex;align-items:center;justify-content:center;margin-bottom:16px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg></div>
+      <h4 style="font-size:16px;font-weight:700;color:var(--np-navy);margin-bottom:8px;">Site Settings</h4>
+      <p style="font-size:14px;color:var(--text-secondary);line-height:1.6;">Decide what's public — hours, contact info, social links.</p>
+    </div>
+
+    <div>
+      <div style="width:40px;height:40px;border-radius:10px;background:var(--np-primary)15;color:var(--np-primary);display:flex;align-items:center;justify-content:center;margin-bottom:16px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="9" width="16" height="10" rx="2"/><circle cx="9" cy="14" r="1.2"/><circle cx="15" cy="14" r="1.2"/><line x1="12" y1="5" x2="12" y2="9"/><circle cx="12" cy="3.5" r="1.5"/></svg></div>
+      <h4 style="font-size:16px;font-weight:700;color:var(--np-navy);margin-bottom:8px;">AI Chat Assistant</h4>
+      <p style="font-size:14px;color:var(--text-secondary);line-height:1.6;">Answers patient questions 24/7 — try it, bottom-left of this page.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══ SECURITY ════════════════════════════════════════════════════════════ -->
+<section style="padding:64px 0;background:var(--np-navy);color:white;" id="security">
+  <div class="container split-even" style="gap:64px;">
+    <div>
+      <h2 style="font-size:30px;font-weight:800;margin-bottom:16px;">Enterprise-Grade Under the Hood</h2>
+      <p style="color:rgba(255,255,255,.7);font-size:17px;line-height:1.6;margin-bottom:32px;">Your patients' trust depends on your digital security — so we don't cut corners.</p>
+      <div class="grid grid-2" style="gap:28px;">
+        <div style="display:flex;gap:14px;align-items:flex-start;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--np-mint)" stroke-width="2" style="flex-shrink:0;margin-top:2px;"><path d="M12 2l7 4v6c0 5-3.5 8-7 9-3.5-1-7-4-7-9V6l7-4z"/><polyline points="9 12 11 14 15 10"/></svg>
+          <div>
+            <h5 style="font-size:16px;font-weight:700;margin-bottom:4px;">Secure by Design</h5>
+            <p style="font-size:13px;color:rgba(255,255,255,.55);">OWASP Top 10 hardened, HTTPS/SSL, and Argon2 hashing.</p>
+          </div>
+        </div>
+        <div style="display:flex;gap:14px;align-items:flex-start;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="var(--np-mint)" stroke="none" style="flex-shrink:0;margin-top:2px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          <div>
+            <h5 style="font-size:16px;font-weight:700;margin-bottom:4px;">Blazing-Fast Pages</h5>
+            <p style="font-size:13px;color:rgba(255,255,255,.55);">Sub-second loads to keep patients from bouncing.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="padding:24px;border-radius:20px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);">
+      <div style="display:flex;gap:8px;margin-bottom:20px;">
+        <div style="width:11px;height:11px;border-radius:50%;background:var(--np-red);"></div>
+        <div style="width:11px;height:11px;border-radius:50%;background:#f2b90b;"></div>
+        <div style="width:11px;height:11px;border-radius:50%;background:var(--np-mint);"></div>
+      </div>
+      <pre class="np-code"># {{ product.name }} security configuration (Django)
+SECURE_SSL_REDIRECT = True
+PASSWORD_HASHERS = ['Argon2PasswordHasher']
+CSRF_COOKIE_SECURE = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
+# Static assets served via CDN — sub-second delivery</pre>
     </div>
   </div>
 </section>
 
-<script>
-function cmsShotSlider() {
-  return {
-    index: 0,
-    total: {{ cms_screenshots|length }},
-    timer: null,
-    cardStep() {
-      const track = this.$refs.track;
-      if (!track || !track.firstElementChild) return 380;
-      const gap = parseFloat(getComputedStyle(track).gap) || 0;
-      return track.firstElementChild.offsetWidth + gap;
-    },
-    get offset() { return this.index * this.cardStep(); },
-    next() { this.index = this.index >= this.total - 1 ? 0 : this.index + 1; },
-    prev() { this.index = this.index <= 0 ? this.total - 1 : this.index - 1; },
-    start() {
-      this.stop();
-      this.timer = setInterval(() => this.next(), 3000);
-    },
-    stop() {
-      if (this.timer) { clearInterval(this.timer); this.timer = null; }
-    },
-  };
-}
-</script>
-
 <!-- ═══ COMPARISON TABLE ════════════════════════════════════════════════════ -->
-<section style="padding:48px 0;background:var(--surface-card);">
+<section style="padding:80px 0;">
   <div class="container" style="max-width:900px;">
-    <h2 style="text-align:center;margin-bottom:8px;font-size:var(--text-2xl);">A Basic Website vs. {{ product.name }}</h2>
-    <p style="text-align:center;color:var(--text-secondary);margin-bottom:32px;">See exactly what you're missing without a purpose-built platform.</p>
-    <div style="overflow-x:auto;">
-      <table style="width:100%;border-collapse:collapse;background:white;border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm);min-width:560px;">
+    <div style="text-align:center;margin-bottom:48px;">
+      <h2 style="font-size:28px;font-weight:800;color:var(--np-navy);">A Basic Website vs. {{ product.name }}</h2>
+      <p style="color:var(--text-secondary);margin-top:8px;">See exactly what you're missing without a purpose-built platform.</p>
+    </div>
+    <div style="overflow-x:auto;border-radius:20px;border:1px solid var(--np-border);box-shadow:var(--shadow-sm);">
+      <table style="width:100%;border-collapse:collapse;background:white;min-width:560px;">
         <thead>
-          <tr style="background:{{ product.color }};">
-            <th style="text-align:left;padding:14px 18px;color:white;font-size:var(--text-sm);font-weight:var(--font-semi);">Capability</th>
-            <th style="text-align:center;padding:14px 18px;color:rgba(255,255,255,.85);font-size:var(--text-sm);font-weight:var(--font-semi);">Typical Website</th>
-            <th style="text-align:center;padding:14px 18px;color:white;font-size:var(--text-sm);font-weight:var(--font-semi);">{{ product.name }}</th>
+          <tr style="background:var(--np-surface-low);border-bottom:1px solid var(--np-border);">
+            <th style="text-align:left;padding:18px 24px;font-size:15px;font-weight:700;color:var(--np-navy);">Capability</th>
+            <th style="text-align:left;padding:18px 24px;font-size:15px;font-weight:700;color:var(--text-secondary);">Typical Website</th>
+            <th style="text-align:left;padding:18px 24px;font-size:15px;font-weight:700;color:var(--np-primary);">{{ product.name }}</th>
           </tr>
         </thead>
         <tbody>
-          <tr style="border-bottom:1px solid var(--border-default);"><td style="padding:12px 18px;font-size:var(--text-sm);color:var(--text-primary);">SEO-friendly marketing pages</td><td style="text-align:center;color:var(--text-muted);font-size:var(--text-sm);">Static, rarely updated</td><td style="text-align:center;color:var(--color-success);font-size:18px;">✓</td></tr>
-          <tr style="border-bottom:1px solid var(--border-default);"><td style="padding:12px 18px;font-size:var(--text-sm);color:var(--text-primary);">Blog &amp; content marketing</td><td style="text-align:center;color:#DC2626;font-size:16px;">✕</td><td style="text-align:center;color:var(--color-success);font-size:18px;">✓</td></tr>
-          <tr style="border-bottom:1px solid var(--border-default);background:var(--surface-card);"><td style="padding:12px 18px;font-size:var(--text-sm);color:var(--text-primary);">Online appointment booking</td><td style="text-align:center;color:var(--text-muted);font-size:var(--text-sm);">Phone calls only</td><td style="text-align:center;color:var(--color-success);font-size:18px;">✓</td></tr>
-          <tr style="border-bottom:1px solid var(--border-default);"><td style="padding:12px 18px;font-size:var(--text-sm);color:var(--text-primary);">Patient CRM &amp; remarketing</td><td style="text-align:center;color:#DC2626;font-size:16px;">✕</td><td style="text-align:center;color:var(--color-success);font-size:18px;">✓</td></tr>
-          <tr style="border-bottom:1px solid var(--border-default);background:var(--surface-card);"><td style="padding:12px 18px;font-size:var(--text-sm);color:var(--text-primary);">24/7 AI chat assistant</td><td style="text-align:center;color:#DC2626;font-size:16px;">✕</td><td style="text-align:center;color:var(--color-success);font-size:18px;">✓</td></tr>
-          <tr style="border-bottom:1px solid var(--border-default);"><td style="padding:12px 18px;font-size:var(--text-sm);color:var(--text-primary);">WhatsApp / Messenger integration</td><td style="text-align:center;color:var(--text-muted);font-size:var(--text-sm);">Manual, unlinked</td><td style="text-align:center;color:var(--color-success);font-size:18px;">✓</td></tr>
-          <tr style="border-bottom:1px solid var(--border-default);background:var(--surface-card);"><td style="padding:12px 18px;font-size:var(--text-sm);color:var(--text-primary);">Doctor &amp; treatment pages</td><td style="text-align:center;color:var(--text-muted);font-size:var(--text-sm);">Basic, static</td><td style="text-align:center;color:var(--color-success);font-size:18px;">✓</td></tr>
-          <tr style="border-bottom:1px solid var(--border-default);"><td style="padding:12px 18px;font-size:var(--text-sm);color:var(--text-primary);">Security (framework, hashing, SSL)</td><td style="text-align:center;color:var(--text-muted);font-size:var(--text-sm);">Varies, often outdated</td><td style="text-align:center;color:var(--color-success);font-size:18px;">✓</td></tr>
-          <tr style="border-bottom:1px solid var(--border-default);background:var(--surface-card);"><td style="padding:12px 18px;font-size:var(--text-sm);color:var(--text-primary);">Page load speed</td><td style="text-align:center;color:var(--text-muted);font-size:var(--text-sm);">Often slow</td><td style="text-align:center;color:var(--color-success);font-size:18px;">✓ &lt;1s</td></tr>
-          <tr><td style="padding:12px 18px;font-size:var(--text-sm);color:var(--text-primary);">Setup time</td><td style="text-align:center;color:var(--text-muted);font-size:var(--text-sm);">Weeks to months</td><td style="text-align:center;color:var(--color-success);font-size:18px;">✓ 7–14 days</td></tr>
+          {% comment %} rows: (label, typical-website text, is_cross) {% endcomment %}
+          <tr style="border-bottom:1px solid var(--np-border);"><td style="padding:16px 24px;font-size:14px;">SEO-optimized pages</td><td style="padding:16px 24px;font-size:14px;color:var(--text-secondary);font-style:italic;">Static, rarely updated</td><td style="padding:16px 24px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="8 12 11 15 16 9"/></svg></td></tr>
+          <tr style="border-bottom:1px solid var(--np-border);"><td style="padding:16px 24px;font-size:14px;">24/7 online booking</td><td style="padding:16px 24px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--np-red)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></td><td style="padding:16px 24px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="8 12 11 15 16 9"/></svg></td></tr>
+          <tr style="border-bottom:1px solid var(--np-border);background:var(--np-surface-low);"><td style="padding:16px 24px;font-size:14px;">AI chatbot assistant</td><td style="padding:16px 24px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--np-red)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg></td><td style="padding:16px 24px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="8 12 11 15 16 9"/></svg></td></tr>
+          <tr style="border-bottom:1px solid var(--np-border);"><td style="padding:16px 24px;font-size:14px;">WhatsApp integration</td><td style="padding:16px 24px;font-size:14px;color:var(--text-secondary);font-style:italic;">Manual, unlinked</td><td style="padding:16px 24px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="8 12 11 15 16 9"/></svg></td></tr>
+          <tr style="border-bottom:1px solid var(--np-border);background:var(--np-surface-low);"><td style="padding:16px 24px;font-size:14px;">Security framework</td><td style="padding:16px 24px;font-size:14px;color:var(--text-secondary);font-style:italic;">Often outdated</td><td style="padding:16px 24px;font-size:14px;color:var(--color-success);font-weight:700;">✓ Bank-grade</td></tr>
+          <tr><td style="padding:16px 24px;font-size:14px;">Page load speed</td><td style="padding:16px 24px;font-size:14px;color:var(--text-secondary);font-style:italic;">Often slow</td><td style="padding:16px 24px;font-size:14px;color:var(--color-success);font-weight:700;">✓ &lt;1s</td></tr>
         </tbody>
       </table>
     </div>
   </div>
 </section>
 
-<!-- ═══ WHO IT'S FOR ════════════════════════════════════════════════════════ -->
-<section style="padding:40px 0;">
-  <div class="container" style="max-width:760px;text-align:center;">
-    <h2 style="margin-bottom:16px;font-size:var(--text-2xl);">Built Specifically for {{ lp.target_audience_label|default:"Your Practice" }}</h2>
-    <p style="color:var(--text-secondary);font-size:var(--text-base);line-height:var(--leading-relaxed);">{{ product.long_description|default:product.short_description }}</p>
-  </div>
-</section>
-
-<!-- ═══ HOW IT WORKS ════════════════════════════════════════════════════════ -->
-<section style="padding:48px 0;background:var(--surface-card);">
-  <div class="container">
-    <h2 style="text-align:center;margin-bottom:36px;font-size:var(--text-2xl);">From Sign-Up to Live in 4 Simple Steps</h2>
-    <div class="grid grid-4" style="gap:24px;text-align:center;">
-      <div>
-        <div class="step-number">1</div>
-        <h4 style="margin-bottom:6px;font-size:var(--text-base);">Book a Free Demo</h4>
-        <p style="font-size:var(--text-sm);color:var(--text-secondary);">Tell us about your clinic — takes 30 seconds.</p>
-      </div>
-      <div>
-        <div class="step-number">2</div>
-        <h4 style="margin-bottom:6px;font-size:var(--text-base);">We Configure Everything</h4>
-        <p style="font-size:var(--text-sm);color:var(--text-secondary);">Pages, doctors, treatments, and branding set up for you.</p>
-      </div>
-      <div>
-        <div class="step-number">3</div>
-        <h4 style="margin-bottom:6px;font-size:var(--text-base);">Go Live in 7–14 Days</h4>
-        <p style="font-size:var(--text-sm);color:var(--text-secondary);">Your fully secure, fast website goes live for patients.</p>
-      </div>
-      <div>
-        <div class="step-number">4</div>
-        <h4 style="margin-bottom:6px;font-size:var(--text-base);">Ongoing Support</h4>
-        <p style="font-size:var(--text-sm);color:var(--text-secondary);">Training, updates, and help — included, always.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══ MID-PAGE CTA ════════════════════════════════════════════════════════ -->
-<section style="padding:32px 0;background:{{ product.color }};text-align:center;">
-  <div class="container">
-    <h3 style="color:white;margin-bottom:8px;">Ready to See {{ product.name }} in Action?</h3>
-    <p style="color:rgba(255,255,255,.85);margin-bottom:20px;">Free 30-minute demo. No commitment. Setup in 7–14 days.</p>
-    <a href="#lp-form" class="btn btn-lg" style="background:white;color:{{ product.color }};border-color:white;">Book Free Demo →</a>
-  </div>
-</section>
-
 <!-- ═══ TESTIMONIALS ════════════════════════════════════════════════════════ -->
 {% if testimonials %}
-<section style="padding:48px 0;">
-  <div class="container">
-    <h2 style="text-align:center;margin-bottom:8px;font-size:var(--text-2xl);">Trusted by Clinics Like Yours</h2>
-    <p style="text-align:center;color:var(--text-muted);font-size:12px;margin-bottom:32px;">Individual results vary — figures below are customer-reported and specific to their practice.</p>
-    <div class="grid grid-3" style="gap:20px;">
-      {% for t in testimonials %}
-      <div class="testimonial-card">
-        <div style="color:#F59E0B;margin-bottom:10px;">{{ t.star_display }}</div>
-        <p style="font-size:var(--text-sm);color:var(--text-secondary);font-style:italic;margin-bottom:14px;">"{{ t.feedback|truncatechars:130 }}"</p>
-        <div style="font-size:var(--text-sm);font-weight:var(--font-semi);">{{ t.customer_name }}</div>
-        <div style="font-size:var(--text-xs);color:var(--text-muted);">{{ t.clinic_name }}{% if t.location %}, {{ t.location }}{% endif %}</div>
+<section style="padding:80px 0;background:var(--np-surface-low);">
+  <div class="container" style="text-align:center;margin-bottom:48px;">
+    <h2 style="font-size:28px;font-weight:800;color:var(--np-navy);margin-bottom:8px;">Trusted by Clinics Like Yours</h2>
+    <p style="color:var(--text-muted);font-size:12px;">Individual results vary — figures below are customer-reported and specific to their practice.</p>
+  </div>
+  <div class="container grid grid-3" style="gap:24px;">
+    {% for t in testimonials %}
+    <div style="background:white;padding:32px;border-radius:20px;border:1px solid var(--np-border);box-shadow:var(--shadow-sm);display:flex;flex-direction:column;justify-content:space-between;">
+      <div>
+        <div style="color:#F59E0B;margin-bottom:14px;font-size:16px;">{{ t.star_display }}</div>
+        <p style="color:var(--text-secondary);font-style:italic;margin-bottom:20px;">"{{ t.feedback|truncatechars:150 }}"</p>
       </div>
-      {% endfor %}
-    </div>
-  </div>
-</section>
-{% endif %}
-
-<!-- ═══ PRICING SNAPSHOT ════════════════════════════════════════════════════ -->
-{% if pricing_tiers %}
-<section style="padding:48px 0;background:var(--surface-card);">
-  <div class="container">
-    <h2 style="text-align:center;margin-bottom:8px;font-size:var(--text-2xl);">Simple, Transparent Pricing</h2>
-    <p style="text-align:center;color:var(--text-secondary);margin-bottom:36px;">No setup fees. Cancel anytime. 30-day free trial.</p>
-    <div class="grid grid-3" style="gap:16px;max-width:920px;margin-inline:auto;">
-      {% for tier in pricing_tiers %}
-      <div class="card" style="padding:24px;text-align:center;{% if tier.is_featured %}border:2px solid {{ product.color }};position:relative;{% endif %}">
-        {% if tier.is_featured %}
-        <div style="position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:{{ product.color }};color:white;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:3px 12px;border-radius:20px;white-space:nowrap;">Most Popular</div>
-        {% endif %}
-        <div style="font-size:var(--text-sm);font-weight:var(--font-semi);color:var(--text-secondary);margin-bottom:8px;">{{ tier.tier_name }}</div>
-        <div style="font-size:28px;font-weight:800;color:var(--text-primary);margin-bottom:4px;">{{ tier.formatted_price }}</div>
-        {% if tier.price %}<div style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">per {{ tier.get_billing_cycle_display|lower }}</div>{% else %}<div style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">Custom pricing</div>{% endif %}
-        <a href="#lp-form" class="btn" style="width:100%;justify-content:center;font-size:var(--text-sm);{% if tier.is_featured %}background:{{ product.color }};color:white;border-color:{{ product.color }};{% else %}background:transparent;color:{{ product.color }};border-color:{{ product.color }};{% endif %}">{{ tier.cta_text }}</a>
-      </div>
-      {% endfor %}
-    </div>
-    <p style="text-align:center;margin-top:20px;"><a href="/pricing/" style="font-size:var(--text-sm);color:{{ product.color }};">See full pricing details →</a></p>
-  </div>
-</section>
-{% endif %}
-
-<!-- ═══ TRUST / GUARANTEE STRIP ═════════════════════════════════════════════ -->
-<section style="padding:32px 0;">
-  <div class="container">
-    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:14px 28px;">
-      <span style="display:flex;align-items:center;gap:6px;font-size:var(--text-sm);color:var(--text-secondary);">🔒 Bank-grade security</span>
-      <span style="display:flex;align-items:center;gap:6px;font-size:var(--text-sm);color:var(--text-secondary);">⚡ Sub-second load times</span>
-      <span style="display:flex;align-items:center;gap:6px;font-size:var(--text-sm);color:var(--text-secondary);">🎓 Free onboarding &amp; training</span>
-      <span style="display:flex;align-items:center;gap:6px;font-size:var(--text-sm);color:var(--text-secondary);">💾 Daily automated backups</span>
-      <span style="display:flex;align-items:center;gap:6px;font-size:var(--text-sm);color:var(--text-secondary);">🔄 Cancel anytime</span>
-      <span style="display:flex;align-items:center;gap:6px;font-size:var(--text-sm);color:var(--text-secondary);">📞 Dedicated support</span>
-    </div>
-  </div>
-</section>
-
-<!-- ═══ FAQ ══════════════════════════════════════════════════════════════════ -->
-{% if product_faqs %}
-<section style="padding:48px 0;background:var(--surface-card);">
-  <div class="container" style="max-width:720px;">
-    <h2 style="text-align:center;margin-bottom:32px;font-size:var(--text-2xl);">Frequently Asked Questions</h2>
-    {% for faq in product_faqs %}
-    <div x-data="{ faqOpen: false }" style="border-bottom:1px solid var(--border-default);">
-      <button @click="faqOpen = !faqOpen" style="width:100%;display:flex;justify-content:space-between;align-items:center;padding:16px 0;background:none;border:none;cursor:pointer;text-align:left;gap:16px;">
-        <span style="font-size:var(--text-base);font-weight:600;color:var(--text-primary);">{{ faq.question }}</span>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" :style="faqOpen ? 'transform:rotate(180deg);transition:.2s;flex-shrink:0;' : 'transition:.2s;flex-shrink:0;'"><polyline points="6 9 12 15 18 9"/></svg>
-      </button>
-      <div x-show="faqOpen" x-collapse style="padding-bottom:16px;">
-        <p style="color:var(--text-secondary);font-size:var(--text-sm);line-height:var(--leading-relaxed);">{{ faq.answer }}</p>
+      <div>
+        <p style="font-weight:700;color:var(--np-navy);">{{ t.customer_name }}</p>
+        <p style="font-size:12px;color:var(--text-muted);">{{ t.clinic_name }}{% if t.location %}, {{ t.location }}{% endif %}</p>
       </div>
     </div>
     {% endfor %}
@@ -461,13 +415,59 @@ function cmsShotSlider() {
 </section>
 {% endif %}
 
-<!-- ═══ FORM ════════════════════════════════════════════════════════════════ -->
-<section id="lp-form" style="padding:48px 0;">
-  <div class="container" style="max-width:560px;">
-    <div class="card" style="padding:36px;border:2px solid {{ product.color }}25;">
-      <h2 style="text-align:center;margin-bottom:6px;font-size:var(--text-2xl);">Book Your Free Demo</h2>
-      <p style="text-align:center;color:var(--text-secondary);font-size:var(--text-sm);margin-bottom:24px;">Takes 30 seconds. We'll call you within 1 business day.</p>
+<!-- ═══ PRICING ═════════════════════════════════════════════════════════════ -->
+{% if pricing_tiers %}
+<section style="padding:80px 0;" id="pricing">
+  <div class="container" style="text-align:center;margin-bottom:48px;">
+    <h2 style="font-size:30px;font-weight:800;color:var(--np-navy);">Simple, Transparent Pricing</h2>
+    <p style="color:var(--text-secondary);margin-top:8px;">No setup fees. Cancel anytime. 30-day free trial.</p>
+  </div>
+  <div class="container" style="max-width:900px;">
+    <div class="grid grid-2" style="gap:24px;">
+      {% for tier in pricing_tiers %}
+      <div style="background:white;padding:40px;border-radius:24px;border:{% if tier.is_featured %}2px solid var(--np-primary){% else %}1px solid var(--np-border){% endif %};box-shadow:{% if tier.is_featured %}var(--shadow-xl){% else %}var(--shadow-sm){% endif %};position:relative;">
+        {% if tier.is_featured %}
+        <div style="position:absolute;top:0;left:50%;transform:translate(-50%,-50%);background:var(--np-primary);color:white;padding:5px 16px;border-radius:999px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;">Most Popular</div>
+        {% endif %}
+        <h4 style="font-size:16px;font-weight:700;color:var(--text-secondary);margin-bottom:8px;">{{ tier.tier_name }}</h4>
+        <div style="margin-bottom:24px;">
+          <span style="font-size:32px;font-weight:800;color:var(--np-navy);">{{ tier.formatted_price }}</span>
+          {% if tier.price %}<span style="color:var(--text-secondary);">/{{ tier.get_billing_cycle_display|lower }}</span>{% else %}<span style="color:var(--text-secondary);"> custom</span>{% endif %}
+        </div>
+        {% if tier.description %}<p style="color:var(--text-secondary);font-size:14px;margin-bottom:24px;">{{ tier.description }}</p>{% endif %}
+        <a href="#lp-form" style="display:block;text-align:center;width:100%;padding:15px;border-radius:12px;font-weight:700;text-decoration:none;{% if tier.is_featured %}background:var(--np-primary);color:white;{% else %}border:2px solid var(--np-primary);color:var(--np-primary);{% endif %}">{{ tier.cta_text }}</a>
+      </div>
+      {% endfor %}
+    </div>
+    <p style="text-align:center;margin-top:24px;"><a href="/pricing/" style="font-size:14px;color:var(--np-primary);">See full pricing details →</a></p>
+  </div>
+</section>
+{% endif %}
 
+<!-- ═══ FINAL CTA + FORM ════════════════════════════════════════════════════ -->
+<section id="lp-form" style="padding:80px 0;background:var(--np-surface-high);position:relative;overflow:hidden;">
+  <div class="container split-even" style="gap:64px;position:relative;z-index:1;">
+    <div>
+      <h2 style="font-size:clamp(28px,4vw,40px);font-weight:800;color:var(--np-navy);line-height:1.2;margin-bottom:20px;">Ready to See <span style="color:var(--np-primary);">{{ product.name }}</span> in Action?</h2>
+      <p style="font-size:17px;color:var(--text-secondary);margin-bottom:36px;max-width:440px;">Free 30-minute demo. No commitment. We'll show you exactly how to grow your practice online.</p>
+      <div style="display:flex;flex-direction:column;gap:20px;">
+        <div style="display:flex;align-items:center;gap:16px;">
+          <div style="width:36px;height:36px;border-radius:50%;background:var(--np-mint-tint);color:var(--np-teal);display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;">1</div>
+          <p style="font-weight:600;color:var(--np-navy);">Book a Free Demo (30 seconds)</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;">
+          <div style="width:36px;height:36px;border-radius:50%;background:var(--np-mint-tint);color:var(--np-teal);display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;">2</div>
+          <p style="font-weight:600;color:var(--np-navy);">We Configure Everything For You</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px;">
+          <div style="width:36px;height:36px;border-radius:50%;background:var(--np-mint-tint);color:var(--np-teal);display:flex;align-items:center;justify-content:center;font-weight:800;flex-shrink:0;">3</div>
+          <p style="font-weight:600;color:var(--np-navy);">Go Live in 7–14 Days</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:white;padding:40px;border-radius:24px;box-shadow:var(--shadow-xl);border:1px solid white;">
+      <h3 style="font-size:22px;font-weight:700;color:var(--np-navy);margin-bottom:24px;">Book Your Free Demo</h3>
       <div id="lp-form-wrap">
         <form data-lp-form hx-post="/contact/appointment/" hx-target="#lp-form-wrap" hx-swap="innerHTML">
           {% csrf_token %}
@@ -477,25 +477,81 @@ function cmsShotSlider() {
           <input type="hidden" name="utm_medium" value="">
           <input type="hidden" name="utm_campaign" value="">
           <input type="hidden" name="utm_content" value="">
+          <input type="hidden" name="specialty" value="{{ lp.specialty }}">
 
-          <div style="display:flex;flex-direction:column;gap:14px;">
-            <input type="text" name="full_name" required placeholder="Full Name *"
-              style="width:100%;padding:12px 14px;border:1px solid var(--border-default);border-radius:var(--radius);font-size:var(--text-sm);font-family:inherit;">
-            <input type="tel" name="phone" required placeholder="Phone Number *"
-              style="width:100%;padding:12px 14px;border:1px solid var(--border-default);border-radius:var(--radius);font-size:var(--text-sm);font-family:inherit;">
-            <input type="text" name="organization" required placeholder="Clinic Name *"
-              style="width:100%;padding:12px 14px;border:1px solid var(--border-default);border-radius:var(--radius);font-size:var(--text-sm);font-family:inherit;">
-            <input type="hidden" name="specialty" value="{{ lp.specialty }}">
+          <div style="display:flex;flex-direction:column;gap:20px;">
+            <div>
+              <label style="display:block;font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:6px;">Full Name *</label>
+              <input type="text" name="full_name" required placeholder="Dr. John Doe"
+                style="width:100%;padding:13px 16px;border:1px solid var(--np-border);border-radius:12px;font-size:14px;font-family:inherit;outline:none;">
+            </div>
+            <div>
+              <label style="display:block;font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:6px;">Phone Number *</label>
+              <input type="tel" name="phone" required placeholder="+91 98765 43210"
+                style="width:100%;padding:13px 16px;border:1px solid var(--np-border);border-radius:12px;font-size:14px;font-family:inherit;outline:none;">
+            </div>
+            <div>
+              <label style="display:block;font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:6px;">Clinic Name *</label>
+              <input type="text" name="organization" required placeholder="Your Clinic Name"
+                style="width:100%;padding:13px 16px;border:1px solid var(--np-border);border-radius:12px;font-size:14px;font-family:inherit;outline:none;">
+            </div>
           </div>
 
-          <button type="submit" class="btn btn-lg" style="width:100%;justify-content:center;margin-top:20px;background:{{ product.color }};border-color:{{ product.color }};color:white;">
+          <button type="submit" style="width:100%;background:var(--np-primary);color:white;padding:16px;border:none;border-radius:12px;font-size:16px;font-weight:700;margin-top:24px;cursor:pointer;box-shadow:0 12px 24px -8px rgba(34,29,208,.35);">
             Confirm Booking →
           </button>
-          <p style="font-size:11px;color:var(--text-muted);text-align:center;margin-top:10px;">🔒 Your information is 100% secure &amp; confidential · No credit card required · Free consultation</p>
+          <p style="text-align:center;font-size:11px;color:var(--text-muted);margin-top:12px;">🔒 Your information is 100% secure &amp; confidential · No credit card required · Free consultation</p>
         </form>
       </div>
     </div>
   </div>
 </section>
 
+<!-- ═══ PRODUCT GALLERY ═════════════════════════════════════════════════════ -->
+<section style="padding:80px 0;background:var(--np-surface-low);" id="gallery">
+  <div class="container" style="text-align:center;margin-bottom:48px;">
+    <h2 style="font-size:28px;font-weight:800;color:var(--np-navy);margin-bottom:12px;">A Glimpse into {{ product.name }}</h2>
+    <p style="color:var(--text-secondary);">Explore the powerful modules and clean interfaces designed for your clinic's success.</p>
+  </div>
+  <div class="container np-gallery">
+    {% for file, caption in gallery_shots %}
+    <div style="background:white;padding:12px;border-radius:16px;border:1px solid var(--np-border);box-shadow:var(--shadow-sm);">
+      <img src="{% static 'img/CuraCms/'|add:file %}" alt="{{ caption }}" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:10px;display:block;" loading="lazy">
+      <p style="margin-top:12px;text-align:center;font-size:13px;font-weight:600;color:var(--text-secondary);">{{ caption }}</p>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- ═══ FAQ ══════════════════════════════════════════════════════════════════ -->
+{% if product_faqs %}
+<section style="padding:80px 0;" id="faq">
+  <div class="container" style="max-width:760px;">
+    <h2 style="text-align:center;font-size:28px;font-weight:800;color:var(--np-navy);margin-bottom:40px;">Frequently Asked Questions</h2>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      {% for faq in product_faqs %}
+      <details class="np-faq" style="padding:22px 24px;background:var(--np-surface-low);border-radius:16px;border:1px solid var(--np-border);">
+        <summary style="list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;font-size:16px;font-weight:700;color:var(--np-navy);">
+          {{ faq.question }}
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;"><polyline points="6 9 12 15 18 9"/></svg>
+        </summary>
+        <p style="margin-top:14px;color:var(--text-secondary);line-height:1.6;">{{ faq.answer }}</p>
+      </details>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ═══ FOOTER ══════════════════════════════════════════════════════════════ -->
+<footer style="background:var(--np-navy);color:white;padding:56px 0 32px;">
+  <div class="container" style="text-align:center;">
+    <div style="display:inline-block;background:#F7F7F7;border-radius:12px;padding:10px 16px;margin-bottom:16px;">
+      <img src="{% static 'img/curasuite-logo-footer.png' %}" alt="{{ product.name }}" style="height:26px;width:auto;display:block;">
+    </div>
+    <p style="color:rgba(255,255,255,.55);font-size:14px;max-width:420px;margin-inline:auto;">Empowering Indian healthcare practitioners with world-class digital tools to grow their practice through efficiency and trust.</p>
+  </div>
+</footer>
+
+</div>
 {% endblock %}
