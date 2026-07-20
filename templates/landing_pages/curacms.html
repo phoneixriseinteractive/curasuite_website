@@ -3,72 +3,8 @@
 
 {% block extra_head %}
 <style>
-  /* Screenshot orbit — all screenshots continuously circling a centered, featured image */
-  .lp-orbit-wrap {
-    position: relative;
-    width: 100%;
-    max-width: 900px;
-    aspect-ratio: 1/1;
-    margin-inline: auto;
-    --orbit-r: 323px;
-    --orbit-size: 117px;
-  }
-  .lp-orbit-ring {
-    position: absolute; inset: 0;
-    animation: lp-orbit-spin 40s linear infinite;
-  }
-  .lp-orbit-item {
-    position: absolute; top: 50%; left: 50%;
-    width: var(--orbit-size); height: var(--orbit-size);
-    margin: calc(var(--orbit-size) / -2);
-  }
-  .lp-orbit-thumb {
-    width: 100%; height: 100%;
-    border-radius: 50%; overflow: hidden;
-    border: 3px solid white; box-shadow: var(--shadow-md);
-    animation: lp-orbit-spin-reverse 40s linear infinite;
-  }
-  .lp-orbit-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .lp-orbit-center {
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    width: 46%; z-index: 5;
-  }
-  @keyframes lp-orbit-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-  @keyframes lp-orbit-spin-reverse { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
-  @keyframes lp-spot-in { from { opacity: 0; transform: scale(.95); } to { opacity: 1; transform: scale(1); } }
-  .lp-spot-img { animation: lp-spot-in .5s ease; }
-  @media (max-width: 640px) {
-    .lp-orbit-wrap { --orbit-r: 230px; --orbit-size: 90px; max-width: 624px; }
-  }
-  @media (max-width: 420px) {
-    /* guard against thumbnails clipping off-screen on narrow phones */
-    .lp-orbit-wrap { --orbit-r: 110px; --orbit-size: 56px; max-width: 300px; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .lp-orbit-ring, .lp-orbit-thumb, .lp-spot-img { animation: none; }
-  }
-
-  @keyframes lp-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
-  @keyframes lp-float-sm { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
-  .lp-collage-frame {
-    display: block;
-    padding: 10px;
-    border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-xl);
-    animation: lp-float 3.4s ease-in-out infinite;
-  }
-  .lp-collage-frame img {
-    display: block;
-    width: 100%;
-    aspect-ratio: 16/10;
-    object-fit: cover;
-    border-radius: var(--radius-lg);
-    border: 1px solid rgba(0,0,0,.06);
-  }
-  .lp-collage-dot { animation: lp-float-sm 2.6s ease-in-out infinite; }
-  @media (prefers-reduced-motion: reduce) {
-    .lp-collage-frame, .lp-collage-dot { animation: none; }
-  }
+  .cms-shot-card { flex: 0 0 360px; }
+  @media (max-width: 480px) { .cms-shot-card { flex: 0 0 88vw; } }
 </style>
 {% endblock %}
 
@@ -125,39 +61,8 @@
         {% if lp.hero_image %}
         <img src="{{ lp.hero_image.url }}" alt="{{ lp.headline }}" style="border-radius:var(--radius-xl);box-shadow:var(--shadow-xl);width:100%;" loading="eager" fetchpriority="high">
         {% else %}
-        <div style="position:relative;aspect-ratio:4/4.2;">
-
-          <!-- decorative floating accents, matching-theme dots + sparkle -->
-          <svg class="lp-collage-dot" style="position:absolute;top:0;left:8%;width:22px;height:22px;color:{{ product.color }}55;z-index:4;animation-delay:.3s;" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0l2.3 8.7L23 11l-8.7 2.3L12 22l-2.3-8.7L1 11l8.7-2.3z"/></svg>
-          <div class="lp-collage-dot" style="position:absolute;top:8%;right:2%;width:16px;height:16px;border-radius:50%;background:var(--color-accent-400);z-index:4;animation-delay:1.1s;"></div>
-          <div class="lp-collage-dot" style="position:absolute;bottom:14%;left:-2%;width:12px;height:12px;border-radius:50%;background:var(--color-secondary-500);z-index:4;animation-delay:1.8s;"></div>
-
-          <!-- badge: arrow chip at the seam of the two top cards -->
-          <div class="lp-collage-dot" style="position:absolute;top:15%;left:65%;width:42px;height:42px;border-radius:50%;background:var(--color-secondary-600);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-lg);z-index:5;animation-delay:.5s;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
-          </div>
-
-          <!-- badge: rating pill at the seam of the two bottom-right cards -->
-          <div class="lp-collage-dot" style="position:absolute;top:53%;right:2%;display:flex;align-items:center;gap:4px;background:white;border-radius:var(--radius-full);padding:6px 12px;box-shadow:var(--shadow-lg);z-index:5;animation-delay:1.3s;">
-            <span style="color:#F59E0B;font-size:12px;letter-spacing:1px;">★★★★★</span>
-            <span style="font-size:12px;font-weight:700;color:var(--text-primary);">4.9</span>
-          </div>
-
-          <div style="position:absolute;top:2%;left:0;width:74%;z-index:1;transform:rotate(-3deg);">
-            <div class="lp-collage-frame" style="background:{{ product.color }}12;animation-delay:0s;">
-              <img src="{% static 'img/CuraCms/Admin_Panel/dashboard.png' %}" alt="CuraCMS admin dashboard" loading="eager">
-            </div>
-          </div>
-          <div style="position:absolute;top:28%;right:0;width:62%;z-index:2;transform:rotate(4deg);">
-            <div class="lp-collage-frame" style="background:var(--color-accent-100);animation-delay:.8s;">
-              <img src="{% static 'img/CuraCms/Admin_Panel/appointment-module.png' %}" alt="CuraCMS appointment booking module" loading="eager">
-            </div>
-          </div>
-          <div style="position:absolute;bottom:0;left:14%;width:56%;z-index:3;transform:rotate(-2deg);">
-            <div class="lp-collage-frame" style="background:var(--color-secondary-100);animation-delay:1.6s;">
-              <img src="{% static 'img/CuraCms/Admin_Panel/Ai-chat-assistant-1.png' %}" alt="CuraCMS AI chatbot assistant" loading="eager">
-            </div>
-          </div>
+        <div style="aspect-ratio:4/3;background:{{ product.color }}10;border-radius:var(--radius-xl);border:2px dashed {{ product.color }}35;display:flex;align-items:center;justify-content:center;">
+          {% if product.icon %}<img src="{{ product.icon.url }}" style="width:72px;height:72px;object-fit:contain;opacity:.5;">{% else %}<span style="font-size:56px;color:{{ product.color }}50;font-weight:800;">{{ product.name|slice:":1" }}</span>{% endif %}
         </div>
         {% endif %}
       </div>
@@ -345,56 +250,54 @@
     <h2 style="text-align:center;margin-bottom:8px;font-size:var(--text-2xl);">See {{ product.name }} in Action</h2>
     <p style="text-align:center;color:var(--text-secondary);margin-bottom:36px;">A clean, modern interface your patients will love.</p>
 
-    <script>
-      window.__cmsShots = [
-        {% for file, caption in cms_screenshots %}
-        { src: "{% static 'img/CuraCms/'|add:file %}", caption: "{{ caption|escapejs }}" }{% if not forloop.last %},{% endif %}
-        {% endfor %}
-      ];
-    </script>
+    <div x-data="cmsShotSlider()" x-init="start()" @mouseenter="stop()" @mouseleave="start()" style="position:relative;">
 
-    <div class="lp-orbit-wrap">
+      <div style="overflow:hidden;">
+        <div x-ref="track" :style="`display:flex;gap:20px;transition:transform .6s cubic-bezier(.4,0,.2,1);transform:translateX(-${offset}px);`">
 
-      <!-- All screenshots, continuously orbiting in a ring (pure CSS — each thumb
-           counter-rotates at the same speed so it stays upright while it orbits) -->
-      <div class="lp-orbit-ring">
-        {% for file, caption in cms_screenshots %}
-        <div class="lp-orbit-item" style="transform:rotate({% widthratio forloop.counter0 cms_screenshots|length 360 %}deg) translateX(var(--orbit-r));">
-          <div class="lp-orbit-thumb">
-            <img src="{% static 'img/CuraCms/'|add:file %}" alt="{{ caption }}" loading="lazy">
+          {% for file, caption in cms_screenshots %}
+          <div class="cms-shot-card">
+            <img src="{% static 'img/cms-screen-shots/'|add:file %}" alt="{{ caption }} — {{ product.name }}"
+                 style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:var(--radius-lg);border:1px solid var(--border-default);box-shadow:var(--shadow-sm);" loading="lazy">
+            <p style="margin-top:10px;text-align:center;font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--text-secondary);">{{ caption }}</p>
           </div>
+          {% endfor %}
+
         </div>
-        {% endfor %}
       </div>
 
-      <!-- Large featured screenshot, centered, still cycling on its own timer -->
-      <div class="lp-orbit-center" x-data="cmsSpotlight()" x-init="start()" @mouseenter="stop()" @mouseleave="start()">
-        <template x-for="item in [items[0]]" :key="item.src">
-          <div class="lp-spot-img">
-            <img :src="item.src" :alt="item.caption + ' — {{ product.name }}'"
-                 style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:var(--radius-xl);border:1px solid var(--border-default);box-shadow:var(--shadow-xl);">
-          </div>
-        </template>
-        <p x-text="items[0].caption" style="margin-top:10px;text-align:center;font-size:var(--text-sm);font-weight:var(--font-semi);color:var(--text-secondary);"></p>
-      </div>
+      <!-- Prev / Next -->
+      <button type="button" @click="stop(); prev(); start();" aria-label="Previous screenshots"
+        style="position:absolute;top:90px;left:-8px;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;background:white;border:1px solid var(--border-default);box-shadow:var(--shadow-md);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <button type="button" @click="stop(); next(); start();" aria-label="Next screenshots"
+        style="position:absolute;top:90px;right:-8px;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;background:white;border:1px solid var(--border-default);box-shadow:var(--shadow-md);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
 
     </div>
   </div>
 </section>
 
 <script>
-function cmsSpotlight() {
+function cmsShotSlider() {
   return {
-    items: window.__cmsShots.slice(),
+    index: 0,
+    total: {{ cms_screenshots|length }},
     timer: null,
-    rotate() { this.items.push(this.items.shift()); },
-    select(i) {
-      for (let k = 0; k < i; k++) this.items.push(this.items.shift());
-      this.start();
+    cardStep() {
+      const track = this.$refs.track;
+      if (!track || !track.firstElementChild) return 380;
+      const gap = parseFloat(getComputedStyle(track).gap) || 0;
+      return track.firstElementChild.offsetWidth + gap;
     },
+    get offset() { return this.index * this.cardStep(); },
+    next() { this.index = this.index >= this.total - 1 ? 0 : this.index + 1; },
+    prev() { this.index = this.index <= 0 ? this.total - 1 : this.index - 1; },
     start() {
       this.stop();
-      this.timer = setInterval(() => this.rotate(), 3500);
+      this.timer = setInterval(() => this.next(), 3000);
     },
     stop() {
       if (this.timer) { clearInterval(this.timer); this.timer = null; }
