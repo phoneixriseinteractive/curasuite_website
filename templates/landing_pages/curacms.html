@@ -30,18 +30,26 @@
   @media (max-width: 900px) { .np-nav-links, .np-nav-phone { display: none; } }
   @media (max-width: 560px) { .np-nav-demo { display: none; } }
 
-  /* Bento benefits grid */
-  .np-bento { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-  .np-bento-wide { grid-column: span 2; }
-  @media (max-width: 900px) {
-    .np-bento { grid-template-columns: 1fr 1fr; }
-  }
+  /* Bento benefits grid — top row (wide + indigo highlight) is its own 2-col
+     grid, separate from the "rest" cards below, so the rest form a clean 2x2
+     (card 4 lands directly under card 2, not under card 1). */
+  .np-bento-top { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-bottom: 24px; }
+  .np-bento-rest { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
   @media (max-width: 640px) {
-    .np-bento { grid-template-columns: 1fr; }
-    .np-bento-wide { grid-column: span 1; }
+    .np-bento-top, .np-bento-rest { grid-template-columns: 1fr; }
   }
 
-  .np-modules { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 32px; }
+  .np-modules { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 24px; }
+  .np-module-card {
+    padding: 24px;
+    background: white;
+    border: 1px solid var(--np-border);
+    /* rounded on 2 opposite corners only (top-left / bottom-right), square on the other 2 */
+    border-radius: 18px 0 18px 0;
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow .2s ease, transform .2s ease;
+  }
+  .np-module-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
   .np-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
 
   .np-faq summary::-webkit-details-marker { display: none; }
@@ -55,6 +63,19 @@
     color: var(--np-mint);
     white-space: pre;
     overflow-x: auto;
+  }
+
+  .np-footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
+  .np-footer-grid a { color: rgba(255,255,255,.65); text-decoration: none; font-size: 14px; }
+  .np-footer-grid a:hover { color: white; }
+  .np-footer-social {
+    width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,.06);
+    display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,.7);
+  }
+  .np-footer-social:hover { background: var(--np-primary); color: white; }
+  @media (max-width: 700px) {
+    .np-footer-grid { grid-template-columns: 1fr 1fr; }
+    .np-footer-grid > div:first-child { grid-column: span 2; }
   }
 </style>
 {% endblock %}
@@ -197,42 +218,49 @@
     <p style="color:var(--np-primary);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">Why Doctors Choose {{ product.name }}</p>
     <h2 style="font-size:32px;font-weight:800;color:var(--np-navy);">One Platform, Zero Guesswork</h2>
   </div>
-  <div class="container np-bento">
-    {% for b in benefits %}
-      {% if forloop.counter0 == 0 %}
-      <div class="np-bento-wide" style="padding:32px;background:white;border-radius:20px;border:1px solid var(--np-border);box-shadow:var(--shadow-sm);display:flex;flex-direction:column;justify-content:space-between;">
-        <div>
-          <div style="width:48px;height:48px;border-radius:12px;background:var(--np-mint-tint);color:var(--np-teal);display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
-            <span style="font-size:26px;">{{ b.icon }}</span>
+  <div class="container">
+    <div class="np-bento-top">
+      {% for b in benefits %}
+        {% if forloop.counter0 == 0 %}
+        <div style="padding:32px;background:white;border-radius:20px;border:1px solid var(--np-border);box-shadow:var(--shadow-sm);display:flex;flex-direction:column;justify-content:space-between;">
+          <div>
+            <div style="width:48px;height:48px;border-radius:12px;background:var(--np-mint-tint);color:var(--np-teal);display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
+              <span style="font-size:26px;">{{ b.icon }}</span>
+            </div>
+            <h3 style="font-size:22px;font-weight:700;color:var(--np-navy);margin-bottom:10px;">{{ b.title }}</h3>
+            <p style="color:var(--text-secondary);max-width:460px;">{{ b.description }}</p>
           </div>
-          <h3 style="font-size:22px;font-weight:700;color:var(--np-navy);margin-bottom:10px;">{{ b.title }}</h3>
-          <p style="color:var(--text-secondary);max-width:460px;">{{ b.description }}</p>
-        </div>
-        <div style="margin-top:28px;border-radius:14px;overflow:hidden;border:1px solid var(--np-border);">
-          <img src="{% static 'img/CuraCms/Admin_Panel/appointment-module.png' %}" alt="Appointment management" style="width:100%;display:block;" loading="lazy">
-        </div>
-      </div>
-      {% elif forloop.counter0 == 1 %}
-      <div style="padding:32px;background:var(--np-primary);color:white;border-radius:20px;box-shadow:var(--shadow-lg);display:flex;flex-direction:column;justify-content:space-between;">
-        <div>
-          <div style="width:48px;height:48px;border-radius:12px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
-            <span style="font-size:26px;">{{ b.icon }}</span>
+          <div style="margin-top:28px;border-radius:14px;overflow:hidden;border:1px solid var(--np-border);">
+            <img src="{% static 'img/CuraCms/Admin_Panel/appointment-module.png' %}" alt="Appointment management" style="width:100%;display:block;" loading="lazy">
           </div>
-          <h3 style="font-size:22px;font-weight:700;margin-bottom:10px;">{{ b.title }}</h3>
-          <p style="color:rgba(255,255,255,.8);">{{ b.description }}</p>
         </div>
-        <div style="margin-top:28px;background:rgba(255,255,255,.1);padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,.15);font-style:italic;font-size:13px;">"Thinking…"</div>
-      </div>
-      {% else %}
-      <div style="padding:32px;background:white;border-radius:20px;border:1px solid var(--np-border);box-shadow:var(--shadow-sm);">
-        <div style="width:44px;height:44px;border-radius:12px;background:var(--np-surface-high);color:var(--np-primary);display:flex;align-items:center;justify-content:center;margin-bottom:18px;">
-          <span style="font-size:22px;">{{ b.icon }}</span>
+        {% elif forloop.counter0 == 1 %}
+        <div style="padding:32px;background:var(--np-primary);color:white;border-radius:20px;box-shadow:var(--shadow-lg);display:flex;flex-direction:column;justify-content:space-between;">
+          <div>
+            <div style="width:48px;height:48px;border-radius:12px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
+              <span style="font-size:26px;">{{ b.icon }}</span>
+            </div>
+            <h3 style="font-size:22px;font-weight:700;margin-bottom:10px;">{{ b.title }}</h3>
+            <p style="color:rgba(255,255,255,.8);">{{ b.description }}</p>
+          </div>
+          <div style="margin-top:28px;background:rgba(255,255,255,.1);padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,.15);font-style:italic;font-size:13px;">"Thinking…"</div>
         </div>
-        <h3 style="font-size:18px;font-weight:700;color:var(--np-navy);margin-bottom:8px;">{{ b.title }}</h3>
-        <p style="color:var(--text-secondary);font-size:14px;line-height:1.6;">{{ b.description }}</p>
-      </div>
-      {% endif %}
-    {% endfor %}
+        {% endif %}
+      {% endfor %}
+    </div>
+    <div class="np-bento-rest">
+      {% for b in benefits %}
+        {% if forloop.counter0 > 1 %}
+        <div style="padding:32px;background:white;border-radius:20px;border:1px solid var(--np-border);box-shadow:var(--shadow-sm);">
+          <div style="width:44px;height:44px;border-radius:12px;background:var(--np-surface-high);color:var(--np-primary);display:flex;align-items:center;justify-content:center;margin-bottom:18px;">
+            <span style="font-size:22px;">{{ b.icon }}</span>
+          </div>
+          <h3 style="font-size:18px;font-weight:700;color:var(--np-navy);margin-bottom:8px;">{{ b.title }}</h3>
+          <p style="color:var(--text-secondary);font-size:14px;line-height:1.6;">{{ b.description }}</p>
+        </div>
+        {% endif %}
+      {% endfor %}
+    </div>
   </div>
 </section>
 {% endif %}
@@ -246,73 +274,73 @@
   </div>
   <div class="container np-modules">
 
-    <div>
+    <div class="np-module-card">
       <div style="width:40px;height:40px;border-radius:10px;background:var(--np-surface-low);color:var(--np-primary);display:flex;align-items:center;justify-content:center;margin-bottom:16px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
       <h4 style="font-size:16px;font-weight:700;color:var(--np-navy);margin-bottom:8px;">Marketing CMS</h4>
       <p style="font-size:14px;color:var(--text-secondary);line-height:1.6;">Publish SEO-optimized landing, service, and location pages in minutes.</p>
     </div>
 
-    <div>
+    <div class="np-module-card">
       <div style="width:40px;height:40px;border-radius:10px;background:var(--np-surface-low);color:var(--np-primary);display:flex;align-items:center;justify-content:center;margin-bottom:16px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3h6a1 1 0 0 1 1 1v2H8V4a1 1 0 0 1 1-1z"/><rect x="3" y="6" width="18" height="14" rx="2"/><line x1="12" y1="10" x2="12" y2="16"/><line x1="9" y1="13" x2="15" y2="13"/></svg></div>
       <h4 style="font-size:16px;font-weight:700;color:var(--np-navy);margin-bottom:8px;">Treatment Listings</h4>
       <p style="font-size:14px;color:var(--text-secondary);line-height:1.6;">List every procedure you offer with clear, patient-friendly descriptions.</p>
     </div>
 
-    <div>
+    <div class="np-module-card">
       <div style="width:40px;height:40px;border-radius:10px;background:var(--np-surface-low);color:var(--np-primary);display:flex;align-items:center;justify-content:center;margin-bottom:16px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M6 16c0-1.7 1.3-3 3-3s3 1.3 3 3"/><line x1="14" y1="8" x2="18" y2="8"/><line x1="14" y1="12" x2="18" y2="12"/></svg></div>
       <h4 style="font-size:16px;font-weight:700;color:var(--np-navy);margin-bottom:8px;">Doctor Profiles</h4>
       <p style="font-size:14px;color:var(--text-secondary);line-height:1.6;">Showcase qualifications and specializations with rich profile pages.</p>
     </div>
 
-    <div>
+    <div class="np-module-card">
       <div style="width:40px;height:40px;border-radius:10px;background:var(--np-surface-low);color:var(--np-primary);display:flex;align-items:center;justify-content:center;margin-bottom:16px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
       <h4 style="font-size:16px;font-weight:700;color:var(--np-navy);margin-bottom:8px;">Social Integration</h4>
       <p style="font-size:14px;color:var(--text-secondary);line-height:1.6;">WhatsApp and Facebook Messenger built directly into your site.</p>
     </div>
 
-    <div>
+    <div class="np-module-card">
       <div style="width:40px;height:40px;border-radius:10px;background:var(--np-surface-low);color:var(--np-primary);display:flex;align-items:center;justify-content:center;margin-bottom:16px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="14" height="14" rx="2"/><polygon points="9 9 14 12 9 15"/></svg></div>
       <h4 style="font-size:16px;font-weight:700;color:var(--np-navy);margin-bottom:8px;">Patient Education Videos</h4>
       <p style="font-size:14px;color:var(--text-secondary);line-height:1.6;">Embed videos explaining procedures to ease patient anxiety.</p>
     </div>
 
-    <div>
+    <div class="np-module-card">
       <div style="width:40px;height:40px;border-radius:10px;background:var(--np-surface-low);color:var(--np-primary);display:flex;align-items:center;justify-content:center;margin-bottom:16px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 11a4 4 0 1 0-4-4"/><path d="M17 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/><path d="M2 21v-2a4 4 0 0 1 4-4h2a4 4 0 0 1 4 4v2"/></svg></div>
       <h4 style="font-size:16px;font-weight:700;color:var(--np-navy);margin-bottom:8px;">Patient CRM</h4>
       <p style="font-size:14px;color:var(--text-secondary);line-height:1.6;">Automatically track visitors and follow up with those who didn't book.</p>
     </div>
 
-    <div>
+    <div class="np-module-card">
       <div style="width:40px;height:40px;border-radius:10px;background:var(--np-surface-low);color:var(--np-primary);display:flex;align-items:center;justify-content:center;margin-bottom:16px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="15" r="4"/><line x1="10.5" y1="12.5" x2="19" y2="4"/><line x1="16" y1="8" x2="19" y2="5"/><line x1="18" y1="10" x2="21" y2="7"/></svg></div>
       <h4 style="font-size:16px;font-weight:700;color:var(--np-navy);margin-bottom:8px;">Role-Based Access</h4>
       <p style="font-size:14px;color:var(--text-secondary);line-height:1.6;">Separate logins for receptionists, doctors, and staff.</p>
     </div>
 
-    <div>
+    <div class="np-module-card">
       <div style="width:40px;height:40px;border-radius:10px;background:var(--np-surface-low);color:var(--np-primary);display:flex;align-items:center;justify-content:center;margin-bottom:16px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
       <h4 style="font-size:16px;font-weight:700;color:var(--np-navy);margin-bottom:8px;">Built-in SEO</h4>
       <p style="font-size:14px;color:var(--text-secondary);line-height:1.6;">Meta controls and schema markup for every single page.</p>
     </div>
 
-    <div>
+    <div class="np-module-card">
       <div style="width:40px;height:40px;border-radius:10px;background:var(--np-surface-low);color:var(--np-primary);display:flex;align-items:center;justify-content:center;margin-bottom:16px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><polyline points="9 16 11 18 15 14"/></svg></div>
       <h4 style="font-size:16px;font-weight:700;color:var(--np-navy);margin-bottom:8px;">Online Booking</h4>
       <p style="font-size:14px;color:var(--text-secondary);line-height:1.6;">Real-time slots with instant confirmations, 24/7.</p>
     </div>
 
-    <div>
+    <div class="np-module-card">
       <div style="width:40px;height:40px;border-radius:10px;background:var(--np-surface-low);color:var(--np-primary);display:flex;align-items:center;justify-content:center;margin-bottom:16px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></div>
       <h4 style="font-size:16px;font-weight:700;color:var(--np-navy);margin-bottom:8px;">Blog &amp; Content</h4>
       <p style="font-size:14px;color:var(--text-secondary);line-height:1.6;">Publish health articles to build authority and organic traffic.</p>
     </div>
 
-    <div>
+    <div class="np-module-card">
       <div style="width:40px;height:40px;border-radius:10px;background:var(--np-surface-low);color:var(--np-primary);display:flex;align-items:center;justify-content:center;margin-bottom:16px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg></div>
       <h4 style="font-size:16px;font-weight:700;color:var(--np-navy);margin-bottom:8px;">Site Settings</h4>
       <p style="font-size:14px;color:var(--text-secondary);line-height:1.6;">Decide what's public — hours, contact info, social links.</p>
     </div>
 
-    <div>
+    <div class="np-module-card" style="border-color:var(--np-primary)30;">
       <div style="width:40px;height:40px;border-radius:10px;background:var(--np-primary)15;color:var(--np-primary);display:flex;align-items:center;justify-content:center;margin-bottom:16px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="9" width="16" height="10" rx="2"/><circle cx="9" cy="14" r="1.2"/><circle cx="15" cy="14" r="1.2"/><line x1="12" y1="5" x2="12" y2="9"/><circle cx="12" cy="3.5" r="1.5"/></svg></div>
       <h4 style="font-size:16px;font-weight:700;color:var(--np-navy);margin-bottom:8px;">AI Chat Assistant</h4>
       <p style="font-size:14px;color:var(--text-secondary);line-height:1.6;">Answers patient questions 24/7 — try it, bottom-left of this page.</p>
@@ -422,8 +450,8 @@ X_FRAME_OPTIONS = 'DENY'
     <h2 style="font-size:30px;font-weight:800;color:var(--np-navy);">Simple, Transparent Pricing</h2>
     <p style="color:var(--text-secondary);margin-top:8px;">No setup fees. Cancel anytime. 30-day free trial.</p>
   </div>
-  <div class="container" style="max-width:900px;">
-    <div class="grid grid-2" style="gap:24px;">
+  <div class="container" style="max-width:1100px;">
+    <div class="grid grid-3" style="gap:24px;">
       {% for tier in pricing_tiers %}
       <div style="background:white;padding:40px;border-radius:24px;border:{% if tier.is_featured %}2px solid var(--np-primary){% else %}1px solid var(--np-border){% endif %};box-shadow:{% if tier.is_featured %}var(--shadow-xl){% else %}var(--shadow-sm){% endif %};position:relative;">
         {% if tier.is_featured %}
@@ -544,12 +572,47 @@ X_FRAME_OPTIONS = 'DENY'
 {% endif %}
 
 <!-- ═══ FOOTER ══════════════════════════════════════════════════════════════ -->
-<footer style="background:var(--np-navy);color:white;padding:56px 0 32px;">
-  <div class="container" style="text-align:center;">
-    <div style="display:inline-block;background:#F7F7F7;border-radius:12px;padding:10px 16px;margin-bottom:16px;">
-      <img src="{% static 'img/curasuite-logo-footer.png' %}" alt="{{ product.name }}" style="height:26px;width:auto;display:block;">
+<footer style="background:var(--np-navy);color:white;padding:64px 0 32px;">
+  <div class="container np-footer-grid">
+    <div>
+      <div style="display:inline-block;background:#F7F7F7;border-radius:12px;padding:10px 16px;margin-bottom:20px;">
+        <img src="{% static 'img/curasuite-logo-footer.png' %}" alt="{{ product.name }}" style="height:26px;width:auto;display:block;">
+      </div>
+      <p style="color:rgba(255,255,255,.55);font-size:14px;max-width:340px;margin-bottom:24px;">Empowering Indian healthcare practitioners with world-class digital tools to grow their practice through efficiency and trust.</p>
+      {% if SOCIAL_LINKS %}
+      <div style="display:flex;gap:12px;">
+        {% if SOCIAL_LINKS.linkedin %}<a class="np-footer-social" href="{{ SOCIAL_LINKS.linkedin }}" target="_blank" rel="noopener" aria-label="LinkedIn"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>{% endif %}
+        {% if SOCIAL_LINKS.twitter_x %}<a class="np-footer-social" href="{{ SOCIAL_LINKS.twitter_x }}" target="_blank" rel="noopener" aria-label="X / Twitter"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>{% endif %}
+        {% if SOCIAL_LINKS.facebook %}<a class="np-footer-social" href="{{ SOCIAL_LINKS.facebook }}" target="_blank" rel="noopener" aria-label="Facebook"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg></a>{% endif %}
+        {% if SOCIAL_LINKS.instagram %}<a class="np-footer-social" href="{{ SOCIAL_LINKS.instagram }}" target="_blank" rel="noopener" aria-label="Instagram"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>{% endif %}
+        {% if SOCIAL_LINKS.youtube %}<a class="np-footer-social" href="{{ SOCIAL_LINKS.youtube }}" target="_blank" rel="noopener" aria-label="YouTube"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/></svg></a>{% endif %}
+      </div>
+      {% endif %}
     </div>
-    <p style="color:rgba(255,255,255,.55);font-size:14px;max-width:420px;margin-inline:auto;">Empowering Indian healthcare practitioners with world-class digital tools to grow their practice through efficiency and trust.</p>
+
+    <div>
+      <h6 style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#a8a6ff;margin-bottom:20px;">Product</h6>
+      <ul style="display:flex;flex-direction:column;gap:14px;list-style:none;">
+        {% if benefits %}<li><a href="#features">Features</a></li>{% endif %}
+        <li><a href="#modules">Modules</a></li>
+        <li><a href="#security">Security</a></li>
+        {% if pricing_tiers %}<li><a href="#pricing">Pricing</a></li>{% endif %}
+      </ul>
+    </div>
+
+    <div>
+      <h6 style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#a8a6ff;margin-bottom:20px;">Support</h6>
+      <ul style="display:flex;flex-direction:column;gap:14px;list-style:none;">
+        <li><a href="mailto:hello@curasuite.com">Contact Support</a></li>
+        <li><a href="/privacy-policy/">Privacy Policy</a></li>
+        <li><a href="/terms/">Terms of Use</a></li>
+        {% if product_faqs %}<li><a href="#faq">FAQ</a></li>{% endif %}
+      </ul>
+    </div>
+  </div>
+
+  <div class="container" style="border-top:1px solid rgba(255,255,255,.1);padding-top:24px;">
+    <p style="color:rgba(255,255,255,.4);font-size:12px;">© {% now "Y" %} PhoenixRise Interactive Pvt. Ltd. Bank-grade security for Indian Doctors.</p>
   </div>
 </footer>
 
