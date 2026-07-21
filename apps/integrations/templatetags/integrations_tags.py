@@ -137,14 +137,14 @@ def chatbot_widget(context):
   </button>
   <!-- Chat window -->
   <div x-show="open" x-cloak x-transition
-    style="position:absolute;bottom:68px;left:0;width:340px;max-height:480px;background:white;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.15);display:flex;flex-direction:column;overflow:hidden;border:1px solid var(--border-default);">
+    style="position:absolute;bottom:68px;left:0;width:340px;max-width:calc(100vw - 48px);height:min(480px, calc(100vh - 140px));background:white;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.15);display:flex;flex-direction:column;overflow:hidden;border:1px solid var(--border-default);">
     <!-- Header -->
-    <div style="background:var(--color-primary-600);color:white;padding:14px 16px;display:flex;align-items:center;gap:10px;">
+    <div style="flex-shrink:0;background:var(--color-primary-600);color:white;padding:14px 16px;display:flex;align-items:center;gap:10px;">
       <div style="width:36px;height:36px;background:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;">🤖</div>
       <div><div style="font-weight:600;font-size:14px;">{name}</div><div style="font-size:11px;opacity:.8;">Online</div></div>
     </div>
     <!-- Messages -->
-    <div id="cs-chat-messages" style="flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;">
+    <div id="cs-chat-messages" style="flex:1;min-height:0;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;">
       <div style="background:var(--color-primary-50);border-radius:12px 12px 12px 0;padding:10px 14px;font-size:13px;max-width:85%;color:var(--text-primary);">{greeting}</div>
       <template x-for="msg in messages" :key="msg.id">
         <div :style="msg.role==='user' ? 'align-self:flex-end;' : 'align-self:flex-start;'">
@@ -159,7 +159,7 @@ def chatbot_widget(context):
       </div>
     </div>
     <!-- Input -->
-    <div style="padding:12px;border-top:1px solid var(--border-default);display:flex;gap:8px;">
+    <div style="flex-shrink:0;padding:12px;border-top:1px solid var(--border-default);display:flex;gap:8px;">
       <input x-model="inputText" @keydown.enter.prevent="sendMessage()"
         type="text" placeholder="Type a message…"
         style="flex:1;border:1px solid var(--border-strong);border-radius:8px;padding:8px 12px;font-size:13px;outline:none;"
