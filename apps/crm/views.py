@@ -8,12 +8,17 @@ from django.contrib import messages
 from .forms import ContactForm, DemoRequestForm, AppointmentForm
 from .services import capture_lead, create_demo_request
 from .models import Lead
+from apps.integrations.services import verify_captcha
+
+CAPTCHA_ERROR = "We couldn't verify you're human. Please try again."
 
 logger = logging.getLogger(__name__)
 
 
 def contact_page(request):
     form = DemoRequestForm(request.POST or None)
+    if request.method == "POST" and form.is_valid() and not verify_captcha(request):
+        form.add_error(None, CAPTCHA_ERROR)
     if request.method == "POST" and form.is_valid():
         d = form.cleaned_data
         lead, created = capture_lead(
@@ -50,6 +55,8 @@ def contact_success(request):
 def demo_request_htmx(request):
     """HTMX endpoint — demo form submitted inline from any page."""
     form = DemoRequestForm(request.POST)
+    if form.is_valid() and not verify_captcha(request):
+        form.add_error(None, CAPTCHA_ERROR)
     if form.is_valid():
         d = form.cleaned_data
         lead, _ = capture_lead(
@@ -90,6 +97,8 @@ def appointment_widget_submit(request):
     Always returns an HTMX partial (widget is HTMX-only, no full-page fallback).
     """
     form = AppointmentForm(request.POST)
+    if form.is_valid() and not verify_captcha(request):
+        form.add_error(None, CAPTCHA_ERROR)
     if form.is_valid():
         d = form.cleaned_data
         source = _resolve_source(d.get("utm_source", ""), d.get("source", ""))

@@ -106,7 +106,7 @@
 <!-- ═══ NAV — in-page anchors only, no exit links off this landing page ══════ -->
 <nav style="background:rgba(248,249,255,.92);backdrop-filter:blur(8px);position:sticky;top:0;z-index:var(--z-sticky);border-bottom:1px solid var(--np-border, #E2E8F0);">
   <div class="container" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
-    <img src="{% static 'img/curasuite-logo-header.png' %}" alt="CuraSuite" class="np-nav-logo">
+    <img src="{% static 'img/curasuite-logo-header.webp' %}" alt="CuraSuite" width="320" height="127" class="np-nav-logo">
 
     <div class="np-nav-links" style="font-size:14px;font-weight:500;color:var(--text-secondary);">
       {% if benefits %}<a href="#features" style="color:inherit;text-decoration:none;">Features</a>{% endif %}
@@ -184,7 +184,7 @@
         {% if lp.hero_image %}
         <img src="{{ lp.hero_image.url }}" alt="{{ lp.headline }}" style="width:100%;display:block;" loading="eager" fetchpriority="high">
         {% else %}
-        <img src="{% static 'img/CuraCms/Front_Pages/profile-hero-section.png' %}" alt="{{ product.name }} doctor profile page" style="width:100%;display:block;" loading="eager" fetchpriority="high">
+        <img src="{% static 'img/CuraCms/Front_Pages/profile-hero-section.webp' %}" alt="{{ product.name }} doctor profile page" width="1100" height="506" style="width:100%;height:auto;display:block;" loading="eager" fetchpriority="high">
         {% endif %}
       </div>
       <!-- Floating trust badge -->
@@ -253,7 +253,7 @@
             <p style="color:var(--text-secondary);max-width:460px;">{{ b.description }}</p>
           </div>
           <div style="margin-top:28px;border-radius:14px;overflow:hidden;border:1px solid var(--np-border);">
-            <img src="{% static 'img/CuraCms/Admin_Panel/appointment-module.png' %}" alt="Appointment management" style="width:100%;display:block;" loading="lazy">
+            <img src="{% static 'img/CuraCms/Admin_Panel/appointment-module.webp' %}" alt="Appointment management" width="1000" height="456" style="width:100%;height:auto;display:block;" loading="lazy">
           </div>
         </div>
         {% elif forloop.counter0 == 1 %}
@@ -547,6 +547,8 @@ X_FRAME_OPTIONS = 'DENY'
             </div>
           </div>
 
+          {% include "components/captcha_field.html" %}
+
           <button type="submit" style="width:100%;background:var(--np-primary);color:white;padding:16px;border:none;border-radius:12px;font-size:16px;font-weight:700;margin-top:24px;cursor:pointer;box-shadow:0 12px 24px -8px rgba(34,29,208,.35);">
             Confirm Booking →
           </button>
@@ -566,7 +568,7 @@ X_FRAME_OPTIONS = 'DENY'
   <div class="container np-gallery">
     {% for file, caption in gallery_shots %}
     <div style="background:white;padding:12px;border-radius:16px;border:1px solid var(--np-border);box-shadow:var(--shadow-sm);">
-      <img src="{% static 'img/CuraCms/'|add:file %}" alt="{{ caption }}" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:10px;display:block;" loading="lazy">
+      <img src="{% static 'img/CuraCms/'|add:file %}" alt="{{ caption }}" width="700" height="320" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:10px;display:block;" loading="lazy">
       <p style="margin-top:12px;text-align:center;font-size:13px;font-weight:600;color:var(--text-secondary);">{{ caption }}</p>
     </div>
     {% endfor %}
@@ -598,7 +600,7 @@ X_FRAME_OPTIONS = 'DENY'
   <div class="container np-footer-grid">
     <div>
       <div style="display:inline-block;background:#F7F7F7;border-radius:12px;padding:10px 16px;margin-bottom:20px;">
-        <img src="{% static 'img/curasuite-logo-footer.png' %}" alt="{{ product.name }}" style="height:26px;width:auto;display:block;">
+        <img src="{% static 'img/curasuite-logo-footer.webp' %}" alt="{{ product.name }}" width="420" height="93" style="height:26px;width:auto;display:block;">
       </div>
       <p style="color:rgba(255,255,255,.55);font-size:14px;max-width:340px;margin-bottom:24px;">Empowering Indian healthcare practitioners with world-class digital tools to grow their practice through efficiency and trust.</p>
       {% if SOCIAL_LINKS %}

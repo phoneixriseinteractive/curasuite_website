@@ -1,11 +1,13 @@
 {# Re-rendered on validation error — mirrors the field set in appointment_widget.html #}
 <div style="background:var(--color-error-bg);border:1px solid var(--color-error-border);color:var(--color-error-text);padding:14px 16px;border-radius:var(--radius);margin-bottom:16px;font-size:var(--text-sm);">
+  {% for error in form.non_field_errors %}<div>{{ error }}</div>{% endfor %}
   {% for field in form %}{% for error in field.errors %}<div>{{ field.label }}: {{ error }}</div>{% endfor %}{% endfor %}
   {% if not form.errors %}Please fill in all required fields.{% endif %}
 </div>
 <form hx-post="/contact/appointment/" hx-target="#appointment-form-wrap" hx-swap="innerHTML">
   {% csrf_token %}
   <input type="hidden" name="product" value="{{ product }}">
+  {% include "components/captcha_field.html" %}
   <p style="font-size:var(--text-sm);color:var(--text-secondary);">Please go back and try again, or refresh the page.</p>
   <button type="submit" class="btn btn-secondary" style="width:100%;justify-content:center;margin-top:12px;">Retry</button>
 </form>

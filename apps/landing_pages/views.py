@@ -6,15 +6,15 @@ from .selectors import get_landing_page_by_slug, get_testimonials_for_landing_pa
 # Real CuraCMS product screenshots for the "A Glimpse into CuraCMS" gallery on
 # curacms.html — (filename relative to static/img/CuraCms/, caption).
 GALLERY_SHOTS = [
-    ("Admin_Panel/doctor-profile.png",        "Doctor Profile Management"),
-    ("Front_Pages/videos.png",                "Patient Education Videos"),
-    ("Admin_Panel/treatment-module.png",      "Treatment & Procedure Listings"),
-    ("Admin_Panel/pages-module.png",          "Marketing CMS & Pages"),
-    ("Admin_Panel/login-panel.png",           "Secure Admin Access"),
-    ("Admin_Panel/social-chat-assistant.png", "WhatsApp & Social Integration"),
-    ("Admin_Panel/Ai-chat-assistant-1.png",   "AI Chatbot Configuration"),
-    ("Admin_Panel/website-settings.png",      "Clinic Branding & Settings"),
-    ("Admin_Panel/seo-settings.png",          "Built-in SEO Controls"),
+    ("Admin_Panel/doctor-profile.webp",        "Doctor Profile Management"),
+    ("Front_Pages/videos.webp",                "Patient Education Videos"),
+    ("Admin_Panel/treatment-module.webp",      "Treatment & Procedure Listings"),
+    ("Admin_Panel/pages-module.webp",          "Marketing CMS & Pages"),
+    ("Admin_Panel/login-panel.webp",           "Secure Admin Access"),
+    ("Admin_Panel/social-chat-assistant.webp", "WhatsApp & Social Integration"),
+    ("Admin_Panel/Ai-chat-assistant-1.webp",   "AI Chatbot Configuration"),
+    ("Admin_Panel/website-settings.webp",      "Clinic Branding & Settings"),
+    ("Admin_Panel/seo-settings.webp",          "Built-in SEO Controls"),
 ]
 
 

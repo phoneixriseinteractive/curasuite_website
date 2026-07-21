@@ -262,6 +262,8 @@
             <input type="hidden" name="specialty" value="pathology_lab">
           </div>
 
+          {% include "components/captcha_field.html" %}
+
           <button type="submit" class="btn btn-lg" style="width:100%;justify-content:center;margin-top:20px;background:{{ product.color }};border-color:{{ product.color }};color:white;">
             Confirm Booking →
           </button>

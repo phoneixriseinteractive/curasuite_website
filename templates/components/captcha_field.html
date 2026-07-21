@@ -1,0 +1,14 @@
+{% comment %}
+CuraSuite — CAPTCHA field, dropped into any lead-capture form.
+Paired with `{% captcha_scripts %}` (loaded once in <head>, base.html/_base_lp.html)
+and the delegated submit-intercept script (also loaded once, same two files) that
+executes reCAPTCHA v3 and attaches the token before the form actually submits.
+Turnstile renders its own managed widget and needs no JS intercept.
+{% endcomment %}
+{% if SITE_SETTINGS.captcha_enabled and SITE_SETTINGS.captcha_site_key %}
+  {% if SITE_SETTINGS.captcha_provider == "turnstile" %}
+  <div class="cf-turnstile" data-sitekey="{{ SITE_SETTINGS.captcha_site_key }}"></div>
+  {% else %}
+  <input type="hidden" name="g-recaptcha-response" class="js-recaptcha-token" data-sitekey="{{ SITE_SETTINGS.captcha_site_key }}" value="">
+  {% endif %}
+{% endif %}

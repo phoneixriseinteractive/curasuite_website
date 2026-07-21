@@ -30,6 +30,7 @@
   {% gtm_head %}
   {% meta_pixel_tag %}
   {% clarity_tag %}
+  {% captcha_scripts %}
 
   <style>
     /* Landing pages have NO site nav — remove any inherited link underlines on nav-like elements */
@@ -56,7 +57,7 @@
   <!-- Minimal top bar — logo only, no nav links, no way to leave the funnel -->
   <div class="lp-sticky-cta" style="background:white;border-bottom:1px solid var(--border-default);">
     <div class="container" style="display:flex;align-items:center;justify-content:space-between;height:56px;">
-      <img src="{% static 'img/curasuite-logo-header.png' %}" alt="CuraSuite" style="height:32px;width:auto;display:block;">
+      <img src="{% static 'img/curasuite-logo-header.webp' %}" alt="CuraSuite" width="320" height="127" style="height:32px;width:auto;display:block;">
       {% if SITE_SETTINGS.whatsapp_phone %}
       <a href="tel:+{{ SITE_SETTINGS.whatsapp_phone }}" style="display:flex;align-items:center;gap:6px;font-size:var(--text-sm);font-weight:var(--font-semi);color:var(--text-primary);">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
@@ -124,6 +125,27 @@
         const placement = link.dataset.waPlacement || 'unknown';
         if (typeof gtag === 'function') gtag('event', 'generate_lead', { method: 'whatsapp', placement: placement });
         if (typeof fbq === 'function') fbq('track', 'Contact', { placement: placement });
+      });
+    });
+
+    // Executes reCAPTCHA v3 and attaches the token to any form containing a
+    // `.js-recaptcha-token` hidden field (see components/captcha_field.html)
+    // before letting the real submit through. Turnstile manages its own hidden
+    // field via its widget, so it needs no intercept here.
+    document.addEventListener('submit', function (e) {
+      const form = e.target;
+      if (!(form instanceof HTMLFormElement)) return;
+      const tokenInput = form.querySelector('.js-recaptcha-token');
+      if (!tokenInput) return;
+      if (form.dataset.recaptchaReady === '1') { delete form.dataset.recaptchaReady; return; }
+      if (typeof grecaptcha === 'undefined') return;
+      e.preventDefault();
+      grecaptcha.ready(function () {
+        grecaptcha.execute(tokenInput.dataset.sitekey, { action: 'lead_form' }).then(function (token) {
+          tokenInput.value = token;
+          form.dataset.recaptchaReady = '1';
+          if (window.htmx) { htmx.trigger(form, 'submit'); } else { form.submit(); }
+        });
       });
     });
   </script>

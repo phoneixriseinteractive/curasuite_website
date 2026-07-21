@@ -74,6 +74,28 @@
   <script src="https://unpkg.com/htmx.org@2.0.3" defer></script>
   <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <script src="{% static 'js/main.js' %}" defer></script>
+  <script>
+    // Executes reCAPTCHA v3 and attaches the token to any form containing a
+    // `.js-recaptcha-token` hidden field (see components/captcha_field.html)
+    // before letting the real submit through. Turnstile manages its own hidden
+    // field via its widget, so it needs no intercept here.
+    document.addEventListener('submit', function (e) {
+      const form = e.target;
+      if (!(form instanceof HTMLFormElement)) return;
+      const tokenInput = form.querySelector('.js-recaptcha-token');
+      if (!tokenInput) return;
+      if (form.dataset.recaptchaReady === '1') { delete form.dataset.recaptchaReady; return; }
+      if (typeof grecaptcha === 'undefined') return;
+      e.preventDefault();
+      grecaptcha.ready(function () {
+        grecaptcha.execute(tokenInput.dataset.sitekey, { action: 'lead_form' }).then(function (token) {
+          tokenInput.value = token;
+          form.dataset.recaptchaReady = '1';
+          if (window.htmx) { htmx.trigger(form, 'submit'); } else { form.submit(); }
+        });
+      });
+    });
+  </script>
   {% block extra_js %}{% endblock %}
 
 </body>
