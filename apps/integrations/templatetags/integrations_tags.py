@@ -144,7 +144,7 @@ def chatbot_widget(context):
       <div><div style="font-weight:600;font-size:14px;">{name}</div><div style="font-size:11px;opacity:.8;">Online</div></div>
     </div>
     <!-- Messages -->
-    <div id="cs-chat-messages" style="flex:1;min-height:0;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;">
+    <div id="cs-chat-messages" style="flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:16px;display:flex;flex-direction:column;gap:10px;">
       <div style="background:var(--color-primary-50);border-radius:12px 12px 12px 0;padding:10px 14px;font-size:13px;max-width:85%;color:var(--text-primary);">{greeting}</div>
       <template x-for="msg in messages" :key="msg.id">
         <div :style="msg.role==='user' ? 'align-self:flex-end;' : 'align-self:flex-start;'">
