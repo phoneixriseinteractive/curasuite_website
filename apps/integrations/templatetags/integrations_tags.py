@@ -107,7 +107,7 @@ def whatsapp_widget(context):
     tooltip = s.whatsapp_tooltip or "Chat with us"
     wa_url  = f"https://wa.me/{phone}?text={message}"
     return mark_safe(f"""<!-- CuraSuite WhatsApp Widget -->
-<div id="cs-whatsapp" style="position:fixed;bottom:24px;right:24px;z-index:999;display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+<div id="cs-whatsapp" style="position:fixed;bottom:24px;right:90px;z-index:999;display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
   <div id="cs-wa-tooltip" style="background:#1F2937;color:white;padding:6px 12px;border-radius:8px;font-size:13px;white-space:nowrap;opacity:0;transition:opacity .2s;pointer-events:none;">{tooltip}</div>
   <a href="{wa_url}" target="_blank" rel="noopener noreferrer" aria-label="{tooltip}" data-wa-placement="floating_widget"
      onmouseenter="document.getElementById('cs-wa-tooltip').style.opacity='1'"
