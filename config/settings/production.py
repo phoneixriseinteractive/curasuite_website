@@ -11,7 +11,7 @@ from .base import *  # noqa: F401, F403
 # ── Core ───────────────────────────────────────────────────────────────────────
 SECRET_KEY = os.environ["SECRET_KEY"]  # Hard fail if not set
 DEBUG = False
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "curasuite.com").split(",")
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "curasuite.app").split(",")
 
 
 # ── Database ───────────────────────────────────────────────────────────────────

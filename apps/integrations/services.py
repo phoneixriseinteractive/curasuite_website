@@ -71,6 +71,11 @@ def verify_captcha(request) -> bool:
         return True
 
     if not result.get("success"):
+        logger.warning(
+            "CAPTCHA verification rejected by %s: error-codes=%s hostname=%s",
+            "Turnstile" if is_turnstile else "reCAPTCHA",
+            result.get("error-codes"), result.get("hostname"),
+        )
         return False
     if not is_turnstile and result.get("score", 1.0) < RECAPTCHA_V3_MIN_SCORE:
         logger.info("reCAPTCHA v3 score %.2f below threshold for this submission.", result.get("score", 0))
