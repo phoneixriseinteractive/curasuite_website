@@ -110,6 +110,7 @@ def whatsapp_widget(context):
 <div id="cs-whatsapp" style="position:fixed;bottom:24px;right:90px;z-index:999;display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
   <div id="cs-wa-tooltip" style="background:#1F2937;color:white;padding:6px 12px;border-radius:8px;font-size:13px;white-space:nowrap;opacity:0;transition:opacity .2s;pointer-events:none;">{tooltip}</div>
   <a href="{wa_url}" target="_blank" rel="noopener noreferrer" aria-label="{tooltip}" data-wa-placement="floating_widget"
+     data-gtm-event="whatsapp_click" data-gtm-location="floating_widget"
      onmouseenter="document.getElementById('cs-wa-tooltip').style.opacity='1'"
      onmouseleave="document.getElementById('cs-wa-tooltip').style.opacity='0'"
      style="width:56px;height:56px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.2);transition:transform .2s;"

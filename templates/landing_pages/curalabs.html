@@ -18,12 +18,13 @@
         {% endif %}
 
         <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px;">
-          <a href="#lp-form" class="btn btn-primary btn-lg" style="background:{{ product.color }};border-color:{{ product.color }};">
+          <a href="#lp-form" data-gtm-event="cta_click" data-gtm-location="hero" class="btn btn-primary btn-lg" style="background:{{ product.color }};border-color:{{ product.color }};">
             Book Free Demo →
           </a>
           {% if SITE_SETTINGS.whatsapp_phone %}
           <a href="https://wa.me/{{ SITE_SETTINGS.whatsapp_phone }}?text={{ lp.whatsapp_message_template|urlencode }}" target="_blank"
              data-wa-placement="hero"
+             data-gtm-event="whatsapp_click" data-gtm-location="hero"
              class="btn btn-lg" style="background:#25D366;color:white;border-color:#25D366;">
             💬 WhatsApp Us
           </a>
@@ -168,7 +169,7 @@
   <div class="container">
     <h3 style="color:white;margin-bottom:8px;">See {{ product.name }} in Action</h3>
     <p style="color:rgba(255,255,255,.85);margin-bottom:20px;">Free demo tailored to your lab's test catalogue and workflow.</p>
-    <a href="#lp-form" class="btn btn-lg" style="background:white;color:{{ product.color }};border-color:white;">Book Free Demo →</a>
+    <a href="#lp-form" data-gtm-event="cta_click" data-gtm-location="mid_page" class="btn btn-lg" style="background:white;color:{{ product.color }};border-color:white;">Book Free Demo →</a>
   </div>
 </section>
 
@@ -206,7 +207,7 @@
         <div style="font-size:var(--text-sm);font-weight:var(--font-semi);color:var(--text-secondary);margin-bottom:8px;">{{ tier.tier_name }}</div>
         <div style="font-size:28px;font-weight:800;color:var(--text-primary);margin-bottom:4px;">{{ tier.formatted_price }}</div>
         {% if tier.price %}<div style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">per {{ tier.get_billing_cycle_display|lower }}</div>{% else %}<div style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">Custom pricing</div>{% endif %}
-        <a href="#lp-form" class="btn" style="width:100%;justify-content:center;font-size:var(--text-sm);{% if tier.is_featured %}background:{{ product.color }};color:white;border-color:{{ product.color }};{% else %}background:transparent;color:{{ product.color }};border-color:{{ product.color }};{% endif %}">{{ tier.cta_text }}</a>
+        <a href="#lp-form" data-gtm-event="cta_click" data-gtm-location="pricing_{{ tier.tier_name|slugify }}" class="btn" style="width:100%;justify-content:center;font-size:var(--text-sm);{% if tier.is_featured %}background:{{ product.color }};color:white;border-color:{{ product.color }};{% else %}background:transparent;color:{{ product.color }};border-color:{{ product.color }};{% endif %}">{{ tier.cta_text }}</a>
       </div>
       {% endfor %}
     </div>
@@ -243,7 +244,7 @@
       <p style="text-align:center;color:var(--text-secondary);font-size:var(--text-sm);margin-bottom:24px;">Takes 30 seconds. We'll call you within 1 business day.</p>
 
       <div id="lp-form-wrap">
-        <form data-lp-form hx-post="/contact/appointment/" hx-target="#lp-form-wrap" hx-swap="innerHTML">
+        <form data-lp-form data-gtm-event="lp_form" hx-post="/contact/appointment/" hx-target="#lp-form-wrap" hx-swap="innerHTML">
           {% csrf_token %}
           <input type="hidden" name="product" value="{{ product.name }}">
           <input type="hidden" name="source" value="">
@@ -251,6 +252,7 @@
           <input type="hidden" name="utm_medium" value="">
           <input type="hidden" name="utm_campaign" value="">
           <input type="hidden" name="utm_content" value="">
+          <input type="hidden" name="lp_slug" value="{{ lp.slug }}">
 
           <div style="display:flex;flex-direction:column;gap:14px;">
             <input type="text" name="full_name" required placeholder="Full Name *"

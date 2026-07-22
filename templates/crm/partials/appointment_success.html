@@ -10,7 +10,19 @@
     Prefer WhatsApp? <a href="https://wa.me/{{ SITE_SETTINGS.whatsapp_phone }}?text=Hi%2C%20I%20just%20booked%20a%20demo%20for%20{{ product|urlencode }}" target="_blank">Message us instantly →</a>
   </p>
   {% endif %}
+  {% if not lp_slug %}
   <button type="button" onclick="this.closest('[x-data]').__x.$data.close()" class="btn btn-secondary" style="width:100%;justify-content:center;">
     Close
   </button>
+  {% endif %}
 </div>
+{% if lp_slug %}
+<script>
+window.dataLayer = window.dataLayer || [];
+dataLayer.push({
+  event: 'lp_form_submit_success',
+  gtm_location: 'lp-form',
+  form_name: '{{ lead.specialty|default:"general" }}_demo'
+});
+</script>
+{% endif %}

@@ -122,7 +122,7 @@ def appointment_widget_submit(request):
         create_demo_request(lead=lead, product_interest=d["product"])
 
         return render(request, "crm/partials/appointment_success.html", {
-            "lead": lead, "product": d["product"],
+            "lead": lead, "product": d["product"], "lp_slug": request.POST.get("lp_slug", ""),
         })
 
     return render(request, "crm/partials/appointment_form.html", {
