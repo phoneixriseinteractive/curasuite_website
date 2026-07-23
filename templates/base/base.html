@@ -77,21 +77,26 @@
   <script>
     // Executes reCAPTCHA v3 and attaches the token to any form containing a
     // `.js-recaptcha-token` hidden field (see components/captcha_field.html)
-    // before letting the real submit through. Turnstile manages its own hidden
+    // before letting htmx issue the request. Turnstile manages its own hidden
     // field via its widget, so it needs no intercept here.
-    document.addEventListener('submit', function (e) {
+    //
+    // Hooks htmx:confirm (not the native `submit` event) because htmx attaches
+    // its own submit handler directly on the form, which fires and sends the
+    // request during the event's target phase — before a document-level
+    // `submit` listener ever runs in the bubble phase. htmx:confirm is the
+    // event htmx exposes specifically so async work like this can run first;
+    // issueRequest() tells htmx to proceed once the token is ready.
+    document.body.addEventListener('htmx:confirm', function (e) {
       const form = e.target;
       if (!(form instanceof HTMLFormElement)) return;
       const tokenInput = form.querySelector('.js-recaptcha-token');
       if (!tokenInput) return;
-      if (form.dataset.recaptchaReady === '1') { delete form.dataset.recaptchaReady; return; }
       if (typeof grecaptcha === 'undefined') return;
       e.preventDefault();
       grecaptcha.ready(function () {
         grecaptcha.execute(tokenInput.dataset.sitekey, { action: 'lead_form' }).then(function (token) {
           tokenInput.value = token;
-          form.dataset.recaptchaReady = '1';
-          if (window.htmx) { htmx.trigger(form, 'submit'); } else { form.submit(); }
+          e.detail.issueRequest(true);
         });
       });
     });
