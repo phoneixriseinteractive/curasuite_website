@@ -1343,11 +1343,12 @@ def landing_page_edit(request, pk):
 
         elif action == "add_pain_point":
             text = request.POST.get("pain_text", "").strip()
+            consequence_text = request.POST.get("pain_consequence", "").strip()
             solution_text = request.POST.get("pain_solution", "").strip()
             if text:
                 LandingPainPoint.objects.create(
-                    landing_page=lp, text=text, solution_text=solution_text,
-                    sort_order=lp.pain_points.count(),
+                    landing_page=lp, text=text, consequence_text=consequence_text,
+                    solution_text=solution_text, sort_order=lp.pain_points.count(),
                 )
                 _toast(request, "Pain point added.")
 

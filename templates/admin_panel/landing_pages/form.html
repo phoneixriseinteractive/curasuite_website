@@ -157,7 +157,8 @@
         <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
           <div>
             <span style="font-size:13px;">✕ {{ pp.text }}</span>
-            {% if pp.solution_text %}<div style="font-size:12px;color:var(--adm-text-muted);margin-top:4px;">✓ {{ pp.solution_text }}</div>{% endif %}
+            {% if pp.consequence_text %}<div style="font-size:12px;color:var(--adm-text-muted);margin-top:4px;">↳ {{ pp.consequence_text }}</div>{% endif %}
+            {% if pp.solution_text %}<div style="font-size:12px;color:var(--adm-text-muted);margin-top:2px;">✓ {{ pp.solution_text }}</div>{% endif %}
           </div>
           <form method="post" onsubmit="return confirm('Remove?')">{% csrf_token %}<input type="hidden" name="action" value="delete_pain_point"><input type="hidden" name="pain_pk" value="{{ pp.pk }}"><button type="submit" class="adm-btn adm-btn-ghost" style="font-size:11px;padding:3px 8px;color:var(--adm-red);white-space:nowrap;">Remove</button></form>
         </div>
@@ -168,6 +169,7 @@
       <form method="post" style="display:flex;flex-direction:column;gap:10px;">
         {% csrf_token %}<input type="hidden" name="action" value="add_pain_point">
         <input type="text" name="pain_text" class="adm-input" placeholder="Pain point — e.g. Losing patients to clinics with a better online presence?" required>
+        <input type="text" name="pain_consequence" class="adm-input" placeholder="Consequence — one-line real-world impact (optional)">
         <input type="text" name="pain_solution" class="adm-input" placeholder="Solution — how the product fixes it (optional)">
         <button type="submit" class="adm-btn adm-btn-primary" style="align-self:flex-start;">Add</button>
       </form>
