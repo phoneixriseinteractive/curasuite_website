@@ -70,6 +70,18 @@
   .np-module-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
   .np-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
 
+  /* Technology stack — fixed 4-column grid (not auto-fit) so the 2nd row's
+     2 cards can be explicitly centered under columns 2–3 of row 1, rather
+     than left-aligned under columns 1–2 by default grid flow. */
+  .np-tech-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+  .np-tech-grid .np-tech-offset-1 { grid-column: 2 / 3; }
+  .np-tech-grid .np-tech-offset-2 { grid-column: 3 / 4; }
+  @media (max-width: 900px) {
+    .np-tech-grid { grid-template-columns: repeat(2, 1fr); }
+    .np-tech-grid .np-tech-offset-1, .np-tech-grid .np-tech-offset-2 { grid-column: auto; }
+  }
+  @media (max-width: 560px) { .np-tech-grid { grid-template-columns: 1fr; } }
+
   /* Pain point / solution rows — side-by-side, collapsing to stacked on mobile
      since two narrow columns of prose become unreadable below ~700px. */
   .np-pain-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
@@ -529,6 +541,66 @@ X_FRAME_OPTIONS = 'DENY'
   </div>
 </section>
 
+<!-- ═══ TECHNOLOGY STACK ════════════════════════════════════════════════════ -->
+<section style="padding:80px 0;background:var(--np-surface-low);">
+  <div class="container" style="text-align:center;margin-bottom:48px;">
+    <p style="color:var(--np-primary);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">Our Technology</p>
+    <h2 style="font-size:30px;font-weight:800;color:var(--np-navy);margin-bottom:12px;">Powered by a Cutting-Edge Stack</h2>
+    <p style="color:var(--text-secondary);">Enterprise-grade technology ensures your clinic is fast, secure, and always available.</p>
+  </div>
+  <div class="container np-tech-grid">
+
+    <div style="background:white;padding:28px;border-radius:20px;border:1px solid var(--np-border);box-shadow:var(--shadow-sm);">
+      <div style="width:44px;height:44px;border-radius:12px;background:#092e2012;display:flex;align-items:center;justify-content:center;margin-bottom:18px;">
+        <span style="font-size:15px;font-weight:800;color:#092E20;">Dj</span>
+      </div>
+      <h4 style="font-size:16px;font-weight:700;color:var(--np-navy);margin-bottom:8px;">Django: Robust Backend</h4>
+      <p style="font-size:14px;color:var(--text-secondary);line-height:1.6;">The foundation for reliability and complex medical data management.</p>
+    </div>
+
+    <div style="background:white;padding:28px;border-radius:20px;border:1px solid var(--np-border);box-shadow:var(--shadow-sm);">
+      <div style="width:44px;height:44px;border-radius:12px;background:#3d72d712;display:flex;align-items:center;justify-content:center;margin-bottom:18px;">
+        <span style="font-size:13px;font-weight:800;color:#3D72D7;letter-spacing:-.02em;">htmx</span>
+      </div>
+      <h4 style="font-size:16px;font-weight:700;color:var(--np-navy);margin-bottom:8px;">HTMX &amp; Alpine JS: Dynamic Performance</h4>
+      <p style="font-size:14px;color:var(--text-secondary);line-height:1.6;">Sub-second interactivity without the bloat of heavy frameworks.</p>
+    </div>
+
+    <div style="background:white;padding:28px;border-radius:20px;border:1px solid var(--np-border);box-shadow:var(--shadow-sm);">
+      <div style="width:44px;height:44px;border-radius:12px;background:#33679112;display:flex;align-items:center;justify-content:center;margin-bottom:18px;">
+        <span style="font-size:15px;font-weight:800;color:#336791;">Pg</span>
+      </div>
+      <h4 style="font-size:16px;font-weight:700;color:var(--np-navy);margin-bottom:8px;">PostgreSQL: Secure Data Storage</h4>
+      <p style="font-size:14px;color:var(--text-secondary);line-height:1.6;">Scalable, enterprise-grade database for patient records.</p>
+    </div>
+
+    <div style="background:white;padding:28px;border-radius:20px;border:1px solid var(--np-border);box-shadow:var(--shadow-sm);">
+      <div style="width:44px;height:44px;border-radius:12px;background:#00963912;display:flex;align-items:center;justify-content:center;margin-bottom:18px;">
+        <span style="font-size:13px;font-weight:800;color:#009639;letter-spacing:-.02em;">nginx</span>
+      </div>
+      <h4 style="font-size:16px;font-weight:700;color:var(--np-navy);margin-bottom:8px;">Nginx: High Availability</h4>
+      <p style="font-size:14px;color:var(--text-secondary);line-height:1.6;">Optimized server performance for consistent uptime.</p>
+    </div>
+
+    <div class="np-tech-offset-1" style="background:white;padding:28px;border-radius:20px;border:1px solid var(--np-border);box-shadow:var(--shadow-sm);">
+      <div style="width:44px;height:44px;border-radius:12px;background:var(--np-surface-high);color:var(--np-primary);display:flex;align-items:center;justify-content:center;margin-bottom:18px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l7 4v6c0 5-3.5 8-7 9-3.5-1-7-4-7-9V6l7-4z"/></svg>
+      </div>
+      <h4 style="font-size:16px;font-weight:700;color:var(--np-navy);margin-bottom:8px;">SSL 256-bit: Military-Grade Encryption</h4>
+      <p style="font-size:14px;color:var(--text-secondary);line-height:1.6;">Every byte of patient data is encrypted in transit.</p>
+    </div>
+
+    <div class="np-tech-offset-2" style="background:white;padding:28px;border-radius:20px;border:1px solid var(--np-border);box-shadow:var(--shadow-sm);">
+      <div style="width:44px;height:44px;border-radius:12px;background:var(--np-mint-tint);color:var(--np-teal);display:flex;align-items:center;justify-content:center;margin-bottom:18px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      </div>
+      <h4 style="font-size:16px;font-weight:700;color:var(--np-navy);margin-bottom:8px;">API-First Architecture</h4>
+      <p style="font-size:14px;color:var(--text-secondary);line-height:1.6;">Decoupled development for lightning-fast page loads and performance.</p>
+    </div>
+
+  </div>
+</section>
+
 <!-- ═══ COMPARISON TABLE ════════════════════════════════════════════════════ -->
 <section style="padding:80px 0;">
   <div class="container" style="max-width:900px;">
@@ -797,6 +869,7 @@ X_FRAME_OPTIONS = 'DENY'
   </div>
 
   <div class="container" style="border-top:1px solid rgba(255,255,255,.1);padding-top:24px;">
+    <p style="color:rgba(255,255,255,.4);font-size:11px;line-height:1.6;text-align:center;max-width:820px;margin:0 auto 16px;">All third-party tools, trademarks, and technologies mentioned on this website belong to their respective owners. CuraSuite is not officially associated with or endorsed by these companies. All software and services are utilized under their respective terms and conditions and in accordance with their distribution licenses.</p>
     <p style="color:rgba(255,255,255,.4);font-size:12px;">© {% now "Y" %} PhoenixRise Interactive Pvt. Ltd. Bank-grade security for Indian Doctors.</p>
   </div>
 </footer>
