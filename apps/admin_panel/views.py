@@ -650,7 +650,6 @@ def media_delete(request, pk):
 @admin_required
 def site_settings(request):
     from apps.integrations.models import SiteSettings
-    from django.core.cache import cache
     settings_obj = SiteSettings.load()
     if request.method == "POST":
         for field in ["ga4_measurement_id","gtm_container_id","meta_pixel_id",
@@ -662,7 +661,6 @@ def site_settings(request):
         for field in ["whatsapp_enabled","chatbot_enabled","captcha_enabled"]:
             setattr(settings_obj, field, field in request.POST)
         settings_obj.save()
-        cache.delete("curasuite:site_settings")
         if _htmx(request):
             return render(request, "admin_panel/components/toast_trigger.html",
                           {"message": "Settings saved!", "type": "success"})
