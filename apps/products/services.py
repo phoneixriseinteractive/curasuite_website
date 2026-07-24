@@ -33,6 +33,7 @@ def create_product(
     long_description: str = "",
     target_audience: str = "",
     color: str = "#2563EB",
+    demo_url: str = "",
     sort_order: int = 0,
     created_by=None,
     seo: dict | None = None,
@@ -63,6 +64,7 @@ def create_product(
         long_description=long_description,
         target_audience=target_audience,
         color=color,
+        demo_url=demo_url,
         sort_order=sort_order,
         created_by=created_by,
     )

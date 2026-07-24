@@ -432,6 +432,7 @@ def product_edit(request, pk):
             product.long_description = request.POST.get("long_description", product.long_description)
             product.target_audience  = request.POST.get("target_audience", product.target_audience)
             product.color            = request.POST.get("color", product.color)
+            product.demo_url         = request.POST.get("demo_url", product.demo_url)
             if "icon" in request.FILES:
                 product.icon = request.FILES["icon"]
             if "hero_image" in request.FILES:

@@ -106,6 +106,10 @@
                 <label class="adm-label">Target Audience <span style="font-weight:400;color:var(--adm-text-muted);">(comma-separated)</span></label>
                 <input type="text" name="target_audience" class="adm-input" value="{{ product.target_audience }}" placeholder="Doctors, Clinics, Dental">
               </div>
+              <div class="adm-form-group adm-form-full">
+                <label class="adm-label">Live Demo URL <span style="font-weight:400;color:var(--adm-text-muted);">(optional — shows a "Visit Demo Website" CTA on landing pages)</span></label>
+                <input type="url" name="demo_url" class="adm-input" value="{{ product.demo_url }}" placeholder="https://cms.curasuite.app">
+              </div>
             </div>
           </div>
         </div>

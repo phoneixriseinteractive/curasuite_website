@@ -23,6 +23,7 @@ PRODUCTS = [
         "name": "CuraCMS",
         "sort_order": 1,
         "color": "#2563EB",
+        "demo_url": "https://cms.curasuite.app",
         "tagline": "Professional Website Platform Built for Doctors & Clinics",
         "short_description": (
             "A healthcare-focused website CMS that enables doctors and clinics to establish "
@@ -287,6 +288,7 @@ class Command(BaseCommand):
                 long_description=product_data["long_description"],
                 target_audience=product_data["target_audience"],
                 color=product_data["color"],
+                demo_url=product_data.get("demo_url", ""),
                 sort_order=product_data["sort_order"],
             )
 

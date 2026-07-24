@@ -92,6 +92,12 @@ class Product(PublishableModel):
         verbose_name=_("Brand color"),
         help_text=_("Hex color used for product accents. e.g. #2563EB"),
     )
+    demo_url = models.URLField(
+        blank=True,
+        verbose_name=_("Live demo URL"),
+        help_text=_("Public demo site for this product, e.g. https://cms.curasuite.app. "
+                    "Shown as a 'Visit Demo Website' CTA on landing pages when set."),
+    )
 
     # ── Target audience ───────────────────────────────────────────────────────
     target_audience = models.TextField(
