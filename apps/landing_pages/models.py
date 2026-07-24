@@ -92,11 +92,16 @@ class LandingPage(PublishableModel):
 
 
 class LandingPainPoint(models.Model):
-    """A problem/pain bullet shown on the landing page — 'Struggling with X?'"""
+    """A problem/pain bullet shown on the landing page — 'Struggling with X?' —
+    paired with a solution statement explaining how the product fixes it."""
 
-    landing_page = models.ForeignKey(LandingPage, on_delete=models.CASCADE, related_name="pain_points")
-    text         = models.CharField(max_length=200, verbose_name=_("Pain point"))
-    sort_order   = models.PositiveIntegerField(default=0)
+    landing_page  = models.ForeignKey(LandingPage, on_delete=models.CASCADE, related_name="pain_points")
+    text          = models.CharField(max_length=200, verbose_name=_("Pain point"))
+    solution_text = models.CharField(
+        max_length=250, blank=True, verbose_name=_("Solution"),
+        help_text=_("How the product solves this pain point. Shown paired with it on the landing page."),
+    )
+    sort_order    = models.PositiveIntegerField(default=0)
 
     class Meta:
         db_table = "landing_pain_points"

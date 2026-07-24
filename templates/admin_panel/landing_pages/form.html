@@ -153,17 +153,23 @@
     <div class="adm-card-header"><span class="adm-card-title">Pain Points</span></div>
     <div>
       {% for pp in pain_points %}
-      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 20px;border-bottom:1px solid var(--adm-border);">
-        <span style="font-size:13px;">✕ {{ pp.text }}</span>
-        <form method="post" onsubmit="return confirm('Remove?')">{% csrf_token %}<input type="hidden" name="action" value="delete_pain_point"><input type="hidden" name="pain_pk" value="{{ pp.pk }}"><button type="submit" class="adm-btn adm-btn-ghost" style="font-size:11px;padding:3px 8px;color:var(--adm-red);">Remove</button></form>
+      <div style="padding:10px 20px;border-bottom:1px solid var(--adm-border);">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+          <div>
+            <span style="font-size:13px;">✕ {{ pp.text }}</span>
+            {% if pp.solution_text %}<div style="font-size:12px;color:var(--adm-text-muted);margin-top:4px;">✓ {{ pp.solution_text }}</div>{% endif %}
+          </div>
+          <form method="post" onsubmit="return confirm('Remove?')">{% csrf_token %}<input type="hidden" name="action" value="delete_pain_point"><input type="hidden" name="pain_pk" value="{{ pp.pk }}"><button type="submit" class="adm-btn adm-btn-ghost" style="font-size:11px;padding:3px 8px;color:var(--adm-red);white-space:nowrap;">Remove</button></form>
+        </div>
       </div>
       {% empty %}<div class="adm-card-body"><p style="font-size:13px;color:var(--adm-text-muted);">No pain points yet.</p></div>{% endfor %}
     </div>
     <div class="adm-card-body" style="border-top:1px solid var(--adm-border);">
-      <form method="post" style="display:flex;gap:10px;">
+      <form method="post" style="display:flex;flex-direction:column;gap:10px;">
         {% csrf_token %}<input type="hidden" name="action" value="add_pain_point">
-        <input type="text" name="pain_text" class="adm-input" placeholder="e.g. Losing patients to clinics with better online presence?" required>
-        <button type="submit" class="adm-btn adm-btn-primary" style="white-space:nowrap;">Add</button>
+        <input type="text" name="pain_text" class="adm-input" placeholder="Pain point — e.g. Losing patients to clinics with a better online presence?" required>
+        <input type="text" name="pain_solution" class="adm-input" placeholder="Solution — how the product fixes it (optional)">
+        <button type="submit" class="adm-btn adm-btn-primary" style="align-self:flex-start;">Add</button>
       </form>
     </div>
   </div>

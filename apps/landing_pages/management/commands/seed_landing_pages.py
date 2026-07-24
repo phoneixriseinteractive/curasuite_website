@@ -35,10 +35,14 @@ class Command(BaseCommand):
                 "whatsapp_message_template": "Hi! I saw your ad and I'm interested in CuraCMS for my clinic.",
                 "default_utm_campaign": "gp-website-demo",
                 "pain_points": [
-                    "Losing patients to clinics with a stronger online presence?",
-                    "Spending hours on the phone booking appointments manually?",
-                    "No way for patients to find you when they search on Google?",
-                    "Website looks outdated or doesn't work on mobile?",
+                    ("Losing patients to clinics with a stronger online presence?",
+                     "A modern, professional website gives your practice the same digital presence as bigger clinics — without the agency price tag."),
+                    ("Spending hours on the phone booking appointments manually?",
+                     "Online booking lets patients schedule themselves 24/7, freeing up your reception desk."),
+                    ("No way for patients to find you when they search on Google?",
+                     "Every page ships with built-in SEO, so you show up when patients search for a doctor nearby."),
+                    ("Website looks outdated or doesn't work on mobile?",
+                     "Every CuraCMS site is fully responsive and loads in under a second, on any device."),
                 ],
                 "benefits": [
                     ("📅", "24/7 Online Booking", "Patients book appointments anytime — no phone calls needed, even outside clinic hours."),
@@ -60,10 +64,14 @@ class Command(BaseCommand):
                 "whatsapp_message_template": "Hi! I saw your ad and I'm interested in CuraCMS for my dental clinic.",
                 "default_utm_campaign": "dentist-website-demo",
                 "pain_points": [
-                    "Potential patients choosing a competitor with a better website?",
-                    "Struggling to showcase before/after smile transformations online?",
-                    "No easy way for patients to book a consultation online?",
-                    "Not appearing when people search 'dentist near me'?",
+                    ("Potential patients choosing a competitor with a better website?",
+                     "A professional, mobile-ready website built specifically for dental practices — so you make the first impression, not your competitor."),
+                    ("Struggling to showcase before/after smile transformations online?",
+                     "Dedicated treatment and gallery pages built into the CMS make it easy to showcase your best work — no coding needed."),
+                    ("No easy way for patients to book a consultation online?",
+                     "24/7 online appointment booking — patients pick a slot themselves, no back-and-forth calls."),
+                    ("Not appearing when people search 'dentist near me'?",
+                     "Built-in SEO tools and schema markup on every page help you rank for local searches that actually convert."),
                 ],
                 "benefits": [
                     ("🦷", "Showcase Your Work", "Display smile transformations and treatment galleries that build instant trust."),
@@ -85,10 +93,14 @@ class Command(BaseCommand):
                 "whatsapp_message_template": "Hi! I saw your ad and I'm interested in CuraCMS for my physiotherapy clinic.",
                 "default_utm_campaign": "physio-website-demo",
                 "pain_points": [
-                    "Patients unsure what conditions you treat before calling?",
-                    "Manually managing session bookings on WhatsApp or calls?",
-                    "No content to explain your specialisations online?",
-                    "Losing potential patients who search online and find nothing?",
+                    ("Patients unsure what conditions you treat before calling?",
+                     "Treatment listing pages spell out every condition and service you treat — before they even pick up the phone."),
+                    ("Manually managing session bookings on WhatsApp or calls?",
+                     "Online booking handles scheduling automatically, while WhatsApp integration stays there for quick questions."),
+                    ("No content to explain your specialisations online?",
+                     "Publish blog articles and service pages that explain your specialisations and build patient trust."),
+                    ("Losing potential patients who search online and find nothing?",
+                     "A findable, SEO-ready website means patients searching for physiotherapy nearby actually find you."),
                 ],
                 "benefits": [
                     ("🏃", "List Your Specialisations", "Clearly showcase sports injury, post-surgery, and chronic pain treatments."),
@@ -110,10 +122,14 @@ class Command(BaseCommand):
                 "whatsapp_message_template": "Hi! I saw your ad and I'm interested in CuraCMS for my eye care practice.",
                 "default_utm_campaign": "ophthalmology-website-demo",
                 "pain_points": [
-                    "Patients confused about which eye procedures you offer?",
-                    "No online way to book cataract or LASIK consultations?",
-                    "Website doesn't reflect the precision and trust your practice requires?",
-                    "Missing out on patients who research online before choosing a specialist?",
+                    ("Patients confused about which eye procedures you offer?",
+                     "Dedicated treatment listing pages clearly explain every procedure you offer, in patient-friendly language."),
+                    ("No online way to book cataract or LASIK consultations?",
+                     "Patients book cataract, LASIK, or any consultation online, 24/7 — no phone tag required."),
+                    ("Website doesn't reflect the precision and trust your practice requires?",
+                     "A polished, professional design built for specialty clinics — reflecting the same precision you bring to your practice."),
+                    ("Missing out on patients who research online before choosing a specialist?",
+                     "SEO-optimised pages and doctor profiles help you get found by patients actively researching specialists."),
                 ],
                 "benefits": [
                     ("👁️", "Procedure Explainers", "Clear, patient-friendly descriptions of cataract, LASIK, and other procedures."),
@@ -135,10 +151,14 @@ class Command(BaseCommand):
                 "whatsapp_message_template": "Hi! I saw your ad and I'm interested in CuraLabs for my pathology lab.",
                 "default_utm_campaign": "curalabs-digital-demo",
                 "pain_points": [
-                    "Phone lines constantly busy with report status calls?",
-                    "Manually coordinating home sample collection over calls?",
-                    "Patients frustrated waiting to collect printed reports?",
-                    "No digital presence while competitor labs go online?",
+                    ("Phone lines constantly busy with report status calls?",
+                     "Patients check report status themselves through secure online access — no more hold music."),
+                    ("Manually coordinating home sample collection over calls?",
+                     "Home collection requests are booked online with a preferred time slot — no phone coordination needed."),
+                    ("Patients frustrated waiting to collect printed reports?",
+                     "OTP-verified digital report downloads mean patients get results the moment they're ready."),
+                    ("No digital presence while competitor labs go online?",
+                     "A modern, professional digital platform puts your lab on equal footing with labs that have already gone digital."),
                 ],
                 "benefits": [
                     ("🔬", "Digital Test Catalogue", "Show all your tests with prices, prep instructions, and turnaround times."),
@@ -159,8 +179,8 @@ class Command(BaseCommand):
             lp = LandingPage.objects.create(product=product, **data)
             lp.publish()
 
-            for i, text in enumerate(pain_points):
-                LandingPainPoint.objects.create(landing_page=lp, text=text, sort_order=i)
+            for i, (text, solution) in enumerate(pain_points):
+                LandingPainPoint.objects.create(landing_page=lp, text=text, solution_text=solution, sort_order=i)
 
             for i, (icon, title, desc) in enumerate(benefits):
                 LandingBenefit.objects.create(
