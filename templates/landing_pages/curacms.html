@@ -70,6 +70,23 @@
   .np-module-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
   .np-gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
 
+  /* How It Works — connecting stepper: a horizontal line threads through
+     numbered nodes on desktop; collapses to a left-rail vertical timeline on
+     mobile since a horizontal connector has no sane narrow-viewport form. */
+  .np-flow { position: relative; display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+  .np-flow-line { position: absolute; top: 27px; left: 10%; right: 10%; height: 2px; background: linear-gradient(90deg, var(--np-primary), var(--np-teal-bright), var(--np-mint)); opacity: .35; z-index: 0; }
+  .np-flow-step { position: relative; z-index: 1; text-align: center; padding: 0 6px; }
+  .np-flow-circle { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; box-shadow: var(--shadow-md); border: 4px solid white; }
+  @media (max-width: 900px) {
+    .np-flow { grid-template-columns: 1fr; gap: 0; }
+    .np-flow-line { display: none; }
+    .np-flow-step { display: flex; align-items: flex-start; gap: 16px; text-align: left; padding-bottom: 32px; }
+    .np-flow-step:last-child { padding-bottom: 0; }
+    .np-flow-step::after { content: ''; position: absolute; left: 27px; top: 56px; bottom: 0; width: 2px; background: var(--np-border); }
+    .np-flow-step:last-child::after { display: none; }
+    .np-flow-circle { margin: 0; flex-shrink: 0; }
+  }
+
   .np-faq summary::-webkit-details-marker { display: none; }
   .np-faq svg { transition: transform .2s ease; }
   .np-faq[open] svg { transform: rotate(180deg); }
@@ -110,6 +127,7 @@
 
     <div class="np-nav-links" style="font-size:14px;font-weight:500;color:var(--text-secondary);">
       {% if benefits %}<a href="#features" style="color:inherit;text-decoration:none;">Features</a>{% endif %}
+      <a href="#how-it-works" style="color:inherit;text-decoration:none;">Process</a>
       <a href="#modules" style="color:inherit;text-decoration:none;">Modules</a>
       <a href="#security" style="color:inherit;text-decoration:none;">Security</a>
       {% if pricing_tiers %}<a href="#pricing" style="color:inherit;text-decoration:none;">Pricing</a>{% endif %}
@@ -287,6 +305,67 @@
   </div>
 </section>
 {% endif %}
+
+<!-- ═══ HOW IT WORKS ════════════════════════════════════════════════════════ -->
+<section style="padding:80px 0;" id="how-it-works">
+  <div class="container" style="text-align:center;margin-bottom:56px;">
+    <p style="color:var(--np-primary);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">How It Works</p>
+    <h2 style="font-size:30px;font-weight:800;color:var(--np-navy);margin-bottom:12px;">From First Call to Live Site in 7–14 Days</h2>
+    <p style="color:var(--text-secondary);max-width:560px;margin-inline:auto;">No agencies, no back-and-forth over email — a guided process built specifically for clinics.</p>
+  </div>
+  <div class="container">
+    <div class="np-flow">
+      <div class="np-flow-line"></div>
+
+      <div class="np-flow-step">
+        <div class="np-flow-circle" style="background:var(--np-primary);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        </div>
+        <h4 style="font-size:15px;font-weight:700;color:var(--np-navy);margin-bottom:8px;">1. Discovery Call</h4>
+        <p style="font-size:13px;color:var(--text-secondary);line-height:1.6;">A free 30-minute call to learn your specialty, current pain points, and what "done" looks like for your clinic.</p>
+      </div>
+
+      <div class="np-flow-step">
+        <div class="np-flow-circle" style="background:var(--np-navy);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
+        </div>
+        <h4 style="font-size:15px;font-weight:700;color:var(--np-navy);margin-bottom:8px;">2. Blueprint &amp; Design</h4>
+        <p style="font-size:13px;color:var(--text-secondary);line-height:1.6;">We map your pages, branding, and which of the 12 modules your practice actually needs — no generic template.</p>
+      </div>
+
+      <div class="np-flow-step">
+        <div class="np-flow-circle" style="background:var(--np-primary-dark);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </div>
+        <h4 style="font-size:15px;font-weight:700;color:var(--np-navy);margin-bottom:8px;">3. Build &amp; Configure</h4>
+        <p style="font-size:13px;color:var(--text-secondary);line-height:1.6;">Our team builds it out — doctor profiles, treatments, booking flow, and the AI assistant — while you keep seeing patients.</p>
+      </div>
+
+      <div class="np-flow-step">
+        <div class="np-flow-circle" style="background:var(--np-teal);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+        <h4 style="font-size:15px;font-weight:700;color:var(--np-navy);margin-bottom:8px;">4. Review &amp; Refine</h4>
+        <p style="font-size:13px;color:var(--text-secondary);line-height:1.6;">You get a private preview link and request changes — we polish every detail before anything goes public.</p>
+      </div>
+
+      <div class="np-flow-step">
+        <div class="np-flow-circle" style="background:linear-gradient(135deg, var(--np-teal-bright), var(--np-mint));box-shadow:0 8px 20px -6px rgba(42,222,192,.6);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--np-navy)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
+        </div>
+        <h4 style="font-size:15px;font-weight:700;color:var(--np-navy);margin-bottom:8px;">5. Launch &amp; Support</h4>
+        <p style="font-size:13px;color:var(--text-secondary);line-height:1.6;">Your site goes live in 7–14 days — fully indexed, booking-ready, with our team and AI assistant backing you up after.</p>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:48px;">
+      <a href="#lp-form" data-gtm-event="cta_click" data-gtm-location="how_it_works" style="display:inline-flex;align-items:center;gap:8px;background:var(--np-primary);color:white;padding:15px 26px;border-radius:12px;font-size:15px;font-weight:700;text-decoration:none;box-shadow:0 12px 24px -8px rgba(34,29,208,.35);">
+        Start With a Free Call
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
 
 <!-- ═══ MODULES GRID — 12 MODULES ═══════════════════════════════════════════ -->
 <section style="padding:80px 0;" id="modules">
@@ -620,6 +699,7 @@ X_FRAME_OPTIONS = 'DENY'
       <h6 style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#a8a6ff;margin-bottom:20px;">Product</h6>
       <ul style="display:flex;flex-direction:column;gap:14px;list-style:none;">
         {% if benefits %}<li><a href="#features">Features</a></li>{% endif %}
+        <li><a href="#how-it-works">How It Works</a></li>
         <li><a href="#modules">Modules</a></li>
         <li><a href="#security">Security</a></li>
         {% if pricing_tiers %}<li><a href="#pricing">Pricing</a></li>{% endif %}
