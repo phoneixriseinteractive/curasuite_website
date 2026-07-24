@@ -549,22 +549,56 @@ X_FRAME_OPTIONS = 'DENY'
 {% if pricing_tiers %}
 <section style="padding:80px 0;" id="pricing">
   <div class="container" style="text-align:center;margin-bottom:48px;">
+    <div style="display:inline-flex;align-items:center;gap:8px;background:linear-gradient(90deg, var(--np-orange-tint), var(--np-mint-tint));color:var(--np-orange-text);padding:8px 20px;border-radius:999px;font-size:13px;font-weight:700;margin-bottom:20px;">
+      🎉 Limited-Time Launch Pricing — Save up to 33%
+    </div>
     <h2 style="font-size:30px;font-weight:800;color:var(--np-navy);">Simple, Transparent Pricing</h2>
     <p style="color:var(--text-secondary);margin-top:8px;">No setup fees. Cancel anytime. 30-day free trial.</p>
   </div>
   <div class="container" style="max-width:1100px;">
-    <div class="grid grid-3" style="gap:24px;">
+    <div class="grid grid-3" style="gap:24px;align-items:stretch;">
       {% for tier in pricing_tiers %}
-      <div style="background:white;padding:40px;border-radius:24px;border:{% if tier.is_featured %}2px solid var(--np-primary){% else %}1px solid var(--np-border){% endif %};box-shadow:{% if tier.is_featured %}var(--shadow-xl){% else %}var(--shadow-sm){% endif %};position:relative;">
+      <div style="background:white;padding:40px;border-radius:24px;border:{% if tier.is_featured %}2px solid var(--np-primary){% else %}1px solid var(--np-border){% endif %};box-shadow:{% if tier.is_featured %}var(--shadow-xl){% else %}var(--shadow-sm){% endif %};position:relative;overflow:hidden;display:flex;flex-direction:column;">
+        {% if tier.has_discount %}
+        <div style="position:absolute;top:18px;right:-32px;transform:rotate(45deg);background:var(--np-red);color:white;padding:4px 38px;font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;box-shadow:0 2px 6px rgba(0,0,0,.15);">Save {{ tier.savings_percent }}%</div>
+        {% endif %}
         {% if tier.is_featured %}
         <div style="position:absolute;top:0;left:50%;transform:translate(-50%,-50%);background:var(--np-primary);color:white;padding:5px 16px;border-radius:999px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;">Most Popular</div>
         {% endif %}
         <h4 style="font-size:16px;font-weight:700;color:var(--text-secondary);margin-bottom:8px;">{{ tier.tier_name }}</h4>
+
+        {% if tier.has_discount %}
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:2px;">
+          <span style="font-size:15px;color:var(--text-muted);text-decoration:line-through;">{{ tier.formatted_original_price }}</span>
+          <span style="font-size:11px;font-weight:700;color:#15803d;background:#dcfce7;padding:2px 9px;border-radius:999px;">You save {{ tier.formatted_savings_amount }}</span>
+        </div>
+        {% endif %}
         <div style="margin-bottom:24px;">
           <span style="font-size:32px;font-weight:800;color:var(--np-navy);">{{ tier.formatted_price }}</span>
           {% if tier.price %}<span style="color:var(--text-secondary);">/{{ tier.get_billing_cycle_display|lower }}</span>{% else %}<span style="color:var(--text-secondary);"> custom</span>{% endif %}
         </div>
         {% if tier.description %}<p style="color:var(--text-secondary);font-size:14px;margin-bottom:24px;">{{ tier.description }}</p>{% endif %}
+
+        {% if tier.features_list %}
+        <ul style="list-style:none;padding:0;margin:0 0 28px;display:flex;flex-direction:column;gap:12px;text-align:left;flex:1;">
+          {% for feat in tier.features_list %}
+            {% if "Everything in" in feat %}
+            <li style="display:flex;align-items:center;gap:10px;font-size:13px;font-weight:700;font-style:italic;color:var(--np-navy);">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="var(--np-primary)" stroke="none" style="flex-shrink:0;"><polygon points="12 2 15 9 22 9.5 17 14.5 18.5 22 12 18 5.5 22 7 14.5 2 9.5 9 9 12 2"/></svg>
+              {{ feat }}
+            </li>
+            {% else %}
+            <li style="display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--text-secondary);line-height:1.5;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-success)" stroke-width="2.5" style="flex-shrink:0;margin-top:2px;"><circle cx="12" cy="12" r="10"/><polyline points="8 12 11 15 16 9"/></svg>
+              {{ feat }}
+            </li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+        {% else %}
+        <div style="flex:1;"></div>
+        {% endif %}
+
         <a href="#lp-form" data-gtm-event="cta_click" data-gtm-location="pricing_{{ tier.tier_name|slugify }}" style="display:block;text-align:center;width:100%;padding:15px;border-radius:12px;font-weight:700;text-decoration:none;{% if tier.is_featured %}background:var(--np-primary);color:white;{% else %}border:2px solid var(--np-primary);color:var(--np-primary);{% endif %}">{{ tier.cta_text }}</a>
       </div>
       {% endfor %}

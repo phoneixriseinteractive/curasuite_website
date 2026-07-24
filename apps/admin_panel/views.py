@@ -1187,10 +1187,12 @@ def pricing_create(request, product_pk):
 
     if request.method == "POST":
         price_raw = request.POST.get("price", "").strip()
+        original_price_raw = request.POST.get("original_price", "").strip()
         ProductPricing.objects.create(
             product=product,
             tier_name=request.POST.get("tier_name", "").strip(),
             price=price_raw if price_raw else None,
+            original_price=original_price_raw if original_price_raw else None,
             billing_cycle=request.POST.get("billing_cycle", "yearly"),
             description=request.POST.get("description", "").strip(),
             features_included=request.POST.get("features_included", "").strip(),
@@ -1231,8 +1233,10 @@ def pricing_edit(request, pk):
             return redirect("admin_panel:pricing_list")
 
         price_raw = request.POST.get("price", "").strip()
+        original_price_raw = request.POST.get("original_price", "").strip()
         tier.tier_name        = request.POST.get("tier_name", tier.tier_name).strip()
         tier.price            = price_raw if price_raw else None
+        tier.original_price   = original_price_raw if original_price_raw else None
         tier.billing_cycle    = request.POST.get("billing_cycle", tier.billing_cycle)
         tier.description      = request.POST.get("description", tier.description).strip()
         tier.features_included= request.POST.get("features_included", tier.features_included).strip()

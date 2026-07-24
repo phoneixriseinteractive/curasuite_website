@@ -194,6 +194,14 @@ class ProductPricing(UUIDModel):
         verbose_name=_("Price (₹)"),
         help_text=_("Leave blank for 'Contact Sales' pricing."),
     )
+    original_price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        verbose_name=_("Original price (₹)"),
+        help_text=_("Optional. If set and higher than Price, shown struck-through with a savings badge."),
+    )
     billing_cycle = models.CharField(
         max_length=20,
         choices=BillingCycle.choices,
@@ -234,6 +242,28 @@ class ProductPricing(UUIDModel):
         if not self.price:
             return "Contact Sales"
         return f"₹{self.price:,.0f}"
+
+    @property
+    def formatted_original_price(self) -> str:
+        return f"₹{self.original_price:,.0f}" if self.original_price else ""
+
+    @property
+    def has_discount(self) -> bool:
+        return bool(self.price and self.original_price and self.original_price > self.price)
+
+    @property
+    def savings_amount(self):
+        return (self.original_price - self.price) if self.has_discount else None
+
+    @property
+    def formatted_savings_amount(self) -> str:
+        return f"₹{self.savings_amount:,.0f}" if self.has_discount else ""
+
+    @property
+    def savings_percent(self) -> int:
+        if not self.has_discount:
+            return 0
+        return round((self.original_price - self.price) / self.original_price * 100)
 
     @property
     def features_list(self) -> list[str]:

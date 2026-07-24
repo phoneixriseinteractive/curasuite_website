@@ -63,9 +63,10 @@ PRODUCTS = [
             {
                 "tier_name": "Starter",
                 "price": "9999",
+                "original_price": "14999",
                 "billing_cycle": "yearly",
                 "description": "Perfect for individual doctors starting their digital journey.",
-                "features_included": "5 Pages\nAppointment Booking\nContact Form\nBasic SEO\nWhatsApp Button\nSSL Certificate\nFree Domain (1 Year)",
+                "features_included": "Marketing CMS\nDoctor Profiles\nSocial Integration\nPatient Education Videos\nRole-Based Access\nBuilt-in SEO\nBlog & Content\nSite Settings",
                 "is_featured": False,
                 "cta_text": "Get Started",
                 "sort_order": 1,
@@ -73,9 +74,10 @@ PRODUCTS = [
             {
                 "tier_name": "Professional",
                 "price": "19999",
+                "original_price": "29999",
                 "billing_cycle": "yearly",
                 "description": "For growing clinics that need more power.",
-                "features_included": "Unlimited Pages\nAppointment Booking\nBlog Engine (Unlimited Posts)\nPatient CRM\nAdvanced SEO Tools\nAI Chatbot\nAnalytics Dashboard\nWhatsApp Integration\nEmail Notifications\nPriority Support",
+                "features_included": "Everything in the Starter plan, plus\nTreatment Listings\nPatient CRM\nOnline Appointment Booking\nAI Chat Assistant",
                 "is_featured": True,
                 "cta_text": "Most Popular",
                 "sort_order": 2,
