@@ -59,6 +59,9 @@
         <div class="adm-form-group">
           <label class="adm-label" for="id_password">Password</label>
           <input type="password" name="password" id="id_password" class="adm-input" placeholder="••••••••••••" autocomplete="current-password" required>
+          <div style="text-align:right;margin-top:6px;">
+            <a href="{% url 'admin_panel:password_reset' %}" style="font-size:12.5px;color:var(--adm-text-muted);">Forgot password?</a>
+          </div>
         </div>
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:24px;">
           <input type="checkbox" name="remember_me" id="id_remember" style="width:14px;height:14px;accent-color:var(--adm-accent);">

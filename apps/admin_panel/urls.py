@@ -1,13 +1,52 @@
 """CuraSuite — Admin Panel URLs"""
-from django.urls import path
+from django.urls import path, reverse_lazy
+from django.contrib.auth.views import (
+    PasswordResetCompleteView, PasswordResetConfirmView,
+    PasswordResetDoneView, PasswordResetView,
+)
+
 from . import views
+from .forms import AdminPasswordResetForm
 
 app_name = "admin_panel"
 
 urlpatterns = [
     # Auth
-    path("login/",  views.admin_login,  name="login"),
-    path("logout/", views.admin_logout, name="logout"),
+    path("login/",              views.admin_login,      name="login"),
+    path("login/otp/",          views.admin_otp_verify,  name="otp_verify"),
+    path("login/otp/resend/",   views.admin_otp_resend,  name="otp_resend"),
+    path("logout/",              views.admin_logout,     name="logout"),
+
+    # Password reset
+    path(
+        "password-reset/",
+        PasswordResetView.as_view(
+            template_name="admin_panel/auth/password_reset.html",
+            email_template_name="admin_panel/auth/emails/password_reset_email.txt",
+            subject_template_name="admin_panel/auth/emails/password_reset_subject.txt",
+            form_class=AdminPasswordResetForm,
+            success_url=reverse_lazy("admin_panel:password_reset_done"),
+        ),
+        name="password_reset",
+    ),
+    path(
+        "password-reset/done/",
+        PasswordResetDoneView.as_view(template_name="admin_panel/auth/password_reset_done.html"),
+        name="password_reset_done",
+    ),
+    path(
+        "password-reset/confirm/<uidb64>/<token>/",
+        PasswordResetConfirmView.as_view(
+            template_name="admin_panel/auth/password_reset_confirm.html",
+            success_url=reverse_lazy("admin_panel:password_reset_complete"),
+        ),
+        name="password_reset_confirm",
+    ),
+    path(
+        "password-reset/complete/",
+        PasswordResetCompleteView.as_view(template_name="admin_panel/auth/password_reset_complete.html"),
+        name="password_reset_complete",
+    ),
 
     # Dashboard
     path("", views.dashboard, name="dashboard"),

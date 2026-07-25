@@ -13,11 +13,17 @@ from django.views.decorators.http import require_POST, require_http_methods
 from django.contrib import messages
 
 from .decorators import admin_required
-from .forms import AdminLoginForm
+from .forms import AdminLoginForm, OTPVerifyForm
 from .selectors import (
     get_dashboard_stats, get_leads_by_source, get_leads_by_status,
     get_recent_demo_requests, get_recent_leads,
 )
+from .services import (
+    PENDING_2FA_REMEMBER_ME_KEY, check_remembered_device, clear_pending_2fa,
+    client_ip, get_pending_2fa_user, issue_remember_device_cookie, set_pending_2fa,
+)
+from apps.accounts.services import create_and_send_otp, resend_otp, verify_otp
+from django.urls import reverse
 
 logger = logging.getLogger(__name__)
 
@@ -48,11 +54,18 @@ def _toast(request, message, kind="success"):
 # AUTH
 # ═══════════════════════════════════════════════════════════════════════════════
 
+def _finish_login(request, user, remember_me):
+    login(request, user)
+    if not remember_me:
+        request.session.set_expiry(0)
+
+
 def admin_login(request):
     if request.user.is_authenticated and request.user.is_staff:
         return redirect("admin_panel:dashboard")
     error = None
     form  = AdminLoginForm(request.POST or None)
+    next_url = request.GET.get("next", "/manage/")
     if request.method == "POST" and form.is_valid():
         user = authenticate(
             request,
@@ -60,12 +73,63 @@ def admin_login(request):
             password=form.cleaned_data["password"],
         )
         if user and user.is_staff:
-            login(request, user)
-            if not form.cleaned_data.get("remember_me"):
-                request.session.set_expiry(0)
-            return redirect(request.GET.get("next", "/manage/"))
-        error = "Invalid credentials or insufficient permissions."
+            remember_me = form.cleaned_data.get("remember_me")
+            device = check_remembered_device(request, user)
+            if device:
+                _finish_login(request, user, remember_me)
+                return redirect(next_url)
+            try:
+                create_and_send_otp(user, ip_address=client_ip(request), user_agent=request.META.get("HTTP_USER_AGENT", ""))
+            except Exception:
+                logger.exception("Failed to send admin OTP email to %s", user.email)
+                error = "We couldn't send your verification code. Please try again in a moment."
+            else:
+                set_pending_2fa(request, user, remember_me)
+                return redirect(f"{reverse('admin_panel:otp_verify')}?next={next_url}")
+        else:
+            error = "Invalid credentials or insufficient permissions."
     return render(request, "admin_panel/auth/login.html", {"form": form, "error": error})
+
+
+def admin_otp_verify(request):
+    if request.user.is_authenticated and request.user.is_staff:
+        return redirect("admin_panel:dashboard")
+    user = get_pending_2fa_user(request)
+    if user is None:
+        return redirect("admin_panel:login")
+
+    error = None
+    sent = request.GET.get("sent") == "1"
+    resend_error = request.GET.get("error")
+    next_url = request.GET.get("next", "/manage/")
+    form = OTPVerifyForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        ok, err = verify_otp(user, form.cleaned_data["code"])
+        if ok:
+            remember_me = request.session.get(PENDING_2FA_REMEMBER_ME_KEY, False)
+            trust_device = form.cleaned_data.get("trust_device")
+            clear_pending_2fa(request)
+            _finish_login(request, user, remember_me)
+            response = redirect(next_url)
+            if trust_device:
+                issue_remember_device_cookie(response, request, user)
+            return response
+        error = err
+    return render(request, "admin_panel/auth/otp_verify.html", {
+        "form": form, "error": error, "email": user.email,
+        "sent": sent, "resend_error": resend_error, "next": next_url,
+    })
+
+
+@require_POST
+def admin_otp_resend(request):
+    next_url = request.GET.get("next", "/manage/")
+    user = get_pending_2fa_user(request)
+    if user is None:
+        return redirect("admin_panel:login")
+    ok, err = resend_otp(user, ip_address=client_ip(request), user_agent=request.META.get("HTTP_USER_AGENT", ""))
+    suffix = "sent=1" if ok else f"error={err}"
+    return redirect(f"{reverse('admin_panel:otp_verify')}?next={next_url}&{suffix}")
 
 
 def admin_logout(request):

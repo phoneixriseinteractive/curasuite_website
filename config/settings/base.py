@@ -165,6 +165,17 @@ DEFAULT_FROM_EMAIL = "CuraSuite <hello@curasuite.com>"
 SERVER_EMAIL = "errors@curasuite.com"
 
 
+# ── Admin Panel Auth Hardening (OTP 2FA + Remember Device) ─────────────────────
+ADMIN_OTP_TTL_MINUTES = 10
+ADMIN_OTP_MAX_ATTEMPTS = 5
+ADMIN_OTP_RESEND_COOLDOWN_SECONDS = 45
+ADMIN_OTP_MAX_SENDS_PER_WINDOW = 5
+ADMIN_OTP_SEND_WINDOW_MINUTES = 15
+
+ADMIN_REMEMBER_DEVICE_DAYS = 30
+ADMIN_REMEMBER_DEVICE_COOKIE_NAME = "adm_device"
+
+
 # ── Security Headers (base — overridden in production) ─────────────────────────
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True

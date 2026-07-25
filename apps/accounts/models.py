@@ -3,11 +3,14 @@ CuraSuite — Accounts Models
 Custom User model using email as the primary identifier.
 """
 
+from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 import uuid
+
+from apps.core.models import TimeStampedModel
 
 
 class UserManager(BaseUserManager):
@@ -68,3 +71,35 @@ class User(AbstractBaseUser, PermissionsMixin):
     @property
     def short_name(self):
         return self.first_name or self.email.split("@")[0]
+
+
+class LoginOTP(TimeStampedModel):
+    """One-time verification code emailed as a second factor for /manage/ logins."""
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="login_otps")
+    code_hash = models.CharField(max_length=64)
+    expires_at = models.DateTimeField(db_index=True)
+    attempts = models.PositiveSmallIntegerField(default=0)
+    is_used = models.BooleanField(default=False)
+    consumed_at = models.DateTimeField(null=True, blank=True)
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    user_agent = models.CharField(max_length=255, blank=True)
+
+    class Meta:
+        db_table = "login_otps"
+        indexes = [models.Index(fields=["user", "is_used", "expires_at"])]
+
+
+class RememberedDevice(TimeStampedModel):
+    """A browser/device that has opted to skip OTP verification for a limited period."""
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="remembered_devices")
+    token_hash = models.CharField(max_length=64, unique=True, db_index=True)
+    expires_at = models.DateTimeField(db_index=True)
+    last_used_at = models.DateTimeField(default=timezone.now)
+    revoked_at = models.DateTimeField(null=True, blank=True)
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    user_agent = models.CharField(max_length=255, blank=True)
+
+    class Meta:
+        db_table = "remembered_devices"
