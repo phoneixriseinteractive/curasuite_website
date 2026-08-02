@@ -21,6 +21,34 @@ RECAPTCHA_VERIFY_URL = "https://www.google.com/recaptcha/api/siteverify"
 TURNSTILE_VERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify"
 RECAPTCHA_V3_MIN_SCORE = 0.5
 
+# ── GTM form-name tracking ───────────────────────────────────────────────────
+# Canonical per-form identifier GTM uses to tell submissions apart — set as the
+# data-gtm-form-name attribute on the <form> itself and pushed as form_name in
+# the post-submit dataLayer event (see crm/partials/appointment_success.html).
+# Keyed by LandingPage.slug; the appointment widget on the main site (no
+# lp_slug) always resolves to MAIN_SITE_GTM_FORM_NAME.
+GTM_FORM_NAMES = {
+    "general-physician": "general_physician_demo",
+    "dentist": "dentist_demo",
+    "ophthalmologist": "ophthalmologist_demo",
+    "physiotherapist": "physiotherapist_demo",
+    "pathology-digital-platform": "pathology_demo",
+}
+MAIN_SITE_GTM_FORM_NAME = "main_site_contact"
+
+
+def get_gtm_form_name(lp_slug: str = "") -> str:
+    """
+    Resolve the GTM form_name for a submission. `lp_slug` empty/falsy means the
+    main-site appointment widget, not a landing page. Unmapped landing page
+    slugs fall back to a `<slug>_demo` pattern rather than main_site_contact,
+    so a newly added landing page still gets a distinct (if unofficial) name
+    instead of being silently lumped in with main-site traffic.
+    """
+    if not lp_slug:
+        return MAIN_SITE_GTM_FORM_NAME
+    return GTM_FORM_NAMES.get(lp_slug, f"{lp_slug.replace('-', '_')}_demo")
+
 
 def verify_captcha(request) -> bool:
     """

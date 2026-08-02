@@ -12,3 +12,11 @@
     <a href="/pricing/" class="btn btn-secondary" style="font-size:var(--text-sm);">View Pricing</a>
   </div>
 </div>
+<script>
+window.dataLayer = window.dataLayer || [];
+dataLayer.push({
+  event: 'lp_form_submit_success',
+  gtm_location: 'main_site_form',
+  form_name: '{{ gtm_form_name }}'
+});
+</script>

@@ -51,7 +51,8 @@
           <form method="post" action="/contact/"
                 hx-post="/contact/demo/"
                 hx-target="#solutions-form-wrap"
-                hx-swap="innerHTML">
+                hx-swap="innerHTML"
+                data-gtm-event="main_site_form" data-gtm-form-name="main_site_contact">
             {% csrf_token %}
             <div id="solutions-form-wrap">
               <div style="display:flex;flex-direction:column;gap:var(--space-3);">

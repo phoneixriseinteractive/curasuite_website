@@ -1,6 +1,9 @@
 """CuraSuite — Landing Pages Public Views"""
 from django.http import Http404
 from django.shortcuts import render
+
+from apps.integrations.services import get_gtm_form_name
+
 from .selectors import get_landing_page_by_slug, get_testimonials_for_landing_page
 
 # Real CuraCMS product screenshots for the "A Glimpse into CuraCMS" gallery on
@@ -38,4 +41,5 @@ def landing_page_detail(request, slug: str):
         "product_features": page.product.features.order_by("sort_order"),
         "screenshots": page.product.screenshots.order_by("sort_order")[:4] if hasattr(page.product, "screenshots") else [],
         "gallery_shots": GALLERY_SHOTS,
+        "gtm_form_name": get_gtm_form_name(page.slug),
     })

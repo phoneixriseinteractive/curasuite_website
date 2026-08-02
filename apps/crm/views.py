@@ -8,7 +8,7 @@ from django.contrib import messages
 from .forms import ContactForm, DemoRequestForm, AppointmentForm
 from .services import capture_lead, create_demo_request
 from .models import Lead
-from apps.integrations.services import verify_captcha
+from apps.integrations.services import get_gtm_form_name, verify_captcha
 
 CAPTCHA_ERROR = "We couldn't verify you're human. Please try again."
 
@@ -40,7 +40,9 @@ def contact_page(request):
 
         # HTMX response
         if request.headers.get("HX-Request"):
-            return render(request, "crm/partials/contact_success.html", {"lead": lead})
+            return render(request, "crm/partials/contact_success.html", {
+                "lead": lead, "gtm_form_name": get_gtm_form_name(),
+            })
 
         return redirect("crm:contact_success")
 
@@ -72,7 +74,9 @@ def demo_request_htmx(request):
             preferred_date=d.get("preferred_date"),
             preferred_time=d.get("preferred_time", ""),
         )
-        return render(request, "crm/partials/contact_success.html", {"lead": lead})
+        return render(request, "crm/partials/contact_success.html", {
+            "lead": lead, "gtm_form_name": get_gtm_form_name(),
+        })
 
     return render(request, "crm/partials/demo_form.html", {"form": form})
 
@@ -121,10 +125,14 @@ def appointment_widget_submit(request):
         )
         create_demo_request(lead=lead, product_interest=d["product"])
 
+        lp_slug = request.POST.get("lp_slug", "")
         return render(request, "crm/partials/appointment_success.html", {
-            "lead": lead, "product": d["product"], "lp_slug": request.POST.get("lp_slug", ""),
+            "lead": lead, "product": d["product"], "lp_slug": lp_slug,
+            "gtm_form_name": get_gtm_form_name(lp_slug),
         })
 
+    lp_slug = request.POST.get("lp_slug", "")
     return render(request, "crm/partials/appointment_form.html", {
         "form": form, "product": request.POST.get("product", ""),
+        "lp_slug": lp_slug, "gtm_form_name": get_gtm_form_name(lp_slug),
     })
