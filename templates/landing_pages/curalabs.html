@@ -9,6 +9,18 @@
    fixed Pathology Blue accent below; {{ product.color }} (Diagnostic Green)
    is reserved for the one real conversion action — the demo-form submit and
    WhatsApp buttons — matching the source design's action-vs-structure split.
+
+   Page flow (10 blocks, per the CRO blueprint):
+     1. Hero (headline + embedded demo form)
+     2. Social proof bar
+     3. Pain Point Contrast — Traditional Lab vs. {{ product.name }}
+     4. 3-step digital flow
+     5. Interactive product UI showcase (3 modules)
+     6. Security & LIS integration stack
+     7. Testimonials
+     8. Pricing tiers & ROI anchor
+     9. FAQ accordion
+     10. Pre-footer conversion banner
    ───────────────────────────────────────────────────────────────────────── #}
 {% block extra_head %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -64,15 +76,9 @@
   .lp-chip { display: flex; align-items: center; gap: 10px; font-size: var(--text-sm); font-weight: 500; color: var(--text-secondary); }
   .lp-chip .material-symbols-outlined { color: var(--color-secondary-600); font-size: 20px; }
 
-  /* Trust bar */
+  /* Social proof bar */
   .lp-trust-bar { background: var(--surface-container, #e5eeff); border-block: 1px solid var(--border-default); padding-block: 16px; }
   .lp-trust-item { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--text-secondary); }
-
-  /* Challenge card */
-  .lp-challenge-card { background: white; border: 1px solid var(--border-default); border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow-sm); }
-  .lp-challenge-icon { width: 40px; height: 40px; border-radius: 50%; background: #ffdad6; color: #93000a; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
-  .lp-solution-line { display: flex; gap: 8px; align-items: flex-start; margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--border-default); font-size: var(--text-sm); color: var(--text-primary); }
-  .lp-solution-line .material-symbols-outlined { color: var(--color-secondary-600); font-size: 18px; flex-shrink: 0; margin-top: 1px; }
 
   /* Step marker */
   .lp-step { width: 88px; height: 88px; border-radius: 50%; background: white; border: 4px solid var(--surface-page); box-shadow: var(--shadow-sm); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; position: relative; }
@@ -97,11 +103,14 @@
   .lp-phone-link { display: none; }
   @media (min-width: 500px) { .lp-phone-link { display: flex; } }
 
-  /* Workflow contrast table */
-  .lp-contrast-table { display: grid; grid-template-columns: 1fr 1fr 1fr; border: 1px solid var(--border-default); border-radius: var(--radius-lg); overflow: hidden; background: white; }
+  /* Pain Point Contrast table */
+  .lp-contrast-table { display: grid; grid-template-columns: auto 1fr 1fr; border: 1px solid var(--border-default); border-radius: var(--radius-lg); overflow: hidden; background: white; }
   .lp-contrast-table > div { padding: 16px 20px; border-bottom: 1px solid var(--border-default); }
   .lp-contrast-head { background: var(--surface-card); font-size: 12px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--text-secondary); }
+  .lp-contrast-area { display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--text-primary); }
+  .lp-contrast-area .material-symbols-outlined { color: var(--color-primary-600); flex-shrink: 0; }
   .lp-contrast-before { background: #fff5f5; color: var(--text-secondary); font-size: var(--text-sm); }
+  .lp-contrast-before small { display: block; color: var(--text-muted); margin-top: 4px; }
   .lp-contrast-after { background: #f0fdf4; color: var(--text-primary); font-size: var(--text-sm); }
   @media (max-width: 768px) { .lp-contrast-table { grid-template-columns: 1fr; } }
 </style>
@@ -135,7 +144,7 @@
 
 {% block content %}
 
-<!-- ═══ HERO ════════════════════════════════════════════════════════════════ -->
+<!-- ═══ 1. HERO (headline + embedded demo form) ═══════════════════════════════ -->
 <section class="hero-pattern pattern-fade-light" style="position:relative;overflow:hidden;padding:56px 0 48px;">
   {% if lp.hero_image %}
   <div style="position:absolute;inset:0;z-index:0;">
@@ -233,48 +242,55 @@
   </div>
 </section>
 
-<!-- ═══ TRUST BAR ═══════════════════════════════════════════════════════════ -->
+<!-- ═══ 2. SOCIAL PROOF BAR ═════════════════════════════════════════════════ -->
 <section class="lp-trust-bar">
   <div class="container" style="display:flex;flex-wrap:wrap;justify-content:center;gap:28px;align-items:center;">
-    <div class="lp-trust-item"><span style="color:#F59E0B;">★★★★★</span>{{ lp.social_proof_note|default:"Trusted by pathology labs across India" }}</div>
+    <div class="lp-trust-item">
+      {% if avg_rating %}<span style="color:#F59E0B;">★</span>{{ avg_rating }}/5 Rating ·{% else %}<span style="color:#F59E0B;">★★★★★</span>{% endif %}
+      {{ lp.social_proof_note|default:"Trusted by pathology labs across India" }}
+    </div>
+    <div class="lp-trust-item"><span class="material-symbols-outlined icon-fill" style="font-size:18px;color:var(--color-secondary-600);">verified</span>NABL Workflow Ready</div>
     <div class="lp-trust-item"><span class="material-symbols-outlined" style="font-size:18px;color:var(--color-primary-600);">lock</span>Secure Report Delivery</div>
     <div class="lp-trust-item"><span class="material-symbols-outlined" style="font-size:18px;color:var(--color-primary-600);">verified_user</span>OTP-Verified Downloads</div>
     <div class="lp-trust-item"><span class="material-symbols-outlined icon-fill" style="font-size:18px;color:var(--color-secondary-600);">bolt</span>7–14 Day Go-Live</div>
   </div>
 </section>
 
-<!-- ═══ CHALLENGES → SOLUTIONS ══════════════════════════════════════════════ -->
+<!-- ═══ 3. PAIN POINT CONTRAST — Traditional Lab vs. {{ product.name }} ═══════ -->
 {% if pain_points %}
 <section style="padding:56px 0;background:var(--surface-card);">
   <div class="container">
-    <h2 style="text-align:center;margin-bottom:36px;font-size:var(--text-2xl);">Is Your Lab Facing These Challenges?</h2>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;">
+    <div style="max-width:680px;margin:0 auto 40px;text-align:center;">
+      <p style="font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--color-primary-600);margin-bottom:8px;">Built Specifically for {{ lp.target_audience_label|default:"Pathology Labs" }}</p>
+      <p style="color:var(--text-secondary);line-height:var(--leading-relaxed);">{{ product.long_description|default:product.short_description|linebreaksbr }}</p>
+    </div>
+    <h2 style="text-align:center;margin-bottom:8px;font-size:var(--text-2xl);">Traditional Pathology Lab vs. {{ product.name }}</h2>
+    <p style="text-align:center;color:var(--text-secondary);margin-bottom:40px;">Traditional workflows are costing you patients and efficiency. It's time to upgrade.</p>
+    <div class="lp-contrast-table" style="max-width:980px;margin-inline:auto;">
+      <div class="lp-contrast-head">Operating Area</div>
+      <div class="lp-contrast-head">Traditional Pathology Lab</div>
+      <div class="lp-contrast-head">With {{ product.name }}</div>
       {% for pp in pain_points %}
-      <div class="lp-challenge-card">
-        <div class="lp-challenge-icon">
-          <span class="material-symbols-outlined">{% cycle "call_end" "edit_calendar" "hourglass_empty" "public_off" "priority_high" "report_problem" %}</span>
-        </div>
-        <h4 style="font-size:var(--text-base);margin-bottom:6px;">{% cycle "Call Line Overload" "Manual Dispatch" "Waiting Room Friction" "Digital Disadvantage" "Growing Pains" "Lost Follow-Ups" %}</h4>
-        <p style="color:var(--text-primary);margin-bottom:0;">{{ pp.text }}</p>
-        {% if pp.consequence_text %}<p style="font-size:var(--text-sm);color:var(--text-muted);margin-top:8px;">{{ pp.consequence_text }}</p>{% endif %}
-        {% if pp.solution_text %}
-        <div class="lp-solution-line">
-          <span class="material-symbols-outlined icon-fill">check_circle</span>
-          <span>{{ pp.solution_text }}</span>
-        </div>
-        {% endif %}
+      <div class="lp-contrast-area">
+        <span class="material-symbols-outlined">{% cycle "call_end" "edit_calendar" "hourglass_empty" "public_off" "priority_high" "report_problem" %}</span>
+        {% cycle "Report Status Requests" "Home Sample Collection" "Patient Retention" "Multi-Branch Operations" "Patient Experience" "Daily Operations" %}
       </div>
+      <div class="lp-contrast-before">
+        {{ pp.text }}
+        {% if pp.consequence_text %}<small>{{ pp.consequence_text }}</small>{% endif %}
+      </div>
+      <div class="lp-contrast-after">{% if pp.solution_text %}<strong>{{ pp.solution_text }}</strong>{% else %}—{% endif %}</div>
       {% endfor %}
     </div>
   </div>
 </section>
 {% endif %}
 
-<!-- ═══ HOW IT WORKS ════════════════════════════════════════════════════════ -->
+<!-- ═══ 4. 3-STEP DIGITAL FLOW ══════════════════════════════════════════════ -->
 <section style="padding:56px 0;">
   <div class="container">
     <h2 style="text-align:center;margin-bottom:8px;font-size:var(--text-2xl);">From Sample to Report — Fully Digital</h2>
-    <p style="text-align:center;color:var(--text-secondary);margin-bottom:44px;">Three simple steps to automate the patient experience.</p>
+    <p style="text-align:center;color:var(--text-secondary);margin-bottom:44px;">Booking → Automated Alert → OTP-Verified Download. Three simple steps.</p>
     <div class="grid grid-3" style="gap:24px;text-align:center;position:relative;">
       <div class="lp-step-connector"></div>
       <div style="position:relative;">
@@ -296,7 +312,7 @@
   </div>
 </section>
 
-<!-- ═══ INTERACTIVE SHOWCASE ════════════════════════════════════════════════ -->
+<!-- ═══ 5. INTERACTIVE PRODUCT UI SHOWCASE ═════════════════════════════════ -->
 {% if benefits %}
 <section id="platform" style="padding:56px 0;background:var(--surface-card);overflow:hidden;">
   <div class="container">
@@ -306,7 +322,7 @@
     </div>
     <div style="display:flex;flex-direction:column;gap:64px;">
 
-      <!-- Module 1 -->
+      <!-- Module 1: Patient Experience -->
       <div id="reports" class="split-even">
         <div>
           {% with shot=screenshots.0 %}
@@ -330,7 +346,7 @@
         </div>
       </div>
 
-      <!-- Module 2 -->
+      <!-- Module 2: Admin & Dispatch Dashboard -->
       {% if benefits|length > 3 %}
       <div id="home-collection" class="split-even">
         <div style="order:2;">
@@ -375,64 +391,34 @@
         </div>
       </div>
 
-    </div>
-  </div>
-</section>
-{% endif %}
-
-<!-- ═══ WORKFLOW CONTRAST ═══════════════════════════════════════════════════ -->
-{% if pain_points %}
-<section style="padding:56px 0;">
-  <div class="container">
-    <h2 style="text-align:center;margin-bottom:40px;font-size:var(--text-2xl);">Workflow Contrast — Before vs. After Impact</h2>
-    <div class="lp-contrast-table" style="max-width:960px;margin-inline:auto;">
-      <div class="lp-contrast-head">Operating Area</div>
-      <div class="lp-contrast-head">Traditional Pathology Lab</div>
-      <div class="lp-contrast-head">With {{ product.name }}</div>
-      {% for pp in pain_points %}
-      <div style="font-weight:700;color:var(--text-primary);display:flex;align-items:center;">{% cycle "Report Status Requests" "Home Sample Collection" "Patient Retention" "Multi-Branch Operations" "Patient Experience" "Daily Operations" %}</div>
-      <div class="lp-contrast-before" style="display:flex;align-items:center;">{{ pp.text }}</div>
-      <div class="lp-contrast-after" style="display:flex;align-items:center;">{% if pp.solution_text %}<strong>{{ pp.solution_text }}</strong>{% else %}—{% endif %}</div>
-      {% endfor %}
-    </div>
-  </div>
-</section>
-{% endif %}
-
-<!-- ═══ FULL FEATURE LIST ═══════════════════════════════════════════════════ -->
-{% if product_features %}
-<section style="padding:56px 0;">
-  <div class="container">
-    <h2 style="text-align:center;margin-bottom:8px;font-size:var(--text-2xl);">Everything Included with {{ product.name }}</h2>
-    <p style="text-align:center;color:var(--text-secondary);margin-bottom:40px;">No hidden add-ons. No surprise charges.</p>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;max-width:1000px;margin-inline:auto;">
-      {% for feat in product_features %}
-      <div style="display:flex;gap:12px;align-items:flex-start;background:var(--surface-card);padding:16px;border-radius:var(--radius-lg);border:1px solid var(--border-default);{% if feat.is_highlighted %}border-color:var(--color-primary-200);background:var(--color-primary-50);{% endif %}">
-        <span class="material-symbols-outlined icon-fill" style="color:var(--color-primary-600);font-size:20px;flex-shrink:0;">check_circle</span>
-        <div>
-          <div style="font-size:var(--text-sm);font-weight:600;color:var(--text-primary);">{{ feat.title }}</div>
-          <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">{{ feat.description|truncatechars:80 }}</div>
+      <!-- Feature strip — everything included, kept compact so it stays part of
+           the showcase block rather than becoming its own top-level section. -->
+      {% if product_features %}
+      <div>
+        <h3 style="text-align:center;font-size:var(--text-lg);margin-bottom:6px;">Everything Included with {{ product.name }}</h3>
+        <p style="text-align:center;color:var(--text-secondary);font-size:var(--text-sm);margin-bottom:24px;">No hidden add-ons. No surprise charges.</p>
+        <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:10px;max-width:900px;margin-inline:auto;">
+          {% for feat in product_features %}
+          <div title="{{ feat.description }}" style="display:flex;align-items:center;gap:6px;background:white;border:1px solid var(--border-default);border-radius:var(--radius-full);padding:8px 16px;{% if feat.is_highlighted %}border-color:var(--color-primary-200);background:var(--color-primary-50);{% endif %}">
+            <span class="material-symbols-outlined icon-fill" style="color:var(--color-primary-600);font-size:16px;">check_circle</span>
+            <span style="font-size:var(--text-sm);font-weight:600;color:var(--text-primary);">{{ feat.title }}</span>
+          </div>
+          {% endfor %}
         </div>
       </div>
-      {% endfor %}
+      {% endif %}
+
     </div>
   </div>
 </section>
 {% endif %}
 
-<!-- ═══ WHO IT'S FOR ════════════════════════════════════════════════════════ -->
-<section style="padding:48px 0;background:var(--surface-card);">
-  <div class="container" style="max-width:760px;text-align:center;">
-    <h2 style="margin-bottom:16px;font-size:var(--text-2xl);">Built Specifically for {{ lp.target_audience_label|default:"Pathology Labs" }}</h2>
-    <p style="color:var(--text-secondary);font-size:var(--text-base);line-height:var(--leading-relaxed);">{{ product.long_description|default:product.short_description }}</p>
-  </div>
-</section>
-
-<!-- ═══ ENTERPRISE INFRASTRUCTURE ═══════════════════════════════════════════ -->
+<!-- ═══ 6. SECURITY & LIS INTEGRATION STACK ════════════════════════════════ -->
 <section style="padding:56px 0;background:var(--color-primary-600);color:white;position:relative;overflow:hidden;">
   <div style="position:absolute;inset:0;background:radial-gradient(ellipse at top right,rgba(255,255,255,.08),transparent 60%);pointer-events:none;"></div>
   <div class="container" style="position:relative;">
-    <h2 style="text-align:center;max-width:680px;margin:0 auto 44px;font-size:var(--text-2xl);color:white;">Built to Fit Seamlessly Into Your Existing Infrastructure</h2>
+    <h2 style="text-align:center;margin-bottom:4px;font-size:var(--text-2xl);color:white;">Security &amp; LIS Integration Stack</h2>
+    <p style="text-align:center;max-width:680px;margin:0 auto 44px;color:rgba(255,255,255,.85);">Built to fit seamlessly into your existing infrastructure.</p>
     <div class="grid grid-4" style="gap:32px;">
       <div>
         <div class="lp-security-icon"><span class="material-symbols-outlined">lock</span></div>
@@ -458,16 +444,7 @@
   </div>
 </section>
 
-<!-- ═══ MID-PAGE CTA ════════════════════════════════════════════════════════ -->
-<section style="padding:36px 0;background:var(--surface-card);text-align:center;border-bottom:1px solid var(--border-default);">
-  <div class="container">
-    <h3 style="margin-bottom:8px;font-size:var(--text-xl);">See {{ product.name }} in Action</h3>
-    <p style="color:var(--text-secondary);margin-bottom:20px;">Free demo tailored to your lab's test catalogue and workflow.</p>
-    <a href="#lp-form" data-gtm-event="cta_click" data-gtm-location="mid_page" class="btn btn-lg" style="background:var(--color-primary-600);color:white;border-color:var(--color-primary-600);">Book Free Demo →</a>
-  </div>
-</section>
-
-<!-- ═══ TESTIMONIALS ════════════════════════════════════════════════════════ -->
+<!-- ═══ 7. TESTIMONIALS & CASE STUDIES ══════════════════════════════════════ -->
 {% if testimonials %}
 <section style="padding:56px 0;">
   <div class="container">
@@ -486,7 +463,7 @@
 </section>
 {% endif %}
 
-<!-- ═══ PRICING ═════════════════════════════════════════════════════════════ -->
+<!-- ═══ 8. PRICING TIERS & ROI ANCHOR ═══════════════════════════════════════ -->
 {% if pricing_tiers %}
 <section style="padding:56px 0;background:var(--surface-card);" id="pricing">
   <div class="container">
@@ -530,7 +507,7 @@
 </section>
 {% endif %}
 
-<!-- ═══ FAQ ══════════════════════════════════════════════════════════════════ -->
+<!-- ═══ 9. OBJECTION-HANDLING FAQ ACCORDION ═════════════════════════════════ -->
 {% if product_faqs %}
 <section id="resources" style="padding:56px 0;">
   <div class="container" style="max-width:720px;">
@@ -549,5 +526,25 @@
   </div>
 </section>
 {% endif %}
+
+<!-- ═══ 10. PRE-FOOTER CONVERSION BANNER ════════════════════════════════════ -->
+<section style="padding:56px 0;background:var(--color-primary-900);text-align:center;">
+  <div class="container" style="max-width:640px;">
+    <h2 style="color:white;margin-bottom:12px;font-size:var(--text-2xl);">Ready to Take Your Lab Digital?</h2>
+    <p style="color:rgba(255,255,255,.8);margin-bottom:28px;">Free demo, no credit card required. Our team calls you within 1 business day.</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <a href="#lp-form" data-gtm-event="cta_click" data-gtm-location="pre_footer" class="btn btn-lg" style="background:{{ product.color }};border-color:{{ product.color }};color:white;">
+        Book Free Demo <span class="material-symbols-outlined" style="font-size:18px;">arrow_forward</span>
+      </a>
+      {% if SITE_SETTINGS.whatsapp_phone %}
+      <a href="https://wa.me/{{ SITE_SETTINGS.whatsapp_phone }}?text={{ lp.whatsapp_message_template|urlencode }}" target="_blank"
+         data-wa-placement="pre_footer" data-gtm-event="whatsapp_click" data-gtm-location="pre_footer"
+         class="btn btn-lg" style="background:var(--whatsapp-green);color:white;border-color:var(--whatsapp-green);">
+        <span class="material-symbols-outlined" style="font-size:18px;">chat</span> WhatsApp Us
+      </a>
+      {% endif %}
+    </div>
+  </div>
+</section>
 
 {% endblock %}

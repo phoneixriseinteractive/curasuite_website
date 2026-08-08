@@ -29,6 +29,13 @@ def landing_page_detail(request, slug: str):
         raise Http404(f"Landing page '{slug}' not found.")
 
     testimonials = get_testimonials_for_landing_page(page)
+    # Real average of the testimonials actually shown on this page — not a
+    # fabricated trust-bar number. None (not 0) when there's nothing to average,
+    # so the template can omit the badge entirely rather than show "0.0★".
+    avg_rating = (
+        round(sum(t.rating for t in testimonials) / len(testimonials), 1)
+        if testimonials else None
+    )
 
     return render(request, page.template_name, {
         "lp": page,
@@ -36,6 +43,7 @@ def landing_page_detail(request, slug: str):
         "pain_points": page.pain_points.all(),
         "benefits": page.benefits.all(),
         "testimonials": testimonials,
+        "avg_rating": avg_rating,
         "pricing_tiers": page.product.pricing_tiers.order_by("sort_order"),
         "product_faqs": page.product.faqs.order_by("sort_order")[:6],
         "product_features": page.product.features.order_by("sort_order"),
