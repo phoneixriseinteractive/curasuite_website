@@ -10,17 +10,18 @@
    is reserved for the one real conversion action — the demo-form submit and
    WhatsApp buttons — matching the source design's action-vs-structure split.
 
-   Page flow (10 blocks, per the CRO blueprint):
+   Page flow (per the CRO blueprint, +1 block added on request):
      1. Hero (headline + embedded demo form)
      2. Social proof bar
      3. Pain Point Contrast — Traditional Lab vs. {{ product.name }}
      4. 3-step digital flow
      5. Interactive product UI showcase (3 modules)
-     6. Security & LIS integration stack
-     7. Testimonials
-     8. Pricing tiers & ROI anchor
-     9. FAQ accordion
-     10. Pre-footer conversion banner
+     6. Module listing — full platform suite grid
+     7. Security & LIS integration stack
+     8. Testimonials
+     9. Pricing tiers & ROI anchor
+     10. FAQ accordion
+     11. Pre-footer conversion banner
    ───────────────────────────────────────────────────────────────────────── #}
 {% block extra_head %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -86,6 +87,12 @@
   .lp-step-badge { position: absolute; top: -6px; right: -6px; width: 28px; height: 28px; border-radius: 50%; background: var(--color-primary-600); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: var(--text-sm); }
   .lp-step-connector { display: none; }
   @media (min-width: 769px) { .lp-step-connector { display: block; position: absolute; top: 44px; left: 16%; right: 16%; height: 2px; background: var(--border-default); z-index: -1; } }
+
+  /* Module listing grid */
+  .lp-module-card { background: white; border: 1px solid var(--border-default); border-radius: var(--radius-lg); padding: 24px; }
+  .lp-module-icon { width: 48px; height: 48px; border-radius: var(--radius-md); background: var(--surface-card); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+  .lp-module-icon.is-blue .material-symbols-outlined { color: var(--color-primary-600); }
+  .lp-module-icon.is-green .material-symbols-outlined { color: var(--color-secondary-600); }
 
   /* Security band */
   .lp-security-icon { width: 48px; height: 48px; border-radius: var(--radius); background: rgba(255,255,255,.1); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
@@ -413,7 +420,69 @@
 </section>
 {% endif %}
 
-<!-- ═══ 6. SECURITY & LIS INTEGRATION STACK ════════════════════════════════ -->
+<!-- ═══ 6. MODULE LISTING — full platform suite ═══════════════════════════════ -->
+<section style="padding:56px 0;">
+  <div class="container">
+    <div style="text-align:center;max-width:640px;margin:0 auto 48px;">
+      <h2 style="margin-bottom:12px;font-size:var(--text-2xl);">A Complete Suite for Modern Pathology Labs</h2>
+      <p style="color:var(--text-secondary);">Everything you need to manage your diagnostic centre, from patient booking to digital report delivery.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;">
+      <div class="lp-module-card">
+        <div class="lp-module-icon is-blue"><span class="material-symbols-outlined">analytics</span></div>
+        <h4 style="font-size:var(--text-base);margin-bottom:6px;">Analytics Dashboard</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);">Real-time data visualization and operational insights.</p>
+      </div>
+      <div class="lp-module-card">
+        <div class="lp-module-icon is-green"><span class="material-symbols-outlined">article</span></div>
+        <h4 style="font-size:var(--text-base);margin-bottom:6px;">CMS Module with Blogs</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);">Health awareness content and SEO-optimized blog platform.</p>
+      </div>
+      <div class="lp-module-card">
+        <div class="lp-module-icon is-blue"><span class="material-symbols-outlined">library_books</span></div>
+        <h4 style="font-size:var(--text-base);margin-bottom:6px;">Test Catalogues Module</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);">Manage digital test lists, prices, and preparation guidelines.</p>
+      </div>
+      <div class="lp-module-card">
+        <div class="lp-module-icon is-green"><span class="material-symbols-outlined">medical_services</span></div>
+        <h4 style="font-size:var(--text-base);margin-bottom:6px;">Custom Test Package Module</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);">Create and manage discounted health checkup packages.</p>
+      </div>
+      <div class="lp-module-card">
+        <div class="lp-module-icon is-blue"><span class="material-symbols-outlined">event_available</span></div>
+        <h4 style="font-size:var(--text-base);margin-bottom:6px;">Appointment Booking</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);">Online scheduling for both home collection and lab visits.</p>
+      </div>
+      <div class="lp-module-card">
+        <div class="lp-module-icon is-green"><span class="material-symbols-outlined">contact_page</span></div>
+        <h4 style="font-size:var(--text-base);margin-bottom:6px;">Patient CRM</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);">Comprehensive patient records, history, and automated reminders.</p>
+      </div>
+      <div class="lp-module-card">
+        <div class="lp-module-icon is-blue"><span class="material-symbols-outlined">cloud_upload</span></div>
+        <h4 style="font-size:var(--text-base);margin-bottom:6px;">Report Upload</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);">Secure interface for uploading and delivering digital reports.</p>
+      </div>
+      <div class="lp-module-card">
+        <div class="lp-module-icon is-green"><span class="material-symbols-outlined">group</span></div>
+        <h4 style="font-size:var(--text-base);margin-bottom:6px;">CRM &amp; Lead Management</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);">B2B lead tracking for referrals and doctor networking.</p>
+      </div>
+      <div class="lp-module-card">
+        <div class="lp-module-icon is-blue"><span class="material-symbols-outlined">payments</span></div>
+        <h4 style="font-size:var(--text-base);margin-bottom:6px;">Billing &amp; Online Payments</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);">Integrated invoicing and secure online payment gateways.</p>
+      </div>
+      <div class="lp-module-card">
+        <div class="lp-module-icon is-green"><span class="material-symbols-outlined">store</span></div>
+        <h4 style="font-size:var(--text-base);margin-bottom:6px;">Branch Module</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);">Location-specific pages and management for multi-branch chains.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 7. SECURITY & LIS INTEGRATION STACK ════════════════════════════════ -->
 <section style="padding:56px 0;background:var(--color-primary-600);color:white;position:relative;overflow:hidden;">
   <div style="position:absolute;inset:0;background:radial-gradient(ellipse at top right,rgba(255,255,255,.08),transparent 60%);pointer-events:none;"></div>
   <div class="container" style="position:relative;">
@@ -444,7 +513,7 @@
   </div>
 </section>
 
-<!-- ═══ 7. TESTIMONIALS & CASE STUDIES ══════════════════════════════════════ -->
+<!-- ═══ 8. TESTIMONIALS & CASE STUDIES ══════════════════════════════════════ -->
 {% if testimonials %}
 <section style="padding:56px 0;">
   <div class="container">
@@ -463,7 +532,7 @@
 </section>
 {% endif %}
 
-<!-- ═══ 8. PRICING TIERS & ROI ANCHOR ═══════════════════════════════════════ -->
+<!-- ═══ 9. PRICING TIERS & ROI ANCHOR ═══════════════════════════════════════ -->
 {% if pricing_tiers %}
 <section style="padding:56px 0;background:var(--surface-card);" id="pricing">
   <div class="container">
@@ -507,7 +576,7 @@
 </section>
 {% endif %}
 
-<!-- ═══ 9. OBJECTION-HANDLING FAQ ACCORDION ═════════════════════════════════ -->
+<!-- ═══ 10. OBJECTION-HANDLING FAQ ACCORDION ════════════════════════════════ -->
 {% if product_faqs %}
 <section id="resources" style="padding:56px 0;">
   <div class="container" style="max-width:720px;">
@@ -527,7 +596,7 @@
 </section>
 {% endif %}
 
-<!-- ═══ 10. PRE-FOOTER CONVERSION BANNER ════════════════════════════════════ -->
+<!-- ═══ 11. PRE-FOOTER CONVERSION BANNER ════════════════════════════════════ -->
 <section style="padding:56px 0;background:var(--color-primary-900);text-align:center;">
   <div class="container" style="max-width:640px;">
     <h2 style="color:white;margin-bottom:12px;font-size:var(--text-2xl);">Ready to Take Your Lab Digital?</h2>
