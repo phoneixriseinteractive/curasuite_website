@@ -99,11 +99,13 @@
   {% whatsapp_widget %}
   {% chatbot_widget %}
 
-  {# Pinned to exact resolved versions/paths — "@3.x.x" and the bare "htmx.org@2.0.3"
-     package path both 30x-redirect on unpkg (an extra round trip on every load) and,
-     for the unpinned "3.x.x" range, unpkg serves them with only a 60s cache instead
-     of the 1-year immutable cache it gives exact versions. Bump the version numbers
-     here deliberately when upgrading rather than letting "3.x.x" float. #}
+  {% comment %}
+    Pinned to exact resolved versions/paths — "@3.x.x" and the bare "htmx.org@2.0.3"
+    package path both 30x-redirect on unpkg (an extra round trip on every load) and,
+    for the unpinned "3.x.x" range, unpkg serves them with only a 60s cache instead
+    of the 1-year immutable cache it gives exact versions. Bump the version numbers
+    here deliberately when upgrading rather than letting "3.x.x" float.
+  {% endcomment %}
   <script src="https://unpkg.com/htmx.org@2.0.3/dist/htmx.min.js" defer></script>
   <script defer src="https://unpkg.com/@alpinejs/collapse@3.15.12/dist/cdn.min.js"></script>
   <script defer src="https://unpkg.com/alpinejs@3.15.12/dist/cdn.min.js"></script>
