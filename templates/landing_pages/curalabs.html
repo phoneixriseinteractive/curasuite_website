@@ -91,7 +91,25 @@
   body { font-family: var(--font-sans); }
   h1, h2, h3, h4, h5, h6 { font-family: var(--font-display); letter-spacing: -0.01em; }
 
-  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
+  {% comment %}
+    Owns font-family + the ligature feature-flag itself rather than relying on
+    Google's auto-generated CSS for the icon_names-subset request — that response
+    only ships "-webkit-font-feature-settings: 'liga'" (no unprefixed, no -moz-),
+    so on some browsers the icon *names* render as literal fallback letterforms
+    instead of substituting the icon glyph. Declaring all three here directly
+    fixes that regardless of what Google's stylesheet happens to include.
+  {% endcomment %}
+  .material-symbols-outlined {
+    font-family: 'Material Symbols Outlined';
+    font-weight: normal;
+    font-style: normal;
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    -moz-font-feature-settings: 'liga';
+    -webkit-font-feature-settings: 'liga';
+    font-feature-settings: 'liga';
+    -webkit-font-smoothing: antialiased;
+    vertical-align: middle;
+  }
   .icon-fill { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
 
   /* Hero checklist chip */
