@@ -88,6 +88,17 @@
   .lp-step-connector { display: none; }
   @media (min-width: 769px) { .lp-step-connector { display: block; position: absolute; top: 44px; left: 16%; right: 16%; height: 2px; background: var(--border-default); z-index: -1; } }
 
+  /* Showcase image slider */
+  .lp-slider-viewport { position: relative; border-radius: var(--radius-xl); box-shadow: var(--shadow-lg); overflow: hidden; background: white; aspect-ratio: 4 / 3; }
+  .lp-slider-viewport img { width: 100%; height: 100%; object-fit: contain; background: white; }
+  .lp-slider-arrow { position: absolute; top: 50%; transform: translateY(-50%); width: 36px; height: 36px; border-radius: 50%; background: white; border: 1px solid var(--border-default); box-shadow: var(--shadow-sm); display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--color-primary-600); }
+  .lp-slider-arrow.prev { left: 12px; }
+  .lp-slider-arrow.next { right: 12px; }
+  .lp-slider-caption { position: absolute; left: 0; right: 0; bottom: 0; background: linear-gradient(0deg,rgba(11,28,48,.75),transparent); color: white; font-size: var(--text-sm); font-weight: 600; padding: 24px 16px 12px; }
+  .lp-slider-dots { display: flex; justify-content: center; gap: 8px; margin-top: 14px; }
+  .lp-slider-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border-strong); border: none; cursor: pointer; padding: 0; }
+  .lp-slider-dot.is-active { background: var(--color-primary-600); width: 20px; border-radius: 4px; }
+
   /* Module listing grid */
   .lp-module-card { background: white; border: 1px solid var(--border-default); border-radius: var(--radius-lg); padding: 24px; }
   .lp-module-icon { width: 48px; height: 48px; border-radius: var(--radius-md); background: var(--surface-card); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
@@ -331,14 +342,28 @@
 
       <!-- Module 1: Patient Experience -->
       <div id="reports" class="split-even">
-        <div>
-          {% with shot=screenshots.0 %}
-          {% if shot %}
-          <img src="{{ shot.image.url }}" alt="{{ shot.caption|default:product.name }}" style="width:100%;border-radius:var(--radius-xl);box-shadow:var(--shadow-lg);" loading="lazy">
-          {% else %}
-          {% include "components/product_mockup.html" with product=product mockup_style="website" %}
-          {% endif %}
-          {% endwith %}
+        <div x-data="{ slide: 0, slides: [
+              { src: '{% static "img/CuraLabs/Digital Test Catalogue.png" %}', caption: 'Digital Test Catalogue' },
+              { src: '{% static "img/CuraLabs/Home Collection Booking.png" %}', caption: 'Home Collection Booking' },
+              { src: '{% static "img/CuraLabs/Secure Report Download.png" %}', caption: 'Secure Report Download' }
+            ] }">
+          <div class="lp-slider-viewport">
+            <template x-for="(s, i) in slides" :key="i">
+              <img :src="s.src" :alt="s.caption" x-show="slide === i" x-cloak loading="lazy">
+            </template>
+            <div class="lp-slider-caption" x-text="slides[slide].caption"></div>
+            <button type="button" class="lp-slider-arrow prev" @click="slide = (slide - 1 + slides.length) % slides.length" aria-label="Previous image">
+              <span class="material-symbols-outlined" style="font-size:20px;">chevron_left</span>
+            </button>
+            <button type="button" class="lp-slider-arrow next" @click="slide = (slide + 1) % slides.length" aria-label="Next image">
+              <span class="material-symbols-outlined" style="font-size:20px;">chevron_right</span>
+            </button>
+          </div>
+          <div class="lp-slider-dots">
+            <template x-for="(s, i) in slides" :key="i">
+              <button type="button" class="lp-slider-dot" :class="slide === i ? 'is-active' : ''" @click="slide = i" :aria-label="'Go to slide ' + (i + 1)"></button>
+            </template>
+          </div>
         </div>
         <div>
           <h3 style="font-size:var(--text-xl);color:var(--color-primary-600);margin-bottom:24px;">Patient Experience (Mobile-First)</h3>
@@ -367,14 +392,27 @@
             {% endfor %}
           </ul>
         </div>
-        <div style="order:1;">
-          {% with shot=screenshots.1 %}
-          {% if shot %}
-          <img src="{{ shot.image.url }}" alt="{{ shot.caption|default:product.name }}" style="width:100%;border-radius:var(--radius-xl);box-shadow:var(--shadow-lg);" loading="lazy">
-          {% else %}
-          {% include "components/product_mockup.html" with product=product mockup_style="dashboard" %}
-          {% endif %}
-          {% endwith %}
+        <div style="order:1;" x-data="{ slide: 0, slides: [
+              { src: '{% static "img/CuraLabs/Automated Notifications.png" %}', caption: 'Automated Notifications' },
+              { src: '{% static "img/CuraLabs/Multi-Branch Ready.png" %}', caption: 'Multi-Branch Ready' }
+            ] }">
+          <div class="lp-slider-viewport">
+            <template x-for="(s, i) in slides" :key="i">
+              <img :src="s.src" :alt="s.caption" x-show="slide === i" x-cloak loading="lazy">
+            </template>
+            <div class="lp-slider-caption" x-text="slides[slide].caption"></div>
+            <button type="button" class="lp-slider-arrow prev" @click="slide = (slide - 1 + slides.length) % slides.length" aria-label="Previous image">
+              <span class="material-symbols-outlined" style="font-size:20px;">chevron_left</span>
+            </button>
+            <button type="button" class="lp-slider-arrow next" @click="slide = (slide + 1) % slides.length" aria-label="Next image">
+              <span class="material-symbols-outlined" style="font-size:20px;">chevron_right</span>
+            </button>
+          </div>
+          <div class="lp-slider-dots">
+            <template x-for="(s, i) in slides" :key="i">
+              <button type="button" class="lp-slider-dot" :class="slide === i ? 'is-active' : ''" @click="slide = i" :aria-label="'Go to slide ' + (i + 1)"></button>
+            </template>
+          </div>
         </div>
       </div>
       {% endif %}
