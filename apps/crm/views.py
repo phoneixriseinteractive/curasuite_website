@@ -113,6 +113,7 @@ def appointment_widget_submit(request):
             phone=d["phone"],
             organization=d["organization"],
             city=d["city"],
+            message=d.get("message", ""),
             business_type="",
             specialty=d["specialty"],
             product_interest=d["product"],

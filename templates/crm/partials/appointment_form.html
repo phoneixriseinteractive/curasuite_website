@@ -4,7 +4,7 @@
   {% for field in form %}{% for error in field.errors %}<div>{{ field.label }}: {{ error }}</div>{% endfor %}{% endfor %}
   {% if not form.errors %}Please fill in all required fields.{% endif %}
 </div>
-<form data-gtm-event="{% if lp_slug %}lp_form{% else %}main_site_form{% endif %}" data-gtm-form-name="{{ gtm_form_name }}" hx-post="/contact/appointment/" hx-target="#appointment-form-wrap" hx-swap="innerHTML">
+<form data-gtm-event="{% if lp_slug %}lp_form{% else %}main_site_form{% endif %}" data-gtm-form-name="{{ gtm_form_name }}" hx-post="/contact/appointment/" hx-target="{% if lp_slug %}#lp-form-wrap{% else %}#appointment-form-wrap{% endif %}" hx-swap="innerHTML">
   {% csrf_token %}
   <input type="hidden" name="product" value="{{ product }}">
   <input type="hidden" name="lp_slug" value="{{ lp_slug }}">

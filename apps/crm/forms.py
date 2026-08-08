@@ -80,6 +80,10 @@ class AppointmentForm(forms.Form):
     organization = forms.CharField(max_length=200, label="Clinic Name")
     specialty    = forms.ChoiceField(choices=Lead.Specialty.choices, label="Specialty")
 
+    # Optional free-text context — e.g. a landing page's "monthly test volume"
+    # dropdown value. Stored on Lead.message for the sales team to see on the callback.
+    message      = forms.CharField(max_length=250, required=False, label="Additional context")
+
     # Attribution — hidden, filled by JS from URL params
     source       = forms.CharField(max_length=20, required=False, widget=forms.HiddenInput())
     utm_source   = forms.CharField(max_length=100, required=False, widget=forms.HiddenInput())
