@@ -1,41 +1,6 @@
 {% extends "landing_pages/_base_lp.html" %}
 {% load static %}
 
-{% comment %}
-  "Trust Blue" theme for the Dentist landing page — scoped entirely to this
-  template via CSS custom property overrides in extra_head, same pattern as
-  curalabs.html. Nothing here touches static/css/tokens.css or base.css, so
-  GP/Physio/Ophthalmologist (still on the shared curacms.html) are unaffected.
-
-  No Tailwind CDN (the source mockup used one at ~300KB+ of runtime JS/CSS
-  parsing) — hand-written CSS against the site's existing token/component
-  system instead, same approach as curalabs.html.
-
-  Marketing copy in most sections below is hardcoded rather than pulled from
-  the LandingPage/pain_points/benefits data — this page represents a different
-  product narrative (practice management: recalls, odontogram, chairside
-  treatment plans) than the currently-seeded "dentist" row's website/CMS
-  copy, and product-level pricing/features/FAQs are shared with the other
-  three curacms.html specialties, so they can't be repurposed here without
-  changing those pages too. Only the form + WhatsApp/phone numbers + page
-  slug (for attribution) stay wired to real data. See conversation notes if
-  you want this made admin-editable later.
-
-  Page flow:
-    1. Hero (headline + embedded demo form)
-    2. Social proof bar
-    3. Problem cards — "Are These Problems Emptying Your Dental Chairs?"
-    4. 3-step flow — Consultation to Recall
-    5. Core specialized modules (6 cards)
-    6. High-value case acceptance engine (CSS-drawn mockup, no images)
-    7. Multi-chair / specialist operations (3 cards)
-    8. Workflow contrast — Generic vs. CuraSuite
-    9. Security & compliance
-    10. Testimonials (dynamic)
-    11. Pricing (hardcoded — chair-tiered, distinct from shared CuraCMS pricing)
-    12. FAQ (native <details>, zero JS)
-    13. Pre-footer conversion banner
-{% endcomment %}
 {% block extra_head %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -47,18 +12,7 @@
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"></noscript>
 
-{% comment %}
-  Material Symbols icon font, subset to the ~31 glyphs this page actually
-  uses (icon_names must be alphabetically sorted or Google's API 400s the
-  whole request — verified before shipping). Icons are referenced by their
-  numeric Unicode codepoint (&#xXXXX;), never by typing the icon's name as
-  ligature text: the icon_names-subset font ships required "rlig"/"rclt"
-  OpenType features instead of the standard font's "liga", which browsers
-  don't reliably auto-apply to a webfont — referencing the codepoint directly
-  sidesteps ligature substitution entirely. Adding a new icon means adding
-  its name to icon_names below (kept alphabetized) AND using its numeric
-  codepoint (see Google's material-design-icons codepoints file) as content.
-{% endcomment %}
+
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0&amp;icon_names=account_balance_wallet,analytics,arrow_forward,autorenew,bolt,business,calendar_today,calendar_view_day,chair_alt,chat,check,check_circle,close,cloud_done,dentistry,description,event_busy,event_repeat,expand_more,format_quote,image,inventory_2,lock,medical_services,money_off,receipt_long,star,touch_app,trending_down,tune,verified_user&amp;display=block" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0&amp;icon_names=account_balance_wallet,analytics,arrow_forward,autorenew,bolt,business,calendar_today,calendar_view_day,chair_alt,chat,check,check_circle,close,cloud_done,dentistry,description,event_busy,event_repeat,expand_more,format_quote,image,inventory_2,lock,medical_services,money_off,receipt_long,star,touch_app,trending_down,tune,verified_user&amp;display=block"></noscript>
 <style>
@@ -167,12 +121,119 @@
   .lp-faq[open] summary .material-symbols-outlined { transform: rotate(180deg); }
   .lp-faq-body { padding: 0 20px 18px; color: var(--text-secondary); font-size: var(--text-sm); line-height: var(--leading-relaxed); border-top: 1px solid var(--border-default); padding-top: 14px; }
 </style>
+
+<!-- Primary Meta Tags -->
+<title>Dental Practice Management Software | CuraSuite Dental</title>
+<meta name="title" content="Dental Practice Management Software | CuraSuite Dental">
+<meta name="description" content="Fill your dental chairs with CuraSuite. Automate WhatsApp patient recalls, visual dental charting (Odontogram), chairside treatment estimates & RVG storage.">
+<meta name="keywords" content="dental clinic software, dental practice management software, visual odontogram software, dental recall software, RVG storage dental, WhatsApp dental appointment reminders">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://curasuite.app/lp/dentist/">
+
+<!-- Open Graph / Facebook / WhatsApp -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://curasuite.app/lp/dentist/">
+<meta property="og:title" content="Fill Your Dental Chairs: Practice Management Software | CuraSuite">
+<meta property="og:description" content="Streamline visual dental charting, send WhatsApp treatment estimates, automate 6-month hygiene recalls, and manage multi-chair operations.">
+<meta property="og:image" content="https://curasuite.app/assets/images/dental-og-preview.png">
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="https://curasuite.app/lp/dentist/">
+<meta property="twitter:title" content="Dental Practice Software with Visual Charting & WhatsApp Recalls">
+<meta property="twitter:description" content="Boost high-value treatment acceptance (Implants, Aligners, RCTs) with interactive WhatsApp cost estimates and automated 6-month recalls.">
+<meta property="twitter:image" content="https://curasuite.app/assets/images/dental-og-preview.png">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "CuraSuite Dental",
+  "operatingSystem": "All (Web-based, iOS, Android, Windows, macOS)",
+  "applicationCategory": "HealthApplication",
+  "category": "Dental Practice Management Software",
+  "offers": {
+    "@type": "AggregateOffer",
+    "priceCurrency": "INR",
+    "lowPrice": "1999",
+    "highPrice": "3999",
+    "priceSpecification": {
+      "@type": "UnitPriceSpecification",
+      "price": "1999",
+      "priceCurrency": "INR",
+      "unitCode": "MONTH"
+    }
+  },
+  "description": "Cloud-based dental practice management software featuring visual odontograms, WhatsApp treatment estimates, RVG image storage, and 6-month hygiene recalls.",
+  "featureList": [
+    "Interactive Visual Odontogram",
+    "WhatsApp Treatment Plan & Cost Estimator",
+    "RVG & Intraoral X-Ray Cloud Storage",
+    "Automated 6-Month Hygiene Recalls",
+    "Multi-Chair & Specialist Operatory Scheduling",
+    "Dental Material Inventory Management"
+  ]
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "MedicalBusiness",
+  "name": "CuraSuite Dental",
+  "url": "https://curasuite.app/lp/dentist/",
+  "logo": "https://curasuite.app/assets/images/curasuite-logo.png",
+  "medicalSpecialty": "Dentistry",
+  "description": "Practice management software built specifically for dentists, orthodontists, implantologists, and multi-chair dental clinic chains.",
+  "telephone": "+91-88828-14698",
+  "priceRange": "₹1999 - ₹3999"
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is staff training included with setup?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes! CuraSuite Dental is designed to be intuitive, and our team provides full onboarding and live video training for your front desk staff."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can visiting specialists access clinical records remotely?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. You can issue secure login credentials to visiting Endodontists or Surgeons, allowing them to view RVG X-rays and patient charts on mobile or tablet devices prior to clinic visits."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does CuraSuite work on mobile devices and iPads?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Base software is 100% cloud-based and runs seamlessly on iPads, Android tablets, Macbooks, and Windows desktop PCs without installing local software."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does the 6-month hygiene recall automation work?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Once a patient completes a scaling or routine treatment, CuraSuite automatically schedules a WhatsApp reminder set for 6 months later, inviting them to book their follow-up visit with a single tap."
+      }
+    }
+  ]
+}
+</script>
+
 {% endblock %}
 
-{% comment %}
-  Top bar override — in-page anchor nav (all hrefs stay on this document, so
-  it never opens an exit route from the ad funnel) plus a header CTA.
-{% endcomment %}
+
 {% block topbar %}
 <div class="lp-sticky-cta" style="background:white;border-bottom:1px solid var(--border-default);">
   <div class="container" style="display:flex;align-items:center;justify-content:space-between;height:72px;gap:24px;">

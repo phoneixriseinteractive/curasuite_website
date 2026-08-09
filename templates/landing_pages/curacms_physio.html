@@ -1,66 +1,13 @@
 {% extends "landing_pages/_base_lp.html" %}
 {% load static %}
 
-{% comment %}
-  "Modern Clinical" (Physio Teal) theme for the Physiotherapist landing page —
-  scoped entirely to this template via CSS custom property overrides in
-  extra_head, same pattern as curalabs.html / curacms_dentist.html. Nothing
-  here touches static/css/tokens.css or base.css, so GP/Ophthalmologist
-  (still on the shared curacms.html) are unaffected.
-
-  No Tailwind CDN — hand-written CSS against the site's existing token/
-  component system instead.
-
-  Marketing copy is hardcoded rather than pulled from LandingPage/pain_points/
-  benefits, same reasoning as curacms_dentist.html: this page represents a
-  different product narrative (session packages, HEP, home-visit dispatch)
-  than the currently-seeded "physiotherapist" row, and pricing/features/FAQs
-  are shared with the other curacms.html specialties. Only the form + hero
-  image + WhatsApp/phone numbers + page slug stay wired to real data.
-
-  Images: the hero uses lp.hero_image (a real, already-existing, admin-
-  editable field) when set, falling back to a decorative gradient. The two
-  "deep dive" photos in the source mockup (tablet app in use / home-visit
-  session) have no real photography yet, so those slots are tasteful CSS
-  panels rather than hotlinked stock photos — swap in real images there
-  once available, same way the CuraLabs page's images were added.
-
-  Page flow:
-    1. Hero (headline + embedded demo form)
-    2. Social proof bar
-    3. Pain points — workflow bottlenecks (4 cards)
-    4. 3-step automation — assessment to recovery
-    5. Core specialized modules (6 cards)
-    6. Deep dive — session retention & package completion
-    7. Deep dive — home-visit & multi-therapist operations
-    8. Telerehab / video consultations (4-step flow + use cases)
-    9. Workflow contrast table — generic vs. CuraSuite
-    10. Security & compliance
-    11. Testimonials (dynamic)
-    12. Pricing (hardcoded — chair/therapist-tiered)
-    13. FAQ (native <details>, zero JS) + pre-footer CTA
-{% endcomment %}
 {% block extra_head %}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-{% comment %}
-  Inter only — loaded via preload+swap so this request doesn't block first paint.
-{% endcomment %}
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"></noscript>
 
-{% comment %}
-  Material Symbols icon font, subset to the ~29 glyphs this page actually uses
-  (icon_names must be alphabetically sorted or Google's API 400s the whole
-  request — verified with a live fetch + fontTools codepoint check before
-  shipping). Icons are referenced by numeric Unicode codepoint (&#xXXXX;),
-  never by typing the icon's name as ligature text — the icon_names-subset
-  font ships required "rlig"/"rclt" OpenType features instead of the standard
-  font's "liga", which browsers don't reliably auto-apply to a webfont.
-  Adding a new icon means adding its name to icon_names below (keep it
-  alphabetized) AND using its numeric codepoint as the element's content.
-{% endcomment %}
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0&amp;icon_names=alarm_on,analytics,arrow_forward,assignment_late,bed,chat,check,check_circle,devices,expand_more,fitness_center,format_quote,group,health_and_safety,inventory_2,lightbulb,location_off,lock,map,medical_services,monitoring,payments,phonelink_erase,pin_drop,route,stethoscope,trending_down,trending_up,video_chat&amp;display=block" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0&amp;icon_names=alarm_on,analytics,arrow_forward,assignment_late,bed,chat,check,check_circle,devices,expand_more,fitness_center,format_quote,group,health_and_safety,inventory_2,lightbulb,location_off,lock,map,medical_services,monitoring,payments,phonelink_erase,pin_drop,route,stethoscope,trending_down,trending_up,video_chat&amp;display=block"></noscript>
 <style>
@@ -165,12 +112,117 @@
   .lp-faq[open] summary .material-symbols-outlined { transform: rotate(180deg); }
   .lp-faq-body { padding: 0 24px 22px; color: var(--text-secondary); font-size: var(--text-sm); line-height: var(--leading-relaxed); border-top: 1px solid var(--border-default); padding-top: 16px; margin: 0 24px; }
 </style>
+
+<!-- Primary Meta Tags -->
+<title>Physiotherapy Clinic Management Software | CuraSuite Physio</title>
+<meta name="title" content="Physiotherapy Clinic Management Software | CuraSuite Physio">
+<meta name="description" content="Streamline OPD & home-visit physio care with CuraSuite. Automate WhatsApp exercise plans (HEP), session packages, visual ROM tracking & Google Meet video consults.">
+<meta name="keywords" content="physiotherapy clinic software, physio practice management software, home exercise program software, physio patient retention, telerehab software, Google Meet video consulting physio">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://curasuite.app/lp/physiotherapist/">
+
+<!-- Open Graph / Facebook / WhatsApp -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://curasuite.app/lp/physiotherapist/">
+<meta property="og:title" content="Zero Drop-Offs: Physiotherapy Practice Management Software | CuraSuite">
+<meta property="og:description" content="Manage OPD session packages, home-visit dispatch, visual ROM/Pain tracking, and WhatsApp exercise plans—built specifically for physical therapy clinics.">
+<meta property="og:image" content="https://curasuite.app/assets/images/physio-og-preview.png">
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="https://curasuite.app/lp/physiotherapist/">
+<meta property="twitter:title" content="Physiotherapy Practice Software with WhatsApp HEP & Google Meet">
+<meta property="twitter:description" content="Stop mid-plan drop-offs with visual ROM tracking, automated 6-session packages, and instant Google Meet telerehab links.">
+<meta property="twitter:image" content="https://curasuite.app/assets/images/physio-og-preview.png">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "CuraSuite Physio",
+  "operatingSystem": "All (Web-based, iOS, Android, Windows, macOS)",
+  "applicationCategory": "HealthApplication",
+  "category": "Physiotherapy Practice Management Software",
+  "offers": {
+    "@type": "AggregateOffer",
+    "priceCurrency": "INR",
+    "lowPrice": "1999",
+    "highPrice": "3999",
+    "priceSpecification": {
+      "@type": "UnitPriceSpecification",
+      "price": "1999",
+      "priceCurrency": "INR",
+      "unitCode": "MONTH"
+    }
+  },
+  "description": "Cloud-based practice management software for physiotherapy clinics, sports rehab centers, and home-care physical therapy networks.",
+  "featureList": [
+    "Visual ROM & Pain Tracking",
+    "WhatsApp Home Exercise Plans (HEP)",
+    "Session Package Renewal Management",
+    "Home Care Therapist Dispatch",
+    "Google Meet Video Consulting",
+    "Multi-Therapist Scheduling"
+  ]
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "MedicalBusiness",
+  "name": "CuraSuite Physio",
+  "url": "https://curasuite.app/lp/physiotherapist/",
+  "logo": "https://curasuite.app/assets/images/curasuite-logo.png",
+  "medicalSpecialty": "Physiotherapy",
+  "description": "Practice management and telehealth automation software designed specifically for physical therapists, sports rehab experts, and home-care providers.",
+  "telephone": "+91-88828-14698",
+  "priceRange": "₹1999 - ₹3999"
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Can we send custom exercise videos to our patients via WhatsApp?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes! You can choose from our built-in Home Exercise Program (HEP) library or upload your custom clinic exercise videos and PDFs to share instantly on WhatsApp."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does CuraSuite track pre-paid session packages?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "When a patient buys a 5 or 10-session rehab package, CuraSuite automatically deducts a session each time they check in and notifies them of their remaining balance via WhatsApp."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does the platform support home-visit physiotherapist scheduling?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. You can assign home care requests to specific therapists based on location pincodes, track visit completion status, and calculate therapist commission payouts automatically."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does Google Meet video consulting work for telerehab?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "When a video consultation is booked, CuraSuite automatically generates a secure Google Meet room link and sends it directly to the patient's WhatsApp, allowing seamless one-tap virtual consultations."
+      }
+    }
+  ]
+}
+</script>
 {% endblock %}
 
-{% comment %}
-  Top bar override — in-page anchor nav (all hrefs stay on this document, so
-  it never opens an exit route from the ad funnel) plus a header CTA.
-{% endcomment %}
 {% block topbar %}
 <div class="lp-sticky-cta" style="background:white;border-bottom:1px solid var(--border-default);">
   <div class="container" style="display:flex;align-items:center;justify-content:space-between;height:72px;gap:24px;">
