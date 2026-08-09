@@ -85,11 +85,12 @@ class LandingPage(PublishableModel):
 
     # Per-slug template overrides — a page listed here gets its own bespoke
     # layout instead of the shared curacms.html/curalabs.html templates. Add
-    # an entry as each specialty gets a dedicated design (dentist first;
-    # physiotherapist and ophthalmologist still fall through to curacms.html
-    # until they get one too).
+    # an entry as each specialty gets a dedicated design (dentist and
+    # physiotherapist so far; ophthalmologist still falls through to
+    # curacms.html until it gets one too).
     TEMPLATE_OVERRIDES = {
         "dentist": "landing_pages/curacms_dentist.html",
+        "physiotherapist": "landing_pages/curacms_physio.html",
     }
 
     @property

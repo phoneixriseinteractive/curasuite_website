@@ -1,0 +1,762 @@
+{% extends "landing_pages/_base_lp.html" %}
+{% load static %}
+
+{% comment %}
+  "Modern Clinical" (Physio Teal) theme for the Physiotherapist landing page —
+  scoped entirely to this template via CSS custom property overrides in
+  extra_head, same pattern as curalabs.html / curacms_dentist.html. Nothing
+  here touches static/css/tokens.css or base.css, so GP/Ophthalmologist
+  (still on the shared curacms.html) are unaffected.
+
+  No Tailwind CDN — hand-written CSS against the site's existing token/
+  component system instead.
+
+  Marketing copy is hardcoded rather than pulled from LandingPage/pain_points/
+  benefits, same reasoning as curacms_dentist.html: this page represents a
+  different product narrative (session packages, HEP, home-visit dispatch)
+  than the currently-seeded "physiotherapist" row, and pricing/features/FAQs
+  are shared with the other curacms.html specialties. Only the form + hero
+  image + WhatsApp/phone numbers + page slug stay wired to real data.
+
+  Images: the hero uses lp.hero_image (a real, already-existing, admin-
+  editable field) when set, falling back to a decorative gradient. The two
+  "deep dive" photos in the source mockup (tablet app in use / home-visit
+  session) have no real photography yet, so those slots are tasteful CSS
+  panels rather than hotlinked stock photos — swap in real images there
+  once available, same way the CuraLabs page's images were added.
+
+  Page flow:
+    1. Hero (headline + embedded demo form)
+    2. Social proof bar
+    3. Pain points — workflow bottlenecks (4 cards)
+    4. 3-step automation — assessment to recovery
+    5. Core specialized modules (6 cards)
+    6. Deep dive — session retention & package completion
+    7. Deep dive — home-visit & multi-therapist operations
+    8. Telerehab / video consultations (4-step flow + use cases)
+    9. Workflow contrast table — generic vs. CuraSuite
+    10. Security & compliance
+    11. Testimonials (dynamic)
+    12. Pricing (hardcoded — chair/therapist-tiered)
+    13. FAQ (native <details>, zero JS) + pre-footer CTA
+{% endcomment %}
+{% block extra_head %}
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+{% comment %}
+  Inter only — loaded via preload+swap so this request doesn't block first paint.
+{% endcomment %}
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"></noscript>
+
+{% comment %}
+  Material Symbols icon font, subset to the ~29 glyphs this page actually uses
+  (icon_names must be alphabetically sorted or Google's API 400s the whole
+  request — verified with a live fetch + fontTools codepoint check before
+  shipping). Icons are referenced by numeric Unicode codepoint (&#xXXXX;),
+  never by typing the icon's name as ligature text — the icon_names-subset
+  font ships required "rlig"/"rclt" OpenType features instead of the standard
+  font's "liga", which browsers don't reliably auto-apply to a webfont.
+  Adding a new icon means adding its name to icon_names below (keep it
+  alphabetized) AND using its numeric codepoint as the element's content.
+{% endcomment %}
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0&amp;icon_names=alarm_on,analytics,arrow_forward,assignment_late,bed,chat,check,check_circle,devices,expand_more,fitness_center,format_quote,group,health_and_safety,inventory_2,lightbulb,location_off,lock,map,medical_services,monitoring,payments,phonelink_erase,pin_drop,route,stethoscope,trending_down,trending_up,video_chat&amp;display=block" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0..1,0&amp;icon_names=alarm_on,analytics,arrow_forward,assignment_late,bed,chat,check,check_circle,devices,expand_more,fitness_center,format_quote,group,health_and_safety,inventory_2,lightbulb,location_off,lock,map,medical_services,monitoring,payments,phonelink_erase,pin_drop,route,stethoscope,trending_down,trending_up,video_chat&amp;display=block"></noscript>
+<style>
+  :root {
+    --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+    /* Physio Teal — primary brand accent */
+    --color-primary-50:  #e6f5f3;
+    --color-primary-100: #89f5e7;
+    --color-primary-500: #008378;
+    --color-primary-600: #00685f;
+    --color-primary-700: #004f48;
+    --color-primary-900: #00201d;
+
+    --color-secondary-100: #d5e3fd;
+    --color-teal-accent: #0d9488;
+
+    --surface-page:   #f5faf8;
+    --surface-card:   #f0f5f2;
+    --surface-raised: #ffffff;
+
+    --text-primary:   #171d1c;
+    --text-secondary: #3d4947;
+    --text-muted:     #6d7a77;
+    --text-link:      #00685f;
+
+    --border-default: #e2e8f0;
+    --border-strong:  #bcc9c6;
+    --border-focus:   #00685f;
+
+    --radius-sm: 6px;
+    --radius:    8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+
+    --whatsapp-green: #25D366;
+    --warning-amber: #F59E0B;
+    --success-green: #10B981;
+  }
+  body { font-family: var(--font-sans); background: var(--surface-page); }
+  h1, h2, h3, h4, h5, h6 { font-family: var(--font-sans); letter-spacing: -0.01em; }
+
+  .material-symbols-outlined { font-family: 'Material Symbols Outlined'; font-weight: normal; font-style: normal; font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; -webkit-font-smoothing: antialiased; }
+  .icon-fill { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+
+  section[id] { scroll-margin-top: 76px; }
+  .lp-nav-link { font-size: var(--text-sm); font-weight: 500; color: var(--text-secondary); text-decoration: none; }
+  .lp-nav-link:hover { color: var(--color-primary-600); text-decoration: none; }
+  .lp-nav { display: none; }
+  @media (min-width: 900px) { .lp-nav { display: flex; } }
+  .lp-phone-link { display: none; }
+  @media (min-width: 500px) { .lp-phone-link { display: flex; } }
+
+  /* Hero */
+  .lp-hero-check { width: 26px; height: 26px; border-radius: 50%; background: var(--color-primary-50); color: var(--color-primary-600); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .lp-hero-panel { background: rgba(255,255,255,.96); backdrop-filter: blur(8px); border: 1px solid var(--border-default); }
+
+  /* Proof bar */
+  .lp-trust-bar { background: var(--color-primary-600); color: white; padding-block: 18px; }
+  .lp-trust-item { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; letter-spacing: .02em; color: white; }
+  .lp-trust-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,.4); }
+
+  /* Pain point / module cards */
+  .lp-icon-tile { width: 52px; height: 52px; border-radius: var(--radius-md); background: var(--color-primary-50); color: var(--color-primary-600); display: flex; align-items: center; justify-content: center; margin-bottom: 20px; font-size: 26px; }
+
+  /* Step marker */
+  .lp-step { width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, var(--color-primary-600), var(--color-primary-500)); color: white; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; margin: 0 auto 18px; box-shadow: var(--shadow-md); border: 4px solid var(--surface-raised); }
+
+  /* Deep-dive image placeholders (no real photography yet) */
+  .lp-photo-panel { position: relative; border-radius: var(--radius-xl); overflow: hidden; box-shadow: var(--shadow-xl); border: 1px solid var(--border-default); aspect-ratio: 4/3; background: linear-gradient(135deg, var(--color-primary-50), var(--color-secondary-100)); display: flex; align-items: center; justify-content: center; }
+  .lp-photo-panel .material-symbols-outlined { font-size: 72px; color: var(--color-primary-600); opacity: .35; }
+  .lp-floating-badge { position: absolute; bottom: -20px; background: white; padding: 14px 18px; border-radius: var(--radius-md); box-shadow: var(--shadow-lg); border: 1px solid var(--border-default); display: flex; align-items: center; gap: 12px; }
+  .lp-floating-badge.right { right: -16px; }
+  .lp-floating-badge.left { left: -16px; }
+
+  /* Use-case list icon circle */
+  .lp-circle-icon { width: 56px; height: 56px; border-radius: var(--radius-lg); background: var(--surface-raised); box-shadow: var(--shadow-sm); border: 1px solid var(--border-default); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+  /* Workflow contrast table */
+  .lp-contrast-table { width: 100%; border-collapse: collapse; background: white; }
+  .lp-contrast-table th, .lp-contrast-table td { padding: 18px 20px; text-align: left; border-bottom: 1px solid var(--border-default); font-size: var(--text-sm); }
+  .lp-contrast-table thead th { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; background: var(--surface-card); color: var(--text-secondary); }
+  .lp-contrast-table thead th.is-new { background: var(--color-teal-accent); color: white; }
+  .lp-contrast-table td.is-old { color: var(--text-secondary); }
+  .lp-contrast-table td.is-new { color: var(--color-primary-600); font-weight: 500; background: var(--color-primary-50); }
+  .lp-contrast-table tbody tr:last-child th, .lp-contrast-table tbody tr:last-child td { border-bottom: none; }
+  .lp-contrast-wrap { overflow-x: auto; border-radius: var(--radius-lg); border: 1px solid var(--border-default); box-shadow: var(--shadow-md); }
+
+  /* Testimonials */
+  .lp-quote-mark { font-size: 56px; color: var(--color-primary-50); position: absolute; top: 20px; right: 20px; }
+
+  /* Pricing */
+  .lp-pricing-badge { position: absolute; top: 0; left: 50%; transform: translate(-50%,-50%); background: var(--warning-amber); color: var(--text-primary); font-size: 11px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; padding: 5px 16px; border-radius: var(--radius-full); white-space: nowrap; box-shadow: var(--shadow-sm); }
+  .lp-roi-box { margin: 24px -32px -32px; padding: 16px 32px; background: var(--color-teal-accent); border-radius: 0 0 var(--radius-xl) var(--radius-xl); display: flex; gap: 10px; align-items: center; justify-content: center; text-align: center; }
+
+  /* FAQ — native <details>, zero JS */
+  .lp-faq { background: white; border: 1px solid var(--border-default); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); }
+  .lp-faq summary { font-weight: 700; color: var(--text-primary); padding: 20px 24px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 16px; list-style: none; }
+  .lp-faq summary::-webkit-details-marker { display: none; }
+  .lp-faq summary .material-symbols-outlined { transition: transform .2s; flex-shrink: 0; color: var(--color-primary-600); }
+  .lp-faq[open] summary .material-symbols-outlined { transform: rotate(180deg); }
+  .lp-faq-body { padding: 0 24px 22px; color: var(--text-secondary); font-size: var(--text-sm); line-height: var(--leading-relaxed); border-top: 1px solid var(--border-default); padding-top: 16px; margin: 0 24px; }
+</style>
+{% endblock %}
+
+{% comment %}
+  Top bar override — in-page anchor nav (all hrefs stay on this document, so
+  it never opens an exit route from the ad funnel) plus a header CTA.
+{% endcomment %}
+{% block topbar %}
+<div class="lp-sticky-cta" style="background:white;border-bottom:1px solid var(--border-default);">
+  <div class="container" style="display:flex;align-items:center;justify-content:space-between;height:72px;gap:24px;">
+    <div style="font-weight:700;color:var(--color-primary-600);font-size:20px;flex-shrink:0;">
+      CuraSuite <span style="color:var(--text-secondary);font-weight:500;">| Physio</span>
+    </div>
+    <nav class="lp-nav" style="gap:28px;">
+      <a class="lp-nav-link" href="#modules">Features</a>
+      <a class="lp-nav-link" href="#modules">Rehab Plans</a>
+      <a class="lp-nav-link" href="#telerehab">Home Visits</a>
+      <a class="lp-nav-link" href="#pricing">Pricing</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:16px;flex-shrink:0;">
+      {% if SITE_SETTINGS.whatsapp_phone %}
+      <a href="tel:+{{ SITE_SETTINGS.whatsapp_phone }}" data-gtm-event="phone_click" data-gtm-location="header" class="lp-phone-link" style="align-items:center;gap:6px;color:var(--text-primary);font-weight:600;font-size:var(--text-sm);text-decoration:none;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <span>+{{ SITE_SETTINGS.whatsapp_phone|slice:":2" }} {{ SITE_SETTINGS.whatsapp_phone|slice:"2:7" }} {{ SITE_SETTINGS.whatsapp_phone|slice:"7:12" }}</span>
+      </a>
+      {% endif %}
+      <a href="#lp-form" data-gtm-event="cta_click" data-gtm-location="header" class="btn" style="background:var(--color-primary-600);border-color:var(--color-primary-600);color:white;font-size:var(--text-sm);padding:10px 20px;border-radius:var(--radius);">Book Free Demo</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<!-- ═══ 1. HERO ═════════════════════════════════════════════════════════════ -->
+<section style="position:relative;overflow:hidden;padding:64px 0 48px;background:var(--surface-card);">
+  <div style="position:absolute;inset:0;z-index:0;">
+    {% if lp.hero_image %}
+    <img src="{{ lp.hero_image.url }}" alt="" style="width:100%;height:100%;object-fit:cover;" loading="eager">
+    <div style="position:absolute;inset:0;background:linear-gradient(90deg,var(--surface-card) 0%,rgba(240,245,242,.95) 55%,rgba(240,245,242,.4) 100%);"></div>
+    {% else %}
+    <div style="position:absolute;inset:0;background:radial-gradient(circle at 80% 20%,var(--color-primary-50) 0%,transparent 60%);"></div>
+    {% endif %}
+  </div>
+  <div class="container" style="position:relative;z-index:1;">
+    <div class="split-hero" style="gap:48px;">
+      <div>
+        <div class="pill" style="background:var(--color-primary-50);color:var(--color-primary-600);border-color:var(--color-primary-100);">
+          <span class="material-symbols-outlined" style="font-size:16px;">&#xf805;</span>
+          DIGITAL PLATFORM FOR PHYSIOTHERAPY &amp; REHAB CLINICS
+        </div>
+        <h1 style="margin-bottom:16px;font-size:clamp(28px,5vw,48px);line-height:1.15;">
+          Zero Drop-Offs: Complete Patient Session Packages &amp; Automated Rehab Home Care
+        </h1>
+        <p style="font-size:var(--text-lg);color:var(--text-secondary);margin-bottom:24px;line-height:var(--leading-relaxed);">
+          Stop losing patients after 2 sessions. Manage multi-visit treatment plans, automate HEP (Home Exercise Program) reminders via WhatsApp, and streamline therapist dispatch for home visits.
+        </p>
+
+        <ul style="display:flex;flex-direction:column;gap:14px;margin-bottom:28px;">
+          <li style="display:flex;align-items:center;gap:12px;">
+            <span class="lp-hero-check"><span class="material-symbols-outlined" style="font-size:14px;">&#xe668;</span></span>
+            <span style="font-weight:500;">Visual Pain &amp; ROM Recovery Tracking</span>
+          </li>
+          <li style="display:flex;align-items:center;gap:12px;">
+            <span class="lp-hero-check"><span class="material-symbols-outlined" style="font-size:14px;">&#xe668;</span></span>
+            <span style="font-weight:500;">Automated Session Package Renewal Alerts</span>
+          </li>
+          <li style="display:flex;align-items:center;gap:12px;">
+            <span class="lp-hero-check"><span class="material-symbols-outlined" style="font-size:14px;">&#xe668;</span></span>
+            <span style="font-weight:500;">Home Visit GPS &amp; Therapist Dispatch</span>
+          </li>
+        </ul>
+
+        {% if SITE_SETTINGS.whatsapp_phone %}
+        <a href="https://wa.me/{{ SITE_SETTINGS.whatsapp_phone }}?text={{ lp.whatsapp_message_template|urlencode }}" target="_blank"
+           data-wa-placement="hero" data-gtm-event="whatsapp_click" data-gtm-location="hero"
+           class="btn btn-lg" style="background:var(--whatsapp-green);color:white;border-color:var(--whatsapp-green);border-radius:var(--radius);">
+          <span class="material-symbols-outlined icon-fill" style="font-size:18px;">&#xe0c9;</span> Chat on WhatsApp
+        </a>
+        {% endif %}
+      </div>
+
+      <div id="lp-form">
+        <div class="lp-hero-panel" style="border-radius:var(--radius-xl);padding:32px;box-shadow:var(--shadow-xl);position:relative;">
+          <div style="text-align:center;margin-bottom:22px;">
+            <h3 style="font-size:var(--text-xl);margin-bottom:6px;">Book a 15-Min Live Demo</h3>
+            <p style="font-size:var(--text-sm);color:var(--text-secondary);">See how CuraSuite helps top physiotherapy clinics double package completions.</p>
+          </div>
+
+          <div id="lp-form-wrap">
+            <form data-lp-form data-gtm-event="lp_form" data-gtm-form-name="{{ gtm_form_name }}" hx-post="/contact/appointment/" hx-target="#lp-form-wrap" hx-swap="innerHTML">
+              {% csrf_token %}
+              <input type="hidden" name="product" value="{{ product.name }}">
+              <input type="hidden" name="source" value="">
+              <input type="hidden" name="utm_source" value="">
+              <input type="hidden" name="utm_medium" value="">
+              <input type="hidden" name="utm_campaign" value="">
+              <input type="hidden" name="utm_content" value="">
+              <input type="hidden" name="lp_slug" value="{{ lp.slug }}">
+
+              <div style="display:flex;flex-direction:column;gap:14px;">
+                <input type="text" name="full_name" required placeholder="Full Name *" class="form-input" style="border-radius:var(--radius);">
+                <input type="text" name="organization" required placeholder="Clinic / Center Name *" class="form-input" style="border-radius:var(--radius);">
+                <div style="display:flex;">
+                  <span style="display:inline-flex;align-items:center;padding-inline:12px;background:var(--surface-card);border:1px solid var(--border-strong);border-right:none;border-radius:var(--radius) 0 0 var(--radius);color:var(--text-secondary);font-size:var(--text-sm);">+91</span>
+                  <input type="tel" name="phone" required placeholder="98765 43210" class="form-input" style="border-radius:0 var(--radius) var(--radius) 0;">
+                </div>
+                <select name="message" class="form-input" style="color:var(--text-secondary);border-radius:var(--radius);">
+                  <option value="" selected>Practice Type</option>
+                  <option value="Practice: OPD Clinic Only (1-2 Beds)">OPD Clinic Only (1–2 Beds)</option>
+                  <option value="Practice: Multi-Bed Rehab Center (3+ Beds)">Multi-Bed Rehab Center (3+ Beds)</option>
+                  <option value="Practice: OPD + Home Visit Care Network">OPD + Home Visit Care Network</option>
+                </select>
+                <input type="hidden" name="specialty" value="{{ lp.specialty|default:'physiotherapist' }}">
+              </div>
+
+              {% include "components/captcha_field.html" %}
+
+              <button type="submit" class="btn btn-lg" style="width:100%;justify-content:center;margin-top:20px;background:var(--color-primary-600);border-color:var(--color-primary-600);color:white;border-radius:var(--radius);">
+                Get Free Demo <span class="material-symbols-outlined" style="font-size:18px;">&#xe5c8;</span>
+              </button>
+              <p style="font-size:11px;color:var(--text-muted);text-align:center;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:4px;">
+                <span class="material-symbols-outlined" style="font-size:14px;">&#xe899;</span> Zero setup fee · 30-day free trial · No credit card required
+              </p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 2. SOCIAL PROOF BAR ═════════════════════════════════════════════════ -->
+<section class="lp-trust-bar">
+  <div class="container" style="display:flex;flex-wrap:wrap;justify-content:center;gap:20px;align-items:center;">
+    <div class="lp-trust-item">
+      <span style="color:var(--warning-amber);letter-spacing:1px;">★★★★★</span>
+      {{ lp.social_proof_note|default:"Trusted by 400+ physio clinics" }}
+    </div>
+    <div class="lp-trust-dot"></div>
+    <div class="lp-trust-item">45% Higher Package Completion</div>
+    <div class="lp-trust-dot"></div>
+    <div class="lp-trust-item">Home Visit Dispatch</div>
+    <div class="lp-trust-dot"></div>
+    <div class="lp-trust-item"><span class="material-symbols-outlined icon-fill" style="font-size:16px;">&#xe858;</span>7-Day Go-Live</div>
+  </div>
+</section>
+
+<!-- ═══ 3. PAIN POINTS ══════════════════════════════════════════════════════ -->
+<section style="padding:64px 0;">
+  <div class="container" style="text-align:center;">
+    <h2 style="margin-bottom:8px;font-size:var(--text-2xl);">Are These Workflow Bottlenecks Hurting Your Physio Practice?</h2>
+    <p style="color:var(--text-secondary);margin-bottom:40px;max-width:640px;margin-inline:auto;">Traditional clinic software wasn't built for session-based rehabilitation.</p>
+    <div class="grid grid-4" style="gap:20px;text-align:left;">
+      <div class="card" style="padding:28px;border-radius:var(--radius-lg);">
+        <div class="lp-icon-tile"><span class="material-symbols-outlined">&#xe8e3;</span></div>
+        <h4 style="font-size:var(--text-base);margin-bottom:10px;font-weight:700;">Mid-Plan Drop-offs</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);">Patients stop coming after session 2 or 3 as soon as acute pain drops, leaving recovery incomplete?</p>
+      </div>
+      <div class="card" style="padding:28px;border-radius:var(--radius-lg);">
+        <div class="lp-icon-tile"><span class="material-symbols-outlined">&#xf2ea;</span></div>
+        <h4 style="font-size:var(--text-base);margin-bottom:10px;font-weight:700;">Lost Home Exercises</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);">Patients forget paper exercise handouts, leading to poor progress and delayed recovery?</p>
+      </div>
+      <div class="card" style="padding:28px;border-radius:var(--radius-lg);">
+        <div class="lp-icon-tile"><span class="material-symbols-outlined">&#xe0c7;</span></div>
+        <h4 style="font-size:var(--text-base);margin-bottom:10px;font-weight:700;">Home Visit Chaos</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);">Coordinating therapists for home visits over phone calls leads to delayed appointments and revenue loss?</p>
+      </div>
+      <div class="card" style="padding:28px;border-radius:var(--radius-lg);">
+        <div class="lp-icon-tile"><span class="material-symbols-outlined">&#xe85f;</span></div>
+        <h4 style="font-size:var(--text-base);margin-bottom:10px;font-weight:700;">Manual Package Tracking</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);">Losing track of how many pre-paid sessions a patient has completed versus remaining?</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 4. 3-STEP AUTOMATION ════════════════════════════════════════════════ -->
+<section style="padding:64px 0;background:var(--surface-card);">
+  <div class="container" style="text-align:center;">
+    <h2 style="margin-bottom:8px;font-size:var(--text-2xl);">From Assessment to Recovery — 100% Automated</h2>
+    <p style="color:var(--text-secondary);margin-bottom:44px;max-width:640px;margin-inline:auto;">A structured patient care model that maximizes clinical outcomes and clinic revenue.</p>
+    <div class="grid grid-3" style="gap:24px;">
+      <div class="card" style="padding:32px 24px;border-radius:var(--radius-lg);">
+        <div class="lp-step">1</div>
+        <h4 style="margin-bottom:8px;font-size:var(--text-base);font-weight:700;">Initial Assessment &amp; HEP</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);">Perform visual ROM/pain scoring and auto-send custom Home Exercise Programs via WhatsApp.</p>
+      </div>
+      <div class="card" style="padding:32px 24px;border-radius:var(--radius-lg);">
+        <div class="lp-step">2</div>
+        <h4 style="margin-bottom:8px;font-size:var(--text-base);font-weight:700;">Session Package Automation</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);">Automatically track completed visits and alert patients via WhatsApp when renewals are due.</p>
+      </div>
+      <div class="card" style="padding:32px 24px;border-radius:var(--radius-lg);">
+        <div class="lp-step">3</div>
+        <h4 style="margin-bottom:8px;font-size:var(--text-base);font-weight:700;">Smart Home-Visit Dispatch</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);">Assign home care requests to nearby physiotherapists with real-time slot and location mapping.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 5. CORE SPECIALIZED MODULES ═════════════════════════════════════════ -->
+<section id="modules" style="padding:64px 0;">
+  <div class="container">
+    <h2 style="text-align:center;margin-bottom:8px;font-size:var(--text-2xl);">Core Specialized Modules</h2>
+    <p style="text-align:center;color:var(--text-secondary);margin-bottom:44px;max-width:640px;margin-inline:auto;">Built specifically for OPD consultations, sports injury rehab, and home care dispatch.</p>
+    <div class="grid grid-3" style="gap:24px;">
+      <div class="card card-hover" style="padding:28px;border-radius:var(--radius-lg);">
+        <div class="lp-icon-tile"><span class="material-symbols-outlined">&#xf190;</span></div>
+        <h4 style="margin-bottom:8px;font-size:var(--text-base);font-weight:700;">Visual Pain &amp; ROM Tracker</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);">Track VAS pain scale scores, joint Range of Motion, and postural assessments over time with progress graphs.</p>
+      </div>
+      <div class="card card-hover" style="padding:28px;border-radius:var(--radius-lg);">
+        <div class="lp-icon-tile"><span class="material-symbols-outlined">&#xeb43;</span></div>
+        <h4 style="margin-bottom:8px;font-size:var(--text-base);font-weight:700;">WhatsApp Exercise Plans (HEP)</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);">Send visual video/image Home Exercise Programs directly to patients' WhatsApp to boost home compliance.</p>
+      </div>
+      <div class="card card-hover" style="padding:28px;border-radius:var(--radius-lg);">
+        <div class="lp-icon-tile"><span class="material-symbols-outlined">&#xef63;</span></div>
+        <h4 style="margin-bottom:8px;font-size:var(--text-base);font-weight:700;">Session Package Manager</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);">Manage 5, 10, or 15-session care packages with automated session deduction and renewal tracking.</p>
+      </div>
+      <div class="card card-hover" style="padding:28px;border-radius:var(--radius-lg);">
+        <div class="lp-icon-tile"><span class="material-symbols-outlined">&#xe55b;</span></div>
+        <h4 style="margin-bottom:8px;font-size:var(--text-base);font-weight:700;">Home Care Dispatch Engine</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);">Manage home visit requests, assign therapists by location, and track session status in real-time.</p>
+      </div>
+      <div class="card card-hover" style="padding:28px;border-radius:var(--radius-lg);">
+        <div class="lp-icon-tile"><span class="material-symbols-outlined">&#xe858;</span></div>
+        <h4 style="margin-bottom:8px;font-size:var(--text-base);font-weight:700;">Automated Session Reminders</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);">Send gentle WhatsApp appointment reminders to reduce missed visits and keep schedules on track.</p>
+      </div>
+      <div class="card card-hover" style="padding:28px;border-radius:var(--radius-lg);">
+        <div class="lp-icon-tile"><span class="material-symbols-outlined">&#xe1a1;</span></div>
+        <h4 style="margin-bottom:8px;font-size:var(--text-base);font-weight:700;">Electrotherapy &amp; Equipment Tracker</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);">Track machine usage (IFT, Ultrasound, Laser, TENS) and bed availability across your clinic slots.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 6. DEEP DIVE — SESSION RETENTION ════════════════════════════════════ -->
+<section style="padding:72px 0;background:var(--surface-card);">
+  <div class="container">
+    <div class="split-even" style="gap:56px;">
+      <div style="order:2;">
+        <div class="lp-photo-panel">
+          <span class="material-symbols-outlined">&#xf190;</span>
+          <div class="lp-floating-badge right" style="bottom:-20px;">
+            <div style="width:40px;height:40px;border-radius:50%;background:rgba(16,185,129,.12);color:var(--success-green);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <span class="material-symbols-outlined icon-fill">&#xf0be;</span>
+            </div>
+            <div>
+              <p style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px;">Package Renewed</p>
+              <p style="font-size:13px;font-weight:600;color:var(--text-primary);">via WhatsApp Link</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="order:1;">
+        <p style="font-size:var(--text-sm);color:var(--color-primary-600);font-weight:700;text-transform:uppercase;letter-spacing:.05em;display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+          <span style="width:32px;height:1px;background:var(--color-primary-600);display:inline-block;"></span>
+          The Session Retention &amp; Care Continuity Engine
+        </p>
+        <h2 style="font-size:var(--text-2xl);margin-bottom:20px;">Double Your Package Completion Rates</h2>
+        <blockquote style="background:var(--surface-raised);padding:24px;border-radius:var(--radius-lg);border-left:4px solid var(--color-primary-600);box-shadow:var(--shadow-sm);margin-bottom:28px;">
+          <span class="material-symbols-outlined icon-fill" style="font-size:32px;color:var(--color-primary-100);display:block;margin-bottom:8px;">&#xe244;</span>
+          <span style="font-style:italic;font-weight:500;color:var(--text-secondary);">"When pain drops, patients quit. CuraSuite keeps them engaged by showing them visual recovery milestones and sending automated session reminders directly to WhatsApp."</span>
+        </blockquote>
+        <ul style="display:flex;flex-direction:column;gap:20px;">
+          <li style="display:flex;gap:16px;">
+            <div style="width:32px;height:32px;border-radius:50%;background:var(--color-primary-50);color:var(--color-primary-600);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;"><span class="material-symbols-outlined" style="font-size:16px;">&#xe8e5;</span></div>
+            <div><strong style="display:block;margin-bottom:4px;">Visual Recovery Progress Reports</strong><span style="color:var(--text-secondary);font-size:var(--text-sm);">Share before-and-after mobility graphs with patients to prove treatment efficacy.</span></div>
+          </li>
+          <li style="display:flex;gap:16px;">
+            <div style="width:32px;height:32px;border-radius:50%;background:var(--color-primary-50);color:var(--color-primary-600);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;"><span class="material-symbols-outlined" style="font-size:16px;">&#xef63;</span></div>
+            <div><strong style="display:block;margin-bottom:4px;">Automated Package Renewal Nudges</strong><span style="color:var(--text-secondary);font-size:var(--text-sm);">Trigger instant WhatsApp payment links when a patient reaches session 8 of 10.</span></div>
+          </li>
+          <li style="display:flex;gap:16px;">
+            <div style="width:32px;height:32px;border-radius:50%;background:var(--color-primary-50);color:var(--color-primary-600);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;"><span class="material-symbols-outlined" style="font-size:16px;">&#xe1d5;</span></div>
+            <div><strong style="display:block;margin-bottom:4px;">Post-Session Care Instructions</strong><span style="color:var(--text-secondary);font-size:var(--text-sm);">Automatically deliver ice/heat application guidelines and ergonomic tips after every visit.</span></div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 7. DEEP DIVE — HOME-VISIT OPERATIONS ════════════════════════════════ -->
+<section style="padding:72px 0;">
+  <div class="container">
+    <div class="split-even" style="gap:56px;">
+      <div>
+        <p style="font-size:var(--text-sm);color:var(--color-primary-600);font-weight:700;text-transform:uppercase;letter-spacing:.05em;display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+          <span style="width:32px;height:1px;background:var(--color-primary-600);display:inline-block;"></span>
+          Scale Your Home Care Network &amp; OPD Operations
+        </p>
+        <h2 style="font-size:var(--text-2xl);margin-bottom:28px;">Effortless Home-Visit &amp; Multi-Therapist Operations</h2>
+        <ul style="display:flex;flex-direction:column;gap:28px;">
+          <li style="display:flex;gap:20px;align-items:flex-start;">
+            <div class="lp-circle-icon"><span class="material-symbols-outlined" style="font-size:24px;color:var(--color-primary-600);">&#xe55e;</span></div>
+            <div><strong style="display:block;font-size:var(--text-lg);margin-bottom:6px;">Geo-Location Route Mapping</strong><span style="color:var(--text-secondary);font-size:var(--text-sm);">Assign home visits efficiently based on patient pincodes and therapist availability.</span></div>
+          </li>
+          <li style="display:flex;gap:20px;align-items:flex-start;">
+            <div class="lp-circle-icon"><span class="material-symbols-outlined" style="font-size:24px;color:var(--color-primary-600);">&#xea21;</span></div>
+            <div><strong style="display:block;font-size:var(--text-lg);margin-bottom:6px;">Therapist Productivity Dashboards</strong><span style="color:var(--text-secondary);font-size:var(--text-sm);">Monitor session counts, patient feedback, and collection totals for associate physiotherapists.</span></div>
+          </li>
+          <li style="display:flex;gap:20px;align-items:flex-start;">
+            <div class="lp-circle-icon"><span class="material-symbols-outlined" style="font-size:24px;color:var(--color-primary-600);">&#xefdf;</span></div>
+            <div><strong style="display:block;font-size:var(--text-lg);margin-bottom:6px;">Bed &amp; Equipment Scheduling</strong><span style="color:var(--text-secondary);font-size:var(--text-sm);">Prevent double-booking for traction beds, electrotherapy units, and specialized rehab zones.</span></div>
+          </li>
+        </ul>
+      </div>
+      <div>
+        <div class="lp-photo-panel">
+          <span class="material-symbols-outlined">&#xeacd;</span>
+          <div class="lp-floating-badge left" style="bottom:-20px;">
+            <div style="width:40px;height:40px;border-radius:50%;background:var(--color-primary-50);color:var(--color-primary-600);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <span class="material-symbols-outlined">&#xeacd;</span>
+            </div>
+            <div>
+              <p style="font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px;">Therapist Arriving</p>
+              <p style="font-size:13px;font-weight:600;color:var(--text-primary);">in 15 minutes</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 8. TELEREHAB / VIDEO CONSULTATIONS ══════════════════════════════════ -->
+<section id="telerehab" style="padding:72px 0;background:var(--surface-card);">
+  <div class="container">
+    <div style="text-align:center;max-width:680px;margin:0 auto 56px;">
+      <p style="font-size:var(--text-sm);color:var(--color-primary-600);font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px;">Google Meet Video Consulting</p>
+      <h2 style="font-size:var(--text-2xl);margin-bottom:12px;">Friction-Free Telerehab &amp; Virtual Consultations</h2>
+      <p style="color:var(--text-secondary);">Expand your clinic's reach with automated Google Meet integration and WhatsApp delivery.</p>
+    </div>
+    <div class="grid grid-4" style="gap:24px;text-align:center;margin-bottom:56px;">
+      <div>
+        <div class="lp-step" style="margin-bottom:14px;">1</div>
+        <h4 style="font-size:var(--text-base);font-weight:700;margin-bottom:6px;">Appointment Creation</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);">Receptionist/Therapist selects "Video Consultation" in scheduler.</p>
+      </div>
+      <div>
+        <div class="lp-step" style="margin-bottom:14px;">2</div>
+        <h4 style="font-size:var(--text-base);font-weight:700;margin-bottom:6px;">Automated Link Generation</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);">CuraSuite generates a secure, unique Google Meet URL via Calendar API.</p>
+      </div>
+      <div>
+        <div class="lp-step" style="margin-bottom:14px;">3</div>
+        <h4 style="font-size:var(--text-base);font-weight:700;margin-bottom:6px;">WhatsApp Delivery</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);">Patient receives instant confirmation with the join link.</p>
+      </div>
+      <div>
+        <div class="lp-step" style="margin-bottom:14px;">4</div>
+        <h4 style="font-size:var(--text-base);font-weight:700;margin-bottom:6px;">Reminders &amp; Notes</h4>
+        <p style="color:var(--text-secondary);font-size:var(--text-sm);">Automated reminders sent 24h/15m prior; session notes auto-saved to EMR.</p>
+      </div>
+    </div>
+    <div class="card" style="padding:40px;border-radius:var(--radius-xl);">
+      <h3 style="text-align:center;margin-bottom:32px;font-size:var(--text-lg);">Key Use Cases for Physiotherapy Practices</h3>
+      <div class="grid grid-3" style="gap:28px;">
+        <div style="display:flex;gap:14px;">
+          <span class="material-symbols-outlined" style="color:var(--color-teal-accent);font-size:30px;flex-shrink:0;">&#xf8a0;</span>
+          <div><strong style="display:block;margin-bottom:6px;">Remote Telerehab &amp; Ergonomic Assessments</strong><span style="color:var(--text-secondary);font-size:var(--text-sm);">Conduct virtual posture checks, movement screening, and workplace evaluations.</span></div>
+        </div>
+        <div style="display:flex;gap:14px;">
+          <span class="material-symbols-outlined" style="color:var(--color-teal-accent);font-size:30px;flex-shrink:0;">&#xef3e;</span>
+          <div><strong style="display:block;margin-bottom:6px;">Progress &amp; Recovery Reviews</strong><span style="color:var(--text-secondary);font-size:var(--text-sm);">Review home exercise compliance and ROM milestones without requiring patient travel.</span></div>
+        </div>
+        <div style="display:flex;gap:14px;">
+          <span class="material-symbols-outlined" style="color:var(--color-teal-accent);font-size:30px;flex-shrink:0;">&#xf109;</span>
+          <div><strong style="display:block;margin-bottom:6px;">Post-Operative &amp; Mobility Care</strong><span style="color:var(--text-secondary);font-size:var(--text-sm);">Provide continuous care to patients unable to travel due to acute pain or recovery.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 9. WORKFLOW CONTRAST TABLE ══════════════════════════════════════════ -->
+<section style="padding:72px 0;">
+  <div class="container">
+    <div style="text-align:center;max-width:640px;margin:0 auto 40px;">
+      <h2 style="font-size:var(--text-2xl);margin-bottom:12px;">Generic Software vs. CuraSuite</h2>
+      <p style="color:var(--text-secondary);">See why specialized rehab software outperforms generic clinic management tools.</p>
+    </div>
+    <div class="lp-contrast-wrap">
+      <table class="lp-contrast-table">
+        <thead>
+          <tr>
+            <th>Practice Area</th>
+            <th>Generic Clinic Software / Paper</th>
+            <th class="is-new">With CuraSuite Physio Platform</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th style="font-weight:700;color:var(--text-primary);">Patient Assessment</th>
+            <td class="is-old">Generic text notes or lost paper cards</td>
+            <td class="is-new"><span class="material-symbols-outlined icon-fill" style="font-size:16px;vertical-align:-3px;margin-right:4px;">&#xf0be;</span>Visual ROM, VAS Pain Scale &amp; posture charts tracked over time</td>
+          </tr>
+          <tr>
+            <th style="font-weight:700;color:var(--text-primary);">Home Exercises (HEP)</th>
+            <td class="is-old">Printed paper slips that patients lose</td>
+            <td class="is-new"><span class="material-symbols-outlined icon-fill" style="font-size:16px;vertical-align:-3px;margin-right:4px;">&#xf0be;</span>Video/Image Home Exercise Plans sent straight to WhatsApp</td>
+          </tr>
+          <tr>
+            <th style="font-weight:700;color:var(--text-primary);">Session Packages</th>
+            <td class="is-old">Paper token cards or manual Excel sheets</td>
+            <td class="is-new"><span class="material-symbols-outlined icon-fill" style="font-size:16px;vertical-align:-3px;margin-right:4px;">&#xf0be;</span>Automated package session tracking with auto-deduction</td>
+          </tr>
+          <tr>
+            <th style="font-weight:700;color:var(--text-primary);">Home Visit Management</th>
+            <td class="is-old">Messy WhatsApp group chats &amp; phone calls</td>
+            <td class="is-new"><span class="material-symbols-outlined icon-fill" style="font-size:16px;vertical-align:-3px;margin-right:4px;">&#xf0be;</span>Centralized dispatcher with location &amp; time slot mapping</td>
+          </tr>
+          <tr>
+            <th style="font-weight:700;color:var(--text-primary);">Appointment Reminders</th>
+            <td class="is-old">Manual calls by reception staff</td>
+            <td class="is-new"><span class="material-symbols-outlined icon-fill" style="font-size:16px;vertical-align:-3px;margin-right:4px;">&#xf0be;</span>Automated WhatsApp alerts 24h before session</td>
+          </tr>
+          <tr>
+            <th style="font-weight:700;color:var(--text-primary);">Multi-Therapist Ops</th>
+            <td class="is-old">Unclear commission and session tracking</td>
+            <td class="is-new"><span class="material-symbols-outlined icon-fill" style="font-size:16px;vertical-align:-3px;margin-right:4px;">&#xf0be;</span>Therapist-wise session logs &amp; automated revenue split</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 10. SECURITY & COMPLIANCE ═══════════════════════════════════════════ -->
+<section style="padding:72px 0;background:var(--color-primary-600);color:white;">
+  <div class="container" style="text-align:center;">
+    <h2 style="margin-bottom:48px;font-size:var(--text-2xl);color:white;">Security &amp; Compliance Built for Physical Therapy</h2>
+    <div class="grid grid-3" style="gap:32px;">
+      <div>
+        <div style="width:72px;height:72px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">
+          <span class="material-symbols-outlined" style="font-size:32px;">&#xe899;</span>
+        </div>
+        <h4 style="margin-bottom:10px;font-size:var(--text-base);font-weight:700;">Encrypted Health Records</h4>
+        <p style="color:rgba(255,255,255,.8);font-size:var(--text-sm);">Patient assessments, mobility videos, and treatment notes secured with 256-bit SSL encryption.</p>
+      </div>
+      <div>
+        <div style="width:72px;height:72px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">
+          <span class="material-symbols-outlined" style="font-size:32px;">&#xe0c9;</span>
+        </div>
+        <h4 style="margin-bottom:10px;font-size:var(--text-base);font-weight:700;">Official WhatsApp API</h4>
+        <p style="color:rgba(255,255,255,.8);font-size:var(--text-sm);">Send compliant appointment reminders, exercise guides, and payment links from your verified profile.</p>
+      </div>
+      <div>
+        <div style="width:72px;height:72px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">
+          <span class="material-symbols-outlined" style="font-size:32px;">&#xe326;</span>
+        </div>
+        <h4 style="margin-bottom:10px;font-size:var(--text-base);font-weight:700;">Tablet &amp; Mobile Optimization</h4>
+        <p style="color:rgba(255,255,255,.8);font-size:var(--text-sm);">Therapists can log assessments and view exercise libraries directly on tablets or smartphones.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 11. TESTIMONIALS ════════════════════════════════════════════════════ -->
+{% if testimonials %}
+<section style="padding:72px 0;">
+  <div class="container">
+    <h2 style="text-align:center;margin-bottom:44px;font-size:var(--text-2xl);">Trusted by Leading Physiotherapy Professionals</h2>
+    <div class="grid grid-2" style="gap:24px;">
+      {% for t in testimonials %}
+      <div class="card" style="padding:36px;position:relative;border-radius:var(--radius-xl);">
+        <span class="lp-quote-mark material-symbols-outlined icon-fill">&#xe244;</span>
+        <div style="color:var(--warning-amber);margin-bottom:18px;letter-spacing:1px;position:relative;">{{ t.star_display }}</div>
+        <blockquote style="font-size:var(--text-lg);color:var(--text-secondary);font-style:italic;margin-bottom:24px;position:relative;line-height:var(--leading-relaxed);">"{{ t.feedback|truncatechars:180 }}"</blockquote>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <div style="width:48px;height:48px;border-radius:50%;background:var(--color-primary-50);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--color-primary-600);font-size:var(--text-lg);">{{ t.customer_name|slice:":1" }}</div>
+          <div>
+            <p style="font-weight:700;color:var(--text-primary);">{{ t.customer_name }}</p>
+            <p style="font-size:var(--text-sm);color:var(--text-secondary);">{{ t.clinic_name }}{% if t.location %}, {{ t.location }}{% endif %}</p>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+<!-- ═══ 12. PRICING ═════════════════════════════════════════════════════════ -->
+<section style="padding:72px 0;background:var(--surface-card);" id="pricing">
+  <div class="container" style="text-align:center;">
+    <h2 style="margin-bottom:8px;font-size:var(--text-2xl);">Simple, Transparent Pricing</h2>
+    <p style="color:var(--text-secondary);margin-bottom:44px;">No setup fees. Cancel anytime. 30-day free trial.</p>
+    <div class="grid grid-3" style="gap:24px;max-width:1080px;margin-inline:auto;align-items:end;text-align:left;">
+
+      <div class="card" style="padding:36px;display:flex;flex-direction:column;height:100%;border-radius:var(--radius-xl);">
+        <h3 style="font-size:var(--text-lg);margin-bottom:6px;font-weight:700;">Physio Starter</h3>
+        <p style="font-size:var(--text-sm);color:var(--text-secondary);margin-bottom:24px;">Single-Therapist OPD</p>
+        <div style="border-bottom:1px solid var(--border-default);padding-bottom:24px;margin-bottom:24px;">
+          <span style="font-size:36px;font-weight:700;">₹1,999</span><span style="color:var(--text-secondary);font-size:var(--text-sm);"> / month</span>
+        </div>
+        <ul style="flex-grow:1;display:flex;flex-direction:column;gap:14px;margin-bottom:28px;">
+          <li style="display:flex;gap:10px;align-items:flex-start;font-size:var(--text-sm);"><span class="material-symbols-outlined" style="color:var(--color-primary-600);font-size:20px;flex-shrink:0;">&#xe668;</span>1 OPD Clinic Location</li>
+          <li style="display:flex;gap:10px;align-items:flex-start;font-size:var(--text-sm);"><span class="material-symbols-outlined" style="color:var(--color-primary-600);font-size:20px;flex-shrink:0;">&#xe668;</span>Basic Patient Records</li>
+          <li style="display:flex;gap:10px;align-items:flex-start;font-size:var(--text-sm);"><span class="material-symbols-outlined" style="color:var(--color-primary-600);font-size:20px;flex-shrink:0;">&#xe668;</span>Assessment Notes</li>
+          <li style="display:flex;gap:10px;align-items:flex-start;font-size:var(--text-sm);"><span class="material-symbols-outlined" style="color:var(--color-primary-600);font-size:20px;flex-shrink:0;">&#xe668;</span>SMS Reminders</li>
+        </ul>
+        <a href="#lp-form" data-gtm-event="cta_click" data-gtm-location="pricing_starter" class="btn" style="width:100%;justify-content:center;margin-top:auto;background:transparent;color:var(--color-primary-600);border:2px solid var(--color-primary-600);border-radius:var(--radius-md);font-weight:700;">Start Free Trial</a>
+      </div>
+
+      <div class="card" style="padding:36px;background:var(--color-primary-600);border-color:var(--color-primary-600);position:relative;box-shadow:var(--shadow-xl);display:flex;flex-direction:column;height:100%;border-radius:var(--radius-xl);overflow:hidden;">
+        <div class="lp-pricing-badge">Most Popular</div>
+        <h3 style="font-size:var(--text-lg);margin-bottom:6px;color:white;font-weight:700;margin-top:8px;">Physio Pro</h3>
+        <p style="font-size:var(--text-sm);color:rgba(255,255,255,.8);margin-bottom:24px;">OPD Clinic + Home Care</p>
+        <div style="border-bottom:1px solid rgba(255,255,255,.2);padding-bottom:24px;margin-bottom:24px;">
+          <span style="font-size:36px;font-weight:700;color:white;">₹3,999</span><span style="color:rgba(255,255,255,.8);font-size:var(--text-sm);"> / month</span>
+        </div>
+        <ul style="flex-grow:1;display:flex;flex-direction:column;gap:14px;margin-bottom:8px;">
+          <li style="display:flex;gap:10px;align-items:flex-start;font-size:var(--text-sm);color:white;"><span class="material-symbols-outlined" style="color:white;font-size:20px;flex-shrink:0;">&#xe668;</span>OPD + Home Visit Management</li>
+          <li style="display:flex;gap:10px;align-items:flex-start;font-size:var(--text-sm);color:white;font-weight:700;"><span class="material-symbols-outlined" style="color:white;font-size:20px;flex-shrink:0;">&#xe668;</span>Visual ROM &amp; Pain Tracker</li>
+          <li style="display:flex;gap:10px;align-items:flex-start;font-size:var(--text-sm);color:white;font-weight:700;"><span class="material-symbols-outlined" style="color:white;font-size:20px;flex-shrink:0;">&#xe668;</span>WhatsApp Exercise Plans (HEP)</li>
+          <li style="display:flex;gap:10px;align-items:flex-start;font-size:var(--text-sm);color:white;"><span class="material-symbols-outlined" style="color:white;font-size:20px;flex-shrink:0;">&#xe668;</span>Session Package Engine</li>
+          <li style="display:flex;gap:10px;align-items:flex-start;font-size:var(--text-sm);color:white;"><span class="material-symbols-outlined" style="color:white;font-size:20px;flex-shrink:0;">&#xe668;</span>Therapist Commission Tracker</li>
+        </ul>
+        <a href="#lp-form" data-gtm-event="cta_click" data-gtm-location="pricing_pro" class="btn" style="width:100%;justify-content:center;background:white;color:var(--color-primary-600);border-color:white;border-radius:var(--radius-md);font-weight:700;">Start Free Trial</a>
+        <div class="lp-roi-box">
+          <span class="material-symbols-outlined icon-fill" style="color:white;font-size:22px;flex-shrink:0;">&#xe90f;</span>
+          <p style="font-size:12px;color:white;font-weight:700;line-height:1.4;">A single retained 10-session rehab package per month completely covers the cost of the Physio Pro Plan.</p>
+        </div>
+      </div>
+
+      <div class="card" style="padding:36px;display:flex;flex-direction:column;height:100%;border-radius:var(--radius-xl);">
+        <h3 style="font-size:var(--text-lg);margin-bottom:6px;font-weight:700;">Enterprise Plan</h3>
+        <p style="font-size:var(--text-sm);color:var(--text-secondary);margin-bottom:24px;">Multi-Center Rehab Chains</p>
+        <div style="border-bottom:1px solid var(--border-default);padding-bottom:24px;margin-bottom:24px;">
+          <span style="font-size:28px;font-weight:700;">Custom Pricing</span>
+        </div>
+        <ul style="flex-grow:1;display:flex;flex-direction:column;gap:14px;margin-bottom:28px;">
+          <li style="display:flex;gap:10px;align-items:flex-start;font-size:var(--text-sm);"><span class="material-symbols-outlined" style="color:var(--color-primary-600);font-size:20px;flex-shrink:0;">&#xe668;</span>Everything in Pro</li>
+          <li style="display:flex;gap:10px;align-items:flex-start;font-size:var(--text-sm);font-weight:700;"><span class="material-symbols-outlined" style="color:var(--color-primary-600);font-size:20px;flex-shrink:0;">&#xe668;</span>Multi-Branch Operations</li>
+          <li style="display:flex;gap:10px;align-items:flex-start;font-size:var(--text-sm);font-weight:700;"><span class="material-symbols-outlined" style="color:var(--color-primary-600);font-size:20px;flex-shrink:0;">&#xe668;</span>Advanced Home Dispatcher</li>
+          <li style="display:flex;gap:10px;align-items:flex-start;font-size:var(--text-sm);"><span class="material-symbols-outlined" style="color:var(--color-primary-600);font-size:20px;flex-shrink:0;">&#xe668;</span>Custom Analytics</li>
+          <li style="display:flex;gap:10px;align-items:flex-start;font-size:var(--text-sm);"><span class="material-symbols-outlined" style="color:var(--color-primary-600);font-size:20px;flex-shrink:0;">&#xe668;</span>Dedicated Account Manager</li>
+        </ul>
+        <a href="/contact/" data-gtm-event="cta_click" data-gtm-location="pricing_enterprise" class="btn" style="width:100%;justify-content:center;margin-top:auto;background:transparent;color:var(--text-primary);border:2px solid var(--border-default);border-radius:var(--radius-md);font-weight:700;">Contact Sales</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 13. FAQ + PRE-FOOTER CTA ════════════════════════════════════════════ -->
+<section style="padding:72px 0;">
+  <div class="container" style="max-width:720px;">
+    <h2 style="text-align:center;margin-bottom:32px;font-size:var(--text-2xl);">Frequently Asked Questions</h2>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <details class="lp-faq">
+        <summary>Can we send custom exercise videos to our patients via WhatsApp?<span class="material-symbols-outlined">&#xe5cf;</span></summary>
+        <div class="lp-faq-body">Yes! You can choose from our built-in Home Exercise Program (HEP) library or upload your own custom clinic exercise videos and PDFs to share instantly on WhatsApp.</div>
+      </details>
+      <details class="lp-faq">
+        <summary>How does CuraSuite track pre-paid session packages?<span class="material-symbols-outlined">&#xe5cf;</span></summary>
+        <div class="lp-faq-body">When a patient buys a 5 or 10-session package, CuraSuite automatically deducts a session each time they check in and notifies them of their remaining balance.</div>
+      </details>
+      <details class="lp-faq">
+        <summary>Does the platform support home-visit physiotherapist scheduling?<span class="material-symbols-outlined">&#xe5cf;</span></summary>
+        <div class="lp-faq-body">Yes. Under the Pro and Enterprise plans, you can assign home requests to specific therapists based on location, track visit completion, and calculate therapist payouts automatically.</div>
+      </details>
+      <details class="lp-faq">
+        <summary>Is staff training included with our setup?<span class="material-symbols-outlined">&#xe5cf;</span></summary>
+        <div class="lp-faq-body">Absolutely. We provide full live video training for your front-desk staff and associate physiotherapists to ensure a smooth 7-day rollout.</div>
+      </details>
+    </div>
+
+    <div style="text-align:center;margin-top:64px;">
+      <h2 style="font-size:var(--text-2xl);margin-bottom:28px;">Ready to Modernize Your Physiotherapy Practice?</h2>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <a href="#lp-form" data-gtm-event="cta_click" data-gtm-location="pre_footer" class="btn btn-lg" style="background:var(--color-primary-600);color:white;border-color:var(--color-primary-600);border-radius:var(--radius-md);">
+          Book Free Demo Now <span class="material-symbols-outlined" style="font-size:18px;">&#xe5c8;</span>
+        </a>
+        {% if SITE_SETTINGS.whatsapp_phone %}
+        <a href="https://wa.me/{{ SITE_SETTINGS.whatsapp_phone }}?text={{ lp.whatsapp_message_template|urlencode }}" target="_blank"
+           data-wa-placement="pre_footer" data-gtm-event="whatsapp_click" data-gtm-location="pre_footer"
+           class="btn btn-lg" style="background:var(--whatsapp-green);color:white;border-color:var(--whatsapp-green);border-radius:var(--radius-md);">
+          <span class="material-symbols-outlined icon-fill" style="font-size:18px;">&#xe0c9;</span> WhatsApp Us
+        </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
