@@ -83,9 +83,20 @@ class LandingPage(PublishableModel):
     def get_absolute_url(self):
         return f"/lp/{self.slug}/"
 
+    # Per-slug template overrides — a page listed here gets its own bespoke
+    # layout instead of the shared curacms.html/curalabs.html templates. Add
+    # an entry as each specialty gets a dedicated design (dentist first;
+    # physiotherapist and ophthalmologist still fall through to curacms.html
+    # until they get one too).
+    TEMPLATE_OVERRIDES = {
+        "dentist": "landing_pages/curacms_dentist.html",
+    }
+
     @property
     def template_name(self):
-        """Two shared templates only — grouped by product key."""
+        """Shared templates grouped by product key, with per-slug overrides above."""
+        if self.slug in self.TEMPLATE_OVERRIDES:
+            return self.TEMPLATE_OVERRIDES[self.slug]
         if self.product.key == "curalabs":
             return "landing_pages/curalabs.html"
         return "landing_pages/curacms.html"
