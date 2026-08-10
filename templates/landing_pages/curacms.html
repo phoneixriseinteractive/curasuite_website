@@ -4,8 +4,12 @@
 {% block extra_head %}
 <style>
   /* ── Scoped palette for this redesign — not the sitewide token set, deliberately
-     matching the client-provided mockup's indigo/navy/teal palette. ── */
-  #lp-content {
+     matching the client-provided mockup's indigo/navy/teal palette.
+     Scoped to `body`, not `#lp-content`: the nav (`{% block topbar %}`) renders
+     as a sibling before `#lp-content`, so these custom properties need to live
+     on a shared ancestor or `var(--np-primary)` resolves to nothing in the nav
+     (that's what was making "Book Free Demo" render as invisible white-on-white). ── */
+  body {
     --np-primary: #221dd0;
     --np-primary-dark: #1a17ad;
     --np-navy: #0F172A;
