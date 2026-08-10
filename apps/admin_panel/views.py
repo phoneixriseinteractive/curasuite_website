@@ -161,7 +161,11 @@ def dashboard(request):
 @admin_required
 def crm_leads(request):
     from apps.crm.models import Lead
-    qs = Lead.objects.select_related("assigned_to").order_by("-created_at")
+    # -updated_at, not -created_at: capture_lead() merges a resubmission (same
+    # phone/email) into the existing Lead rather than creating a new row, so
+    # sorting by created_at alone would leave a just-resubmitted lead stuck
+    # wherever it was first created instead of surfacing it at the top.
+    qs = Lead.objects.select_related("assigned_to").order_by("-updated_at")
     status = request.GET.get("status", "")
     search = request.GET.get("q", "").strip()
     if status: qs = qs.filter(status=status)

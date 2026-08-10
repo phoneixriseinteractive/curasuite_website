@@ -31,7 +31,7 @@
   <div class="adm-table-wrap">
     {% if leads %}
     <table class="adm-table">
-      <thead><tr><th>Lead</th><th>Organisation</th><th>Product</th><th>Source</th><th>Status</th><th>Score</th><th>Date</th><th>Actions</th></tr></thead>
+      <thead><tr><th>Lead</th><th>Organisation</th><th>Product</th><th>Source</th><th>Status</th><th>Score</th><th>Last Activity</th><th>Actions</th></tr></thead>
       <tbody>
         {% for lead in leads %}
         <tr>
@@ -44,7 +44,7 @@
           <td style="font-size:12px;color:var(--adm-text-secondary);">{{ lead.get_source_display }}</td>
           <td>{% status_badge lead.status %}</td>
           <td style="color:var(--adm-text-secondary);">{{ lead.score }}</td>
-          <td style="font-size:12px;color:var(--adm-text-muted);white-space:nowrap;">{{ lead.created_at|date:"M j, Y" }}</td>
+          <td style="font-size:12px;color:var(--adm-text-muted);white-space:nowrap;">{{ lead.updated_at|date:"M j, Y" }}</td>
           <td>
             <a href="{% url 'admin_panel:crm_lead_detail' lead.pk %}" class="adm-btn adm-btn-secondary" style="padding:4px 10px;font-size:12px;">
               View →

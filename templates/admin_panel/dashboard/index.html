@@ -94,7 +94,7 @@
             <th>Product</th>
             <th>Source</th>
             <th>Status</th>
-            <th>Date</th>
+            <th>Last Activity</th>
           </tr>
         </thead>
         <tbody>
@@ -107,7 +107,7 @@
             <td style="color:var(--adm-text-secondary);">{{ lead.product_interest|default:"—" }}</td>
             <td style="color:var(--adm-text-secondary);">{{ lead.get_source_display }}</td>
             <td>{% status_badge lead.status %}</td>
-            <td style="color:var(--adm-text-muted);font-size:12px;white-space:nowrap;">{{ lead.created_at|date:"M j, Y" }}</td>
+            <td style="color:var(--adm-text-muted);font-size:12px;white-space:nowrap;">{{ lead.updated_at|date:"M j, Y" }}</td>
           </tr>
           {% endfor %}
         </tbody>

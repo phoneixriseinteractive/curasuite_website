@@ -56,7 +56,11 @@ def get_dashboard_stats() -> dict:
 
 def get_recent_leads(limit: int = 8):
     from apps.crm.models import Lead
-    return Lead.objects.select_related("assigned_to").order_by("-created_at")[:limit]
+    # -updated_at, not -created_at: capture_lead() merges a resubmission (same
+    # phone/email) into the existing Lead rather than creating a new row, so
+    # sorting by created_at alone would leave a just-resubmitted lead stuck
+    # wherever it was first created instead of surfacing it as "recent".
+    return Lead.objects.select_related("assigned_to").order_by("-updated_at")[:limit]
 
 
 def get_recent_demo_requests(limit: int = 5):
