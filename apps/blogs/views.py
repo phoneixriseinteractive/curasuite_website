@@ -35,13 +35,19 @@ def blog_detail(request, slug: str):
 
 
 def blog_category(request, slug: str):
+    from .models import BlogCategory
     from .selectors import get_all_categories
+    # Lenient lookup (not get_object_or_404): an unknown category slug should
+    # still render the listing — just with no matching posts and no per-
+    # category SEO override — rather than 404, matching prior behaviour.
+    category = BlogCategory.objects.filter(slug=slug).first()
     blogs = get_blogs_by_category(slug)
     paginator = Paginator(blogs, 12)
     page = paginator.get_page(request.GET.get("page", 1))
     return render(request, "blogs/blog_list.html", {
         "blogs": page, "categories": get_all_categories(),
         "active_category_slug": slug,
+        "seo": get_seo_for_object(category) if category else None,
     })
 
 

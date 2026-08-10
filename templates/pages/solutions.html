@@ -1,7 +1,7 @@
 {% extends "base/base.html" %}
 {% load static %}
 
-{% block seo_title %}{{ page.title }} | CuraSuite{% endblock %}
+{% block seo_title %}{% if seo %}{{ seo.get_title }}{% else %}{{ page.title }} | CuraSuite{% endif %}{% endblock %}
 {% block meta_description %}{% if seo %}{{ seo.get_description }}{% else %}{{ page.excerpt }}{% endif %}{% endblock %}
 
 {% block content %}

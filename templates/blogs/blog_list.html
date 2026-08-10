@@ -1,6 +1,9 @@
 {% extends "base/base.html" %}
-{% block seo_title %}Healthcare Technology Blog — Insights for Clinics & Doctors | {{ SITE_NAME }}{% endblock %}
-{% block meta_description %}Healthcare technology articles, clinic growth strategies, SEO guides for doctors, and product updates from the CuraSuite team.{% endblock %}
+{# `seo` is only set when this template is rendered for a specific BlogCategory
+   (see blog_category() in views.py) — the plain /blog/ index and /blog/tag/<slug>/
+   fall back to the generic blog listing copy below. #}
+{% block seo_title %}{% if seo %}{{ seo.get_title }}{% else %}Healthcare Insights & Tech Blog | CuraSuite{% endif %}{% endblock %}
+{% block meta_description %}{% if seo %}{{ seo.get_description }}{% else %}Stay updated with the latest trends in healthcare marketing, digital transformation, AI in medicine, and clinic growth strategies.{% endif %}{% endblock %}
 
 {% block content %}
 <section class="section-sm" style="background:var(--surface-card);border-bottom:1px solid var(--border-default);">

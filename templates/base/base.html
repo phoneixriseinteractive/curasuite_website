@@ -31,10 +31,62 @@
   <link rel="stylesheet" href="{% static 'css/base.css' %}">
   {% block extra_css %}{% endblock %}
 
-  {# ── Schema ──────────────────────────────────────────────────────────────── #}
+  {# ── Schema ──────────────────────────────────────────────────────────────────
+     Site-wide default Organization schema. Any template that needs its own
+     structured data (Product, BlogPosting, etc. — see home.html, product_detail.html,
+     blog_detail.html) overrides this block instead of appending to it, so only
+     one JSON-LD graph ever ships per page. Landing pages never see this block —
+     they extend landing_pages/_base_lp.html, a separate base template that
+     doesn't include it. #}
   {% block schema %}
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"Organization","name":"{{ SITE_NAME }}","url":"{{ request.scheme }}://{{ request.get_host }}"}
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": ["Organization", "LocalBusiness", "SoftwareCompany"],
+        "@id": "https://curasuite.app/#organization",
+        "name": "CuraSuite",
+        "alternateName": "CuraSuite Healthcare Platform",
+        "url": "https://curasuite.app/",
+        "logo": "https://curasuite.app/logo.png",
+        "image": "https://curasuite.app/logo.png",
+        "description": "CuraSuite is an all-in-one healthcare management platform offering clinic management software, pathology lab management software, healthcare websites, and digital solutions for doctors, clinics, hospitals, and diagnostic centres.",
+        "telephone": "+91 88828 14698",
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+91 88828 14698",
+          "contactType": "Customer Support",
+          "areaServed": "IN",
+          "availableLanguage": ["English", "Hindi"]
+        },
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "D-9, Ground Floor, Sector-3",
+          "addressLocality": "Noida",
+          "addressRegion": "Uttar Pradesh",
+          "postalCode": "201301",
+          "addressCountry": "IN"
+        },
+        "areaServed": {
+          "@type": "Country",
+          "name": "India"
+        },
+        "sameAs": [
+          "https://www.linkedin.com/company/curasuite/",
+          "https://www.facebook.com/curasuite",
+          "https://www.instagram.com/curasuite_app/"
+        ],
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.9",
+          "reviewCount": "128",
+          "bestRating": "5",
+          "worstRating": "1"
+        }
+      }
+    ]
+  }
   </script>
   {% endblock %}
 
