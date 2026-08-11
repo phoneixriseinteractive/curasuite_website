@@ -31,13 +31,15 @@
   <link rel="stylesheet" href="{% static 'css/base.css' %}">
   {% block extra_css %}{% endblock %}
 
-  {# ── Schema ──────────────────────────────────────────────────────────────────
-     Site-wide default Organization schema. Any template that needs its own
-     structured data (Product, BlogPosting, etc. — see home.html, product_detail.html,
-     blog_detail.html) overrides this block instead of appending to it, so only
-     one JSON-LD graph ever ships per page. Landing pages never see this block —
-     they extend landing_pages/_base_lp.html, a separate base template that
-     doesn't include it. #}
+  {# ── Schema ── #}
+  {% comment %}
+    Site-wide default Organization schema. Any template that needs its own
+    structured data (Product, BlogPosting, etc. — see home.html, product_detail.html,
+    blog_detail.html) overrides this block instead of appending to it, so only
+    one JSON-LD graph ever ships per page. Landing pages never see this block —
+    they extend landing_pages/_base_lp.html, a separate base template that
+    doesn't include it.
+  {% endcomment %}
   {% block schema %}
   <script type="application/ld+json">
   {
