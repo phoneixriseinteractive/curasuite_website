@@ -50,7 +50,13 @@ SESSION_ENGINE = "django.contrib.sessions.backends.db"
 
 
 # ── Email ──────────────────────────────────────────────────────────────────────
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+# Console by default; set RESEND_API_KEY in .env to send real mail through Resend.
+RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "")
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", DEFAULT_FROM_EMAIL)
+if RESEND_API_KEY:
+    EMAIL_BACKEND = "apps.core.email_backends.ResendEmailBackend"
+else:
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 
 # ── Static & Media ─────────────────────────────────────────────────────────────

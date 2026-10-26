@@ -7,6 +7,7 @@ from datetime import timedelta
 from django.conf import settings
 from django.core.mail import send_mail
 from django.utils import timezone
+from django.utils.html import escape
 
 from .models import LoginOTP, RememberedDevice
 
@@ -30,6 +31,14 @@ def send_otp_email(user, code: str) -> None:
             f"This code expires in {settings.ADMIN_OTP_TTL_MINUTES} minutes. "
             f"If you did not attempt to sign in, you can ignore this email.\n\n"
             f"— The CuraSuite Team"
+        ),
+        html_message=(
+            f"<p>Hi {escape(user.short_name)},</p>"
+            f"<p>Your one-time verification code is:</p>"
+            f'<p style="font-size:28px;font-weight:700;letter-spacing:6px;font-family:monospace">{code}</p>'
+            f"<p>This code expires in {settings.ADMIN_OTP_TTL_MINUTES} minutes. "
+            f"If you did not attempt to sign in, you can ignore this email.</p>"
+            f"<p>— The CuraSuite Team</p>"
         ),
         from_email=settings.DEFAULT_FROM_EMAIL,
         recipient_list=[user.email],
