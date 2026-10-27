@@ -161,8 +161,8 @@ SESSION_COOKIE_SAMESITE = "Lax"
 
 
 # ── Email ──────────────────────────────────────────────────────────────────────
-DEFAULT_FROM_EMAIL = "CuraSuite <hello@curasuite.com>"
-SERVER_EMAIL = "errors@curasuite.com"
+DEFAULT_FROM_EMAIL = "CuraSuite <hello@curasuite.app>"
+SERVER_EMAIL = "errors@curasuite.app"
 
 
 # ── Admin Panel Auth Hardening (OTP 2FA + Remember Device) ─────────────────────
@@ -224,7 +224,7 @@ LOGGING = {
 # ── CuraSuite Application Settings ────────────────────────────────────────────
 CURASUITE_SITE_NAME = "CuraSuite"
 CURASUITE_SITE_TAGLINE = "Healthcare Technology That Helps Your Practice Grow"
-CURASUITE_SUPPORT_EMAIL = "support@curasuite.com"
-CURASUITE_DEMO_EMAIL = "demo@curasuite.com"
+CURASUITE_SUPPORT_EMAIL = "support@curasuite.app"
+CURASUITE_DEMO_EMAIL = "demo@curasuite.app"
 CURASUITE_PAGINATION_DEFAULT = 20
 CURASUITE_PAGINATION_MAX = 100

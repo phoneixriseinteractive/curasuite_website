@@ -126,7 +126,7 @@ def _send_welcome_email(subscriber: NewsletterSubscriber) -> None:
 
 
 def _get_base_url() -> str:
-    return getattr(settings, "CURASUITE_BASE_URL", "https://curasuite.com")
+    return getattr(settings, "CURASUITE_BASE_URL", "https://curasuite.app")
 
 
 @transaction.atomic

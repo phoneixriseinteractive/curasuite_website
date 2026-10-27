@@ -6,7 +6,7 @@ from django.contrib.auth.forms import PasswordResetForm
 class AdminLoginForm(forms.Form):
     email    = forms.EmailField(
         label="Email address",
-        widget=forms.EmailInput(attrs={"placeholder": "admin@curasuite.com", "autocomplete": "email", "autofocus": True}),
+        widget=forms.EmailInput(attrs={"placeholder": "admin@curasuite.app", "autocomplete": "email", "autofocus": True}),
     )
     password = forms.CharField(
         label="Password",

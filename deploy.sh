@@ -67,7 +67,12 @@ else
     echo "── requirements.txt unchanged — skipping pip install ──"
 fi
 
-export $(grep -v '^#' "$ENV_FILE" | xargs)
+# Read KEY=value lines verbatim (like systemd's EnvironmentFile) so values containing
+# spaces, e.g. DEFAULT_FROM_EMAIL=CuraSuite <noreply@curasuite.app>, survive intact.
+while IFS='=' read -r key value || [ -n "$key" ]; do
+    [[ -z "$key" || "$key" == \#* ]] && continue
+    export "$key=$value"
+done < "$ENV_FILE"
 export DJANGO_SETTINGS_MODULE="$SETTINGS_MODULE"
 
 echo "── Checking Django configuration before touching the database ──"

@@ -146,8 +146,8 @@ class Command(BaseCommand):
         smtp = SMTPSettings.load()
         smtp.host        = "smtp.gmail.com"
         smtp.port        = 587
-        smtp.username    = "hello@curasuite.com"
-        smtp.from_email  = "hello@curasuite.com"
+        smtp.username    = "hello@curasuite.app"
+        smtp.from_email  = "hello@curasuite.app"
         smtp.from_name   = "CuraSuite"
         smtp.use_tls     = True
         smtp.use_ssl     = False
@@ -181,7 +181,7 @@ class Command(BaseCommand):
             "Disallow: /admin/\n"
             "Disallow: /api/\n"
             "\n"
-            "Sitemap: https://curasuite.com/sitemap.xml\n"
+            "Sitemap: https://curasuite.app/sitemap.xml\n"
         )
         r.save()
         self.stdout.write(self.style.SUCCESS("    ✓ robots.txt saved"))
@@ -406,7 +406,7 @@ class Command(BaseCommand):
                 "slug": "contact",
                 "page_type": "contact",
                 "excerpt": "Get in touch with the CuraSuite team. Book a free demo today.",
-                "content": "<p>We'd love to hear from you. Book a free demo, request pricing, or just say hello.</p><p><strong>Email:</strong> hello@curasuite.com</p><p><strong>WhatsApp:</strong> +91 98765 43210</p><p><strong>Business Hours:</strong> Monday–Saturday, 9 AM–7 PM IST</p>",
+                "content": "<p>We'd love to hear from you. Book a free demo, request pricing, or just say hello.</p><p><strong>Email:</strong> hello@curasuite.app</p><p><strong>WhatsApp:</strong> +91 98765 43210</p><p><strong>Business Hours:</strong> Monday–Saturday, 9 AM–7 PM IST</p>",
                 "seo": {
                     "seo_title": "Contact CuraSuite — Book a Free Demo",
                     "meta_description": "Contact CuraSuite to book a free product demo, request pricing, or get support. Available Monday–Saturday, 9 AM–7 PM IST.",
@@ -419,7 +419,7 @@ class Command(BaseCommand):
                 "slug": "privacy-policy",
                 "page_type": "legal",
                 "excerpt": "How CuraSuite collects, uses, and protects your data.",
-                "content": "<h2>Privacy Policy</h2><p><em>Last updated: June 2025</em></p><h3>Information We Collect</h3><p>We collect information you provide when booking demos, subscribing to our newsletter, or contacting us — including name, email, phone, and organisation.</p><h3>How We Use It</h3><p>We use your information to provide our services, respond to enquiries, send relevant updates, and improve CuraSuite products. We never sell your data.</p><h3>Data Security</h3><p>All data is encrypted in transit (HTTPS) and at rest. We use industry-standard security practices and conduct regular security reviews.</p><h3>Contact</h3><p>For privacy concerns, email privacy@curasuite.com.</p>",
+                "content": "<h2>Privacy Policy</h2><p><em>Last updated: June 2025</em></p><h3>Information We Collect</h3><p>We collect information you provide when booking demos, subscribing to our newsletter, or contacting us — including name, email, phone, and organisation.</p><h3>How We Use It</h3><p>We use your information to provide our services, respond to enquiries, send relevant updates, and improve CuraSuite products. We never sell your data.</p><h3>Data Security</h3><p>All data is encrypted in transit (HTTPS) and at rest. We use industry-standard security practices and conduct regular security reviews.</p><h3>Contact</h3><p>For privacy concerns, email privacy@curasuite.app.</p>",
                 "seo": {
                     "seo_title": "Privacy Policy | CuraSuite",
                     "meta_description": "Read CuraSuite's privacy policy to understand how we collect, use, and protect your personal information.",
@@ -443,7 +443,7 @@ class Command(BaseCommand):
                 "slug": "refund-policy",
                 "page_type": "legal",
                 "excerpt": "CuraSuite's 30-day money-back guarantee and refund process.",
-                "content": "<h2>Refund Policy</h2><p>We offer a 30-day money-back guarantee on all annual plans. If you are not completely satisfied within the first 30 days, contact us for a full refund — no questions asked.</p><p>To request a refund, email billing@curasuite.com with your order details.</p>",
+                "content": "<h2>Refund Policy</h2><p>We offer a 30-day money-back guarantee on all annual plans. If you are not completely satisfied within the first 30 days, contact us for a full refund — no questions asked.</p><p>To request a refund, email billing@curasuite.app with your order details.</p>",
                 "seo": {
                     "seo_title": "Refund Policy — 30-Day Money Back Guarantee | CuraSuite",
                     "meta_description": "CuraSuite offers a 30-day money-back guarantee on all annual plans. Full refund, no questions asked.",
@@ -963,9 +963,9 @@ class Command(BaseCommand):
 <li>📖 Case studies from Indian clinics and labs</li>
 </ul>
 <p>We publish twice a month — no spam, ever.</p>
-<p style="margin-top:32px;"><a href="https://curasuite.com/products/" style="background:#111827;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;">Explore Our Products →</a></p>
-<p style="color:#9CA3AF;font-size:12px;margin-top:48px;">PhoenixRise Interactive Pvt. Ltd. | hello@curasuite.com</p>""",
-            content_text="Welcome to CuraSuite Insights! Thank you for subscribing. Visit curasuite.com to explore our products.",
+<p style="margin-top:32px;"><a href="https://curasuite.app/products/" style="background:#111827;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;">Explore Our Products →</a></p>
+<p style="color:#9CA3AF;font-size:12px;margin-top:48px;">PhoenixRise Interactive Pvt. Ltd. | hello@curasuite.app</p>""",
+            content_text="Welcome to CuraSuite Insights! Thank you for subscribing. Visit curasuite.app to explore our products.",
             status="sent",
             sent_at=now - timedelta(days=20),
             total_sent=12,
@@ -984,8 +984,8 @@ class Command(BaseCommand):
 <h2>Mehta Diagnostic Centre, Ahmedabad</h2>
 <p>"The home collection feature was a game-changer. We manage collection slots efficiently and confirmation WhatsApps go out automatically." — Dr. Anjali Mehta</p>
 <h2>Ready to Transform Your Lab?</h2>
-<p><a href="https://curasuite.com/products/curalabs/" style="background:#16A34A;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;">Explore CuraLabs →</a></p>""",
-            content_text="CuraLabs is helping pathology labs across India. Read real results at curasuite.com/products/curalabs/",
+<p><a href="https://curasuite.app/products/curalabs/" style="background:#16A34A;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;">Explore CuraLabs →</a></p>""",
+            content_text="CuraLabs is helping pathology labs across India. Read real results at curasuite.app/products/curalabs/",
             status="draft",
         )
 

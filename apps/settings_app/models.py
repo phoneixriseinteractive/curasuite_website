@@ -155,7 +155,7 @@ class SMTPSettings(models.Model):
     username    = models.CharField(max_length=200, blank=True, verbose_name=_("Username / Email"))
     use_tls     = models.BooleanField(default=True, verbose_name=_("Use TLS"))
     use_ssl     = models.BooleanField(default=False, verbose_name=_("Use SSL"))
-    from_email  = models.EmailField(default="hello@curasuite.com", verbose_name=_("From email"))
+    from_email  = models.EmailField(default="hello@curasuite.app", verbose_name=_("From email"))
     from_name   = models.CharField(max_length=100, default="CuraSuite", verbose_name=_("From name"))
     # Note: password stored in .env as EMAIL_HOST_PASSWORD — never in DB
     is_verified = models.BooleanField(default=False, verbose_name=_("Connection verified"))
@@ -192,7 +192,7 @@ class RobotsTxt(models.Model):
             "Disallow: /manage/\n"
             "Disallow: /admin/\n"
             "\n"
-            "Sitemap: https://curasuite.com/sitemap.xml\n"
+            "Sitemap: https://curasuite.app/sitemap.xml\n"
         ),
         verbose_name=_("robots.txt content"),
     )
