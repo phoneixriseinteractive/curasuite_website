@@ -1,0 +1,113 @@
+{% extends "pages/solutions.html" %}
+{% load static icons %}
+{# Pathology labs sales page — sells CuraLabs. #}
+
+{% block accent %}{{ solution_products.curalabs.color|default:"#DC2626" }}{% endblock %}
+
+{% block hero_eyebrow %}{% icon "test-tube" size=16 %} For Pathology Labs &amp; Diagnostic Centres{% endblock %}
+{% block hero_title %}Turn your lab's website into a 24/7 booking desk.{% endblock %}
+{% block hero_lead %}<strong>CuraLabs</strong> lets patients find tests, book home collection and download reports online — so your team spends less time on the phone and more time on samples.{% endblock %}
+
+{% block hero_trust %}
+  <li>{% icon "check" size=18 stroke_width=2.5 %} Home collection booking</li>
+  <li>{% icon "check" size=18 stroke_width=2.5 %} OTP-secured report downloads</li>
+  {% with tier=solution_products.curalabs.starting_tier %}{% if tier %}
+  <li>{% icon "check" size=18 stroke_width=2.5 %} Plans from {{ tier.formatted_price }}{% if tier.plus_gst %} + GST{% endif %}{% if tier.period_label %} / {{ tier.period_label }}{% endif %}</li>
+  {% endif %}{% endwith %}
+{% endblock %}
+
+{% block hero_visual %}
+  {% if solution_products.curalabs %}
+    {% include "products/partials/hero_showcase_curalabs.html" with product=solution_products.curalabs %}
+  {% endif %}
+{% endblock %}
+
+{% block pains_title %}What's costing your lab patients{% endblock %}
+{% block pains %}
+  <div class="sol-pain">
+    <div class="sol-pain__icon">{% icon "phone" size=22 stroke_width=1.75 %}</div>
+    <h3>"Is my report ready?"</h3>
+    <p>Front-desk staff spend hours answering the same report-status and test-price calls every day.</p>
+  </div>
+  <div class="sol-pain">
+    <div class="sol-pain__icon">{% icon "home" size=22 stroke_width=1.75 %}</div>
+    <h3>Home collection chaos</h3>
+    <p>Requests scattered across calls, WhatsApp chats and notebooks — slots get missed and patients get annoyed.</p>
+  </div>
+  <div class="sol-pain">
+    <div class="sol-pain__icon">{% icon "file-text" size=22 stroke_width=1.75 %}</div>
+    <h3>Reports stuck on paper</h3>
+    <p>Patients have to come back or wait for a call just to collect results they could simply download.</p>
+  </div>
+  <div class="sol-pain">
+    <div class="sol-pain__icon">{% icon "search" size=22 stroke_width=1.75 %}</div>
+    <h3>Losing patients to big chains</h3>
+    <p>National labs let patients book online in seconds. Without it, local patients drift to them.</p>
+  </div>
+{% endblock %}
+
+{% block solution %}
+<div class="sol-heading">
+  <div class="sol-label">The solution</div>
+  <h2>Everything your lab needs to go digital</h2>
+  <p>One platform for online bookings, home collection, reports and patient communication.</p>
+</div>
+<div class="grid sol-grid-3" style="gap: var(--space-6);">
+  <div class="card feature-card">
+    <div class="feature-icon">{% icon "list" size=24 stroke_width=1.75 %}</div>
+    <h3 class="sol-feature__title">Digital test catalogue</h3>
+    <p class="sol-feature__text">Every test with price, sample type, turnaround time and preparation instructions — patients find what they need without calling.</p>
+  </div>
+  <div class="card feature-card highlighted">
+    <div class="feature-icon">{% icon "home" size=24 stroke_width=1.75 %}</div>
+    <h3 class="sol-feature__title">Home collection booking</h3>
+    <p class="sol-feature__text">Patients pick a date, time slot and address. Confirmations go out on WhatsApp automatically — no manual coordination.</p>
+  </div>
+  <div class="card feature-card highlighted">
+    <div class="feature-icon">{% icon "download" size=24 stroke_width=1.75 %}</div>
+    <h3 class="sol-feature__title">Secure report download</h3>
+    <p class="sol-feature__text">Patients download reports with OTP verification — instant, paperless, and no more "is it ready?" calls.</p>
+  </div>
+  <div class="card feature-card">
+    <div class="feature-icon">{% icon "bell" size=24 stroke_width=1.75 %}</div>
+    <h3 class="sol-feature__title">Automated notifications</h3>
+    <p class="sol-feature__text">WhatsApp and SMS alerts for booking confirmations, collection reminders and report availability.</p>
+  </div>
+  <div class="card feature-card">
+    <div class="feature-icon">{% icon "shield-check" size=24 stroke_width=1.75 %}</div>
+    <h3 class="sol-feature__title">Showcase your accreditations</h3>
+    <p class="sol-feature__text">Display NABL accreditation and quality commitments prominently, with a website that matches the quality of your lab.</p>
+  </div>
+  <div class="card feature-card">
+    <div class="feature-icon">{% icon "layers" size=24 stroke_width=1.75 %}</div>
+    <h3 class="sol-feature__title">Multi-branch ready</h3>
+    <p class="sol-feature__text">Running several collection centres? Manage every branch from one dashboard with unified records and reporting.</p>
+  </div>
+</div>
+<div class="sol-note">
+  <a href="{% if solution_products.curalabs %}{{ solution_products.curalabs.get_absolute_url }}{% else %}/products/curalabs/{% endif %}" class="sol-link">Explore all CuraLabs features {% icon "arrow-right" size=16 %}</a>
+</div>
+{% endblock %}
+
+{% block outcomes %}
+  <div class="sol-stat"><div class="sol-stat__num">60%</div><div class="sol-stat__label">Drop in phone call volume</div></div>
+  <div class="sol-stat"><div class="sol-stat__num">35%</div><div class="sol-stat__label">Increase in test bookings</div></div>
+  <div class="sol-stat"><div class="sol-stat__num">100%</div><div class="sol-stat__label">Paperless report delivery</div></div>
+  <div class="sol-stat"><div class="sol-stat__num">14 days</div><div class="sol-stat__label">Average go-live time</div></div>
+{% endblock %}
+
+{% block steps_audience %}samples and patients{% endblock %}
+{% block pricing_audience %}lab{% endblock %}
+
+{% block pricing %}
+<div style="max-width: 640px; margin-inline: auto;">
+  {% if solution_products.curalabs %}{% include "pages/partials/solutions_pricing_card.html" with product=solution_products.curalabs label="CuraLabs" subtitle="Digital platform for pathology labs" %}{% endif %}
+</div>
+{% endblock %}
+
+{% block cta_title %}See CuraLabs in action{% endblock %}
+{% block cta_lead %}Book a free 30-minute demo. We'll show you how CuraLabs handles bookings, home collection and reports for a lab like yours.{% endblock %}
+{% block org_placeholder %}Lab / Diagnostic centre name{% endblock %}
+{% block product_options %}
+  <option value="CuraLabs" selected>CuraLabs — platform for pathology labs</option>
+{% endblock %}

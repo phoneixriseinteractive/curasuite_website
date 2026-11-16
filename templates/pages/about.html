@@ -1,31 +1,34 @@
 {% extends "base/base.html" %}
-{% load static %}
+{% load static icons %}
 
 {% block seo_title %}About CuraSuite | Digitizing Healthcare Management{% endblock %}
-{% block meta_description %}Learn how CuraSuite empowers doctors, clinics, and labs with intuitive software built to enhance patient care and streamline operations.{% endblock %}
+{% block meta_description %}Learn how CuraSuite empowers doctors, clinics, and labs with CuraOS, CuraCMS and CuraLabs — intuitive software built to enhance patient care and streamline operations.{% endblock %}
+
+{# The page ends with its own CTA, so skip the site-wide banner. #}
+{% block contextual_cta %}{% endblock %}
 
 {% block content %}
+<div class="sol about" style="--accent: var(--color-primary-600);">
 
 <!-- ═══ HERO ════════════════════════════════════════════════════════════════ -->
-<section style="position:relative;overflow:hidden;padding:var(--space-20) 0 var(--space-16);" class="hero-pattern">
-  <div class="pattern-fade-light" style="position:absolute;inset:0;pointer-events:none;"></div>
-  <div class="container split-even" style="position:relative;z-index:1;gap:var(--space-16);">
+<section class="sol-hero">
+  <div class="container split-even" style="gap:var(--space-16);">
     <div>
-      <div class="pill">🇮🇳 Made in India, Built for India</div>
+      <div class="sol-eyebrow">{% icon "map-pin" size=16 %} Made in India, Built for India</div>
       <h1 style="margin-bottom:var(--space-6);">We're on a Mission to Digitise Indian Healthcare</h1>
-      <p style="font-size:var(--text-xl);color:var(--text-secondary);line-height:var(--leading-relaxed);margin-bottom:var(--space-8);">
+      <p class="sol-hero__lead">
         CuraSuite is built by PhoenixRise Interactive — a team of healthcare technology specialists who believe every doctor, clinic, and lab deserves world-class digital tools.
       </p>
-      <div style="display:flex;gap:var(--space-4);flex-wrap:wrap;">
-        <a href="/contact/" class="btn btn-primary btn-lg">Get in Touch</a>
-        <a href="/products/" class="btn btn-secondary btn-lg">Explore Products</a>
+      <div class="sol-hero__actions">
+        <a href="/contact/" class="btn btn-lg sol-btn-primary">Get in Touch {% icon "arrow-right" size=18 %}</a>
+        <a href="#products" class="btn btn-lg sol-btn-ghost">Explore Products</a>
       </div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);">
-      <div class="stat-card"><div class="stat-number">2020</div><div class="stat-label">Founded</div></div>
-      <div class="stat-card" style="background:var(--color-primary-600);border-color:transparent;"><div style="font-size:var(--text-4xl);font-weight:800;color:white;line-height:1;margin-bottom:var(--space-2);">500+</div><div style="font-size:var(--text-sm);color:rgba(255,255,255,.8);">Clients served</div></div>
-      <div class="stat-card" style="background:var(--color-secondary-600);border-color:transparent;"><div style="font-size:var(--text-4xl);font-weight:800;color:white;line-height:1;margin-bottom:var(--space-2);">15+</div><div style="font-size:var(--text-sm);color:rgba(255,255,255,.8);">Indian cities</div></div>
-      <div class="stat-card"><div class="stat-number">4.9★</div><div class="stat-label">Customer rating</div></div>
+    <div class="about-stats">
+      <div class="about-stat"><div class="about-stat__num">2020</div><div class="about-stat__label">Founded</div></div>
+      <div class="about-stat about-stat--solid"><div class="about-stat__num">500+</div><div class="about-stat__label">Clients served</div></div>
+      <div class="about-stat about-stat--solid about-stat--alt"><div class="about-stat__num">15+</div><div class="about-stat__label">Indian cities</div></div>
+      <div class="about-stat"><div class="about-stat__num">4.9★</div><div class="about-stat__label">Customer rating</div></div>
     </div>
   </div>
 </section>
@@ -33,32 +36,57 @@
 <!-- ═══ MISSION & VISION ════════════════════════════════════════════════════ -->
 <section class="section">
   <div class="container">
-    <div class="grid grid-2" style="gap:var(--space-12);">
-      <div style="background:var(--color-primary-50);border-radius:var(--radius-xl);padding:var(--space-10);border:1px solid var(--color-primary-100);">
-        <div style="font-size:36px;margin-bottom:var(--space-5);">🎯</div>
-        <h3 style="margin-bottom:var(--space-4);color:var(--color-primary-700);">Our Mission</h3>
-        <p style="color:var(--text-secondary);line-height:var(--leading-relaxed);font-size:var(--text-lg);">
-          To simplify healthcare technology by delivering practical, secure, and scalable digital solutions that help healthcare providers focus on what matters most — patient care.
-        </p>
+    <div class="grid grid-2" style="gap:var(--space-8);">
+      <div class="about-mv">
+        <div class="about-mv__icon">{% icon "target" size=26 stroke_width=1.75 %}</div>
+        <h3>Our Mission</h3>
+        <p>To simplify healthcare technology by delivering practical, secure, and scalable digital solutions that help healthcare providers focus on what matters most — patient care.</p>
       </div>
-      <div style="background:var(--color-secondary-50);border-radius:var(--radius-xl);padding:var(--space-10);border:1px solid var(--color-secondary-100);">
-        <div style="font-size:36px;margin-bottom:var(--space-5);">🔭</div>
-        <h3 style="margin-bottom:var(--space-4);color:var(--color-secondary-700);">Our Vision</h3>
-        <p style="color:var(--text-secondary);line-height:var(--leading-relaxed);font-size:var(--text-lg);">
-          Become India's most trusted healthcare technology ecosystem — the platform that every clinic, doctor, and diagnostic lab reaches for when they want to grow digitally.
-        </p>
+      <div class="about-mv about-mv--alt">
+        <div class="about-mv__icon">{% icon "eye" size=26 stroke_width=1.75 %}</div>
+        <h3>Our Vision</h3>
+        <p>Become India's most trusted healthcare technology ecosystem — the platform that every clinic, doctor, and diagnostic lab reaches for when they want to grow digitally.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ═══ STORY ════════════════════════════════════════════════════════════════ -->
-<section class="section bg-dots-sm" style="position:relative;">
-  <div style="position:absolute;inset:0;background:var(--surface-card);opacity:.93;"></div>
-  <div class="container" style="position:relative;z-index:1;">
-    <div class="split-even" style="gap:var(--space-16);">
+<!-- ═══ PRODUCT ECOSYSTEM ═══════════════════════════════════════════════════ -->
+<section class="section sol-tinted" id="products" style="scroll-margin-top:80px;">
+  <div class="container">
+    <div class="sol-heading">
+      <div class="sol-label">The CuraSuite ecosystem</div>
+      <h2>Three products. Two solutions. One partner.</h2>
+      <p>Everything a doctor, clinic or diagnostic lab needs to go digital — from the first Google search to the final invoice.</p>
+    </div>
+
+    <div class="about-group">
+      <div class="about-group__head">
+        <span class="about-group__title">{% icon "stethoscope" size=18 %} For Doctors &amp; Clinics</span>
+        <a href="/solutions/doctors/" class="sol-link">See the solution {% icon "arrow-right" size=16 %}</a>
+      </div>
+      <div class="grid grid-2" style="gap:var(--space-6);">
+        {% if about_products.curaos %}{% include "pages/partials/product_card.html" with p=about_products.curaos shot="img/CuraOS/Hero/cura-os-dashboard.webp" shot_w=840 shot_h=693 tag="Run your clinic" %}{% endif %}
+        {% if about_products.curacms %}{% include "pages/partials/product_card.html" with p=about_products.curacms shot="img/CuraCms/Hero/cura-cms-website.webp" shot_w=723 shot_h=442 tag="Grow your practice" %}{% endif %}
+      </div>
+    </div>
+
+    <div class="about-group">
+      <div class="about-group__head">
+        <span class="about-group__title">{% icon "test-tube" size=18 %} For Pathology Labs</span>
+        <a href="/solutions/pathology-labs/" class="sol-link">See the solution {% icon "arrow-right" size=16 %}</a>
+      </div>
+      {% if about_products.curalabs %}{% include "pages/partials/product_card.html" with p=about_products.curalabs shot="img/CuraLabs/Hero/cura-labs-website.webp" shot_w=1908 shot_h=886 tag="Digitise your lab" wide=True %}{% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- ═══ STORY & TIMELINE ════════════════════════════════════════════════════ -->
+<section class="section">
+  <div class="container">
+    <div class="split-even" style="gap:var(--space-16);align-items:start;">
       <div>
-        <div class="section-label">Our Story</div>
+        <div class="sol-label">Our Story</div>
         <h2 style="margin-bottom:var(--space-6);">Why We Built CuraSuite</h2>
         <div style="display:flex;flex-direction:column;gap:var(--space-5);color:var(--text-secondary);line-height:var(--leading-relaxed);">
           <p>Healthcare in India is undergoing rapid digital transformation. Yet most clinics and labs still use fragmented, outdated software — or no software at all. Reception runs on paper registers. Appointments are managed on WhatsApp. Billing happens in Excel.</p>
@@ -67,80 +95,70 @@
           <p>Four years later, we've helped 500+ clinics, doctors, and labs across 15 cities transform their practices. We're just getting started.</p>
         </div>
       </div>
-      <!-- Timeline -->
-      <div>
-        <div style="position:relative;padding-left:var(--space-8);">
-          <div style="position:absolute;left:12px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--color-primary-400),var(--color-primary-200));"></div>
-          <div style="display:flex;flex-direction:column;gap:var(--space-8);">
-            <div style="position:relative;">
-              <div style="position:absolute;left:-32px;top:4px;width:10px;height:10px;background:var(--color-primary-600);border-radius:50%;border:2px solid white;box-shadow:var(--shadow);"></div>
-              <div style="font-size:var(--text-sm);font-weight:700;color:var(--color-primary-600);margin-bottom:4px;">2020</div>
-              <p style="font-size:var(--text-sm);color:var(--text-secondary);">Founded PhoenixRise Interactive with a focus on healthcare technology for Indian providers.</p>
-            </div>
-            <div style="position:relative;">
-              <div style="position:absolute;left:-32px;top:4px;width:10px;height:10px;background:var(--color-primary-600);border-radius:50%;border:2px solid white;box-shadow:var(--shadow);"></div>
-              <div style="font-size:var(--text-sm);font-weight:700;color:var(--color-primary-600);margin-bottom:4px;">2021</div>
-              <p style="font-size:var(--text-sm);color:var(--text-secondary);">Launched CuraCMS — website platform for doctors and clinics. First 50 clients onboarded in 6 months.</p>
-            </div>
-            <div style="position:relative;">
-              <div style="position:absolute;left:-32px;top:4px;width:10px;height:10px;background:var(--color-primary-600);border-radius:50%;border:2px solid white;box-shadow:var(--shadow);"></div>
-              <div style="font-size:var(--text-sm);font-weight:700;color:var(--color-primary-600);margin-bottom:4px;">2022</div>
-              <p style="font-size:var(--text-sm);color:var(--text-secondary);">CuraLabs goes live. Labs across 8 cities adopt the platform, reducing phone call volume by 60%.</p>
-            </div>
-            <div style="position:relative;">
-              <div style="position:absolute;left:-32px;top:4px;width:10px;height:10px;background:var(--color-primary-600);border-radius:50%;border:2px solid white;box-shadow:var(--shadow);"></div>
-              <div style="font-size:var(--text-sm);font-weight:700;color:var(--color-primary-600);margin-bottom:4px;">2023</div>
-              <p style="font-size:var(--text-sm);color:var(--text-secondary);">Reached 300+ clients across 12 cities. Introduced AI chatbot powered by Google Gemini.</p>
-            </div>
-            <div style="position:relative;">
-              <div style="position:absolute;left:-32px;top:4px;width:10px;height:10px;background:var(--color-secondary-600);border-radius:50%;border:2px solid white;box-shadow:var(--shadow);"></div>
-              <div style="font-size:var(--text-sm);font-weight:700;color:var(--color-secondary-600);margin-bottom:4px;">2024 — Today</div>
-              <p style="font-size:var(--text-sm);color:var(--text-secondary);">CuraSuite CMS launched. 500+ clients across 15+ cities. India's fastest-growing healthcare tech platform.</p>
-            </div>
-          </div>
-        </div>
-      </div>
+
+      <ol class="about-timeline">
+        <li>
+          <div class="about-timeline__year">2020</div>
+          <p>Founded PhoenixRise Interactive with a focus on healthcare technology for Indian providers.</p>
+        </li>
+        <li style="--accent: {{ about_products.curacms.color|default:'#2563EB' }};">
+          <div class="about-timeline__year">2021 <span class="about-timeline__tag">CuraCMS</span></div>
+          <p>Launched CuraCMS — website platform for doctors and clinics. First 50 clients onboarded in 6 months.</p>
+        </li>
+        <li style="--accent: {{ about_products.curalabs.color|default:'#DC2626' }};">
+          <div class="about-timeline__year">2022 <span class="about-timeline__tag">CuraLabs</span></div>
+          <p>CuraLabs goes live. Labs across 8 cities adopt the platform, reducing phone call volume by 60%.</p>
+        </li>
+        <li>
+          <div class="about-timeline__year">2023</div>
+          <p>Reached 300+ clients across 12 cities. Introduced AI chatbot powered by Google Gemini.</p>
+        </li>
+        <li style="--accent: {{ about_products.curaos.color|default:'#7C3AED' }};" class="is-current">
+          <div class="about-timeline__year">2024 — Today <span class="about-timeline__tag">CuraOS</span></div>
+          <p>CuraOS launched. 500+ clients across 15+ cities. India's fastest-growing healthcare tech platform.</p>
+        </li>
+      </ol>
     </div>
   </div>
 </section>
 
 <!-- ═══ VALUES ═══════════════════════════════════════════════════════════════ -->
-<section class="section">
+<section class="section sol-tinted">
   <div class="container">
-    <div class="text-center" style="margin-bottom:var(--space-12);">
-      <div class="section-label">What We Stand For</div>
+    <div class="sol-heading">
+      <div class="sol-label">What We Stand For</div>
       <h2>Our Core Values</h2>
     </div>
-    <div class="grid grid-3" style="gap:var(--space-6);">
-      <div class="card" style="padding:var(--space-8);text-align:center;">
-        <div style="font-size:40px;margin-bottom:var(--space-4);">🏥</div>
-        <h4 style="margin-bottom:var(--space-3);">Healthcare First</h4>
-        <p style="color:var(--text-secondary);font-size:var(--text-sm);line-height:var(--leading-relaxed);">Every product decision starts with one question: does this make healthcare delivery better? Technology for technology's sake has no place here.</p>
+    <div class="grid sol-grid-3" style="gap:var(--space-6);">
+      <div class="card feature-card">
+        <div class="feature-icon">{% icon "stethoscope" size=24 stroke_width=1.75 %}</div>
+        <h3 class="sol-feature__title">Healthcare First</h3>
+        <p class="sol-feature__text">Every product decision starts with one question: does this make healthcare delivery better? Technology for technology's sake has no place here.</p>
       </div>
-      <div class="card" style="padding:var(--space-8);text-align:center;">
-        <div style="font-size:40px;margin-bottom:var(--space-4);">🤝</div>
-        <h4 style="margin-bottom:var(--space-3);">Partnership Mindset</h4>
-        <p style="color:var(--text-secondary);font-size:var(--text-sm);line-height:var(--leading-relaxed);">We don't just sell software and disappear. We onboard, train, support, and grow with our clients — many since our first year of operation.</p>
+      <div class="card feature-card">
+        <div class="feature-icon">{% icon "users" size=24 stroke_width=1.75 %}</div>
+        <h3 class="sol-feature__title">Partnership Mindset</h3>
+        <p class="sol-feature__text">We don't just sell software and disappear. We onboard, train, support, and grow with our clients — many since our first year of operation.</p>
       </div>
-      <div class="card" style="padding:var(--space-8);text-align:center;">
-        <div style="font-size:40px;margin-bottom:var(--space-4);">🔒</div>
-        <h4 style="margin-bottom:var(--space-3);">Trust Through Security</h4>
-        <p style="color:var(--text-secondary);font-size:var(--text-sm);line-height:var(--leading-relaxed);">Patient data is sacred. We apply the strictest security standards to every product — encryption, access controls, audit logs, and daily backups as default.</p>
+      <div class="card feature-card">
+        <div class="feature-icon">{% icon "shield-check" size=24 stroke_width=1.75 %}</div>
+        <h3 class="sol-feature__title">Trust Through Security</h3>
+        <p class="sol-feature__text">Patient data is sacred. We apply the strictest security standards to every product — encryption, access controls, audit logs, and daily backups as default.</p>
       </div>
-      <div class="card" style="padding:var(--space-8);text-align:center;">
-        <div style="font-size:40px;margin-bottom:var(--space-4);">🇮🇳</div>
-        <h4 style="margin-bottom:var(--space-3);">Built for India</h4>
-        <p style="color:var(--text-secondary);font-size:var(--text-sm);line-height:var(--leading-relaxed);">Our products understand Indian workflows, languages, compliance requirements, and payment systems. No retrofitting foreign software for the Indian market.</p>
+      <div class="card feature-card">
+        <div class="feature-icon">{% icon "map-pin" size=24 stroke_width=1.75 %}</div>
+        <h3 class="sol-feature__title">Built for India</h3>
+        <p class="sol-feature__text">Our products understand Indian workflows, languages, compliance requirements, and payment systems. No retrofitting foreign software for the Indian market.</p>
       </div>
-      <div class="card" style="padding:var(--space-8);text-align:center;">
-        <div style="font-size:40px;margin-bottom:var(--space-4);">⚡</div>
-        <h4 style="margin-bottom:var(--space-3);">Speed & Reliability</h4>
-        <p style="color:var(--text-secondary);font-size:var(--text-sm);line-height:var(--leading-relaxed);">Healthcare doesn't stop. Our products are engineered for 99.9% uptime, fast load times, and zero downtime during critical hours — including nights and weekends.</p>
+      <div class="card feature-card">
+        <div class="feature-icon">{% icon "zap" size=24 stroke_width=1.75 %}</div>
+        <h3 class="sol-feature__title">Speed &amp; Reliability</h3>
+        <p class="sol-feature__text">Healthcare doesn't stop. Our products are engineered for 99.9% uptime, fast load times, and zero downtime during critical hours — including nights and weekends.</p>
       </div>
-      <div class="card" style="padding:var(--space-8);text-align:center;">
-        <div style="font-size:40px;margin-bottom:var(--space-4);">💡</div>
-        <h4 style="margin-bottom:var(--space-3);">Continuous Innovation</h4>
-        <p style="color:var(--text-secondary);font-size:var(--text-sm);line-height:var(--leading-relaxed);">Healthcare technology evolves rapidly. We ship new features every month and update all clients automatically — no upgrade fees, no version migrations.</p>
+      <div class="card feature-card">
+        <div class="feature-icon">{% icon "lightbulb" size=24 stroke_width=1.75 %}</div>
+        <h3 class="sol-feature__title">Continuous Innovation</h3>
+        <p class="sol-feature__text">Healthcare technology evolves rapidly. We ship new features every month and update all clients automatically — no upgrade fees, no version migrations.</p>
       </div>
     </div>
   </div>
@@ -148,17 +166,19 @@
 
 <!-- ═══ TESTIMONIALS ════════════════════════════════════════════════════════ -->
 {% if testimonials %}
-<section class="section bg-dots-sm" style="position:relative;">
-  <div style="position:absolute;inset:0;background:var(--surface-card);opacity:.93;"></div>
-  <div class="container" style="position:relative;z-index:1;">
-    <div class="text-center" style="margin-bottom:var(--space-10);">
-      <div class="section-label">Customer Love</div>
+<section class="section">
+  <div class="container">
+    <div class="sol-heading">
+      <div class="sol-label">Customer Love</div>
       <h2>Trusted by Healthcare Professionals Across India</h2>
     </div>
     <div class="grid grid-3" style="gap:var(--space-6);">
       {% for t in testimonials %}
       <div class="testimonial-card card-hover">
-        <div style="color:#F59E0B;margin-bottom:var(--space-3);">{{ t.star_display }}</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-3);">
+          <span style="color:#F59E0B;">{{ t.star_display }}</span>
+          {% if t.product %}<span class="about-timeline__tag" style="--accent: {% if t.product == 'CuraOS' %}{{ about_products.curaos.color|default:'#7C3AED' }}{% elif t.product == 'CuraLabs' %}{{ about_products.curalabs.color|default:'#DC2626' }}{% else %}{{ about_products.curacms.color|default:'#2563EB' }}{% endif %};">{{ t.product }}</span>{% endif %}
+        </div>
         <p style="color:var(--text-secondary);font-size:var(--text-sm);line-height:var(--leading-relaxed);margin-bottom:var(--space-4);font-style:italic;">"{{ t.feedback|truncatechars:150 }}"</p>
         <div style="display:flex;align-items:center;gap:var(--space-3);padding-top:var(--space-4);border-top:1px solid var(--border-default);">
           {% if t.photo %}<img src="{{ t.photo.url }}" alt="" style="width:40px;height:40px;border-radius:50%;object-fit:cover;flex-shrink:0;" loading="lazy">
@@ -176,12 +196,17 @@
 {% endif %}
 
 <!-- ═══ CTA ══════════════════════════════════════════════════════════════════ -->
-<section style="background:var(--color-primary-600);padding:var(--space-16) 0;text-align:center;">
-  <div class="container" style="max-width:600px;">
+<section class="sol-cta" style="text-align:center;">
+  <div class="container" style="max-width:680px;">
     <h2 style="color:white;margin-bottom:var(--space-4);">Want to Know More?</h2>
-    <p style="color:rgba(255,255,255,.85);font-size:var(--text-lg);margin-bottom:var(--space-8);">Talk to our team — we'd love to understand your practice and show you how CuraSuite can help.</p>
-    <a href="/contact/" class="btn btn-lg" style="background:white;color:var(--color-primary-600);border-color:white;">Get in Touch</a>
+    <p style="color:rgba(255,255,255,.8);font-size:var(--text-lg);margin-bottom:var(--space-8);">Talk to our team — we'd love to understand your practice and show you how CuraSuite can help.</p>
+    <div style="display:flex;gap:var(--space-4);justify-content:center;flex-wrap:wrap;">
+      <a href="/contact/" class="btn btn-lg sol-btn-primary">Get in Touch {% icon "arrow-right" size=18 %}</a>
+      <a href="/solutions/doctors/" class="btn btn-lg about-btn-light">For Doctors &amp; Clinics</a>
+      <a href="/solutions/pathology-labs/" class="btn btn-lg about-btn-light">For Pathology Labs</a>
+    </div>
   </div>
 </section>
 
+</div>
 {% endblock %}

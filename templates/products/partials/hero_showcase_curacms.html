@@ -1,0 +1,19 @@
+{% load static %}
+{# Layered CuraCMS hero: admin dashboard (back) → patient website (front-left) → mobile view (front-right). #}
+<div class="hero-showcase" style="--accent: {{ product.color }};">
+  <figure class="hero-shot hero-shot--dashboard">
+    <div class="hero-shot__bar" aria-hidden="true"><span></span><span></span><span></span></div>
+    <img src="{% static 'img/CuraCms/Hero/cura-cms-dashboard.webp' %}" width="1902" height="724"
+         alt="{{ product.name }} admin dashboard showing page views, appointments and enquiries"
+         fetchpriority="high">
+  </figure>
+  <figure class="hero-shot hero-shot--website">
+    <div class="hero-shot__bar" aria-hidden="true"><span></span><span></span><span></span></div>
+    <img src="{% static 'img/CuraCms/Hero/cura-cms-website.webp' %}" width="723" height="442"
+         alt="Doctor profile website built with {{ product.name }}, with online appointment booking">
+  </figure>
+  <figure class="hero-shot hero-shot--mobile">
+    <img src="{% static 'img/CuraCms/Hero/cura-cms-mobile.webp' %}" width="382" height="775"
+         alt="Mobile view of a {{ product.name }} clinic website with Call, WhatsApp and Book Now actions">
+  </figure>
+</div>

@@ -1,0 +1,240 @@
+{% load icons %}
+{% comment %}
+  CuraCMS-only product page sections, included from products/product_detail.html
+  between Features and Pricing.
+
+  SCREENSHOT / VIDEO SLOTS: every placeholder below is marked with
+  "SCREENSHOT:" or "VIDEO:" — search for those markers and swap the
+  .cms-shot--placeholder <div> for an <img>/<video> (keep width/height attrs
+  to avoid layout shift, and write descriptive alt text).
+{% endcomment %}
+
+{# ── Jump nav ─────────────────────────────────────────────────────────────── #}
+<nav class="cms-jump" aria-label="On this page" style="--accent: {{ product.color }};">
+  <div class="container">
+    <a href="#features">Features</a>
+    <a href="#tour">Product Tour</a>
+    <a href="#templates">Website Templates</a>
+    <a href="#appointments">Appointments</a>
+    <a href="#seo-editor">SEO Editor</a>
+    <a href="#integrations">Integrations</a>
+    <a href="#migration">Migration</a>
+    <a href="#security">Security</a>
+    {% if testimonials %}<a href="#case-studies">Case Studies</a>{% endif %}
+    {% if pricing_tiers %}<a href="#pricing">Pricing</a>{% endif %}
+  </div>
+</nav>
+
+{# ── Product tour (video) ─────────────────────────────────────────────────── #}
+<section class="section" id="tour" style="--accent: {{ product.color }};">
+  <div class="container">
+    <div class="text-center" style="max-width: 720px; margin: 0 auto var(--space-10);">
+      <div class="section-label" style="color: {{ product.color }};">Product Tour</div>
+      <h2>See How a Doctor Website Runs on CuraCMS</h2>
+      <p style="font-size: var(--text-lg); color: var(--text-secondary); margin-top: var(--space-4);">
+        One admin panel to edit pages, publish health articles, manage appointment requests
+        and follow up with patient enquiries — no developer, no plugins.
+      </p>
+    </div>
+    {# VIDEO: CuraCMS walkthrough (admin panel → edit page → booking lands in CRM). 16:9. #}
+    <div class="cms-shot cms-shot--placeholder cms-shot--wide" role="img" aria-label="CuraCMS product walkthrough video (coming soon)">
+      <span>{% icon "monitor" size=28 %} Product walkthrough video coming soon</span>
+    </div>
+  </div>
+</section>
+
+{# ── Doctor website templates ─────────────────────────────────────────────── #}
+<section class="section" id="templates" style="background: var(--surface-card); --accent: {{ product.color }};">
+  <div class="container">
+    <div class="text-center" style="max-width: 720px; margin: 0 auto var(--space-12);">
+      <div class="section-label" style="color: {{ product.color }};">Doctor Website Templates</div>
+      <h2>Website Templates Designed for Your Specialty</h2>
+      <p style="font-size: var(--text-lg); color: var(--text-secondary); margin-top: var(--space-4);">
+        Start from a layout built around how patients choose a doctor in your field — services,
+        doctor profiles, clinic timings, location and a booking button on every page.
+      </p>
+    </div>
+    <div class="grid grid-3" style="gap: var(--space-6);">
+      {% for tpl in cms_templates %}
+      <article class="card card-hover" style="padding: 0; overflow: hidden;">
+        {# SCREENSHOT: {{ tpl.name }} template homepage, 16:10. #}
+        <div class="cms-shot cms-shot--placeholder cms-shot--card" role="img" aria-label="{{ tpl.name }} website template preview (coming soon)">
+          <span>{% icon tpl.icon size=24 %}</span>
+        </div>
+        <div style="padding: var(--space-5);">
+          <h3 style="font-size: var(--text-lg); margin-bottom: var(--space-2);">{{ tpl.name }}</h3>
+          <p style="color: var(--text-secondary); font-size: var(--text-sm);">{{ tpl.description }}</p>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+    <p class="text-center" style="margin-top: var(--space-8); color: var(--text-secondary); font-size: var(--text-sm);">
+      Every template is mobile-first, loads fast and is fully editable — colours, sections, photos and copy.
+    </p>
+  </div>
+</section>
+
+{# ── Appointment workflow ─────────────────────────────────────────────────── #}
+<section class="section" id="appointments" style="--accent: {{ product.color }};">
+  <div class="container">
+    <div class="text-center" style="max-width: 720px; margin: 0 auto var(--space-12);">
+      <div class="section-label" style="color: {{ product.color }};">Appointment Workflow</div>
+      <h2>From Website Visit to Confirmed Appointment</h2>
+      <p style="font-size: var(--text-lg); color: var(--text-secondary); margin-top: var(--space-4);">
+        Patients book whenever it suits them. Your front desk sees every request in one place —
+        nothing lost in call logs or WhatsApp chats.
+      </p>
+    </div>
+    <ol class="cms-steps">
+      {% for step in cms_appointment_steps %}
+      <li class="cms-step">
+        <div class="cms-step__num" style="background: {{ product.color }};">{{ forloop.counter }}</div>
+        <h3 class="cms-step__title">{{ step.title }}</h3>
+        <p class="cms-step__text">{{ step.description }}</p>
+      </li>
+      {% endfor %}
+    </ol>
+    {# SCREENSHOT: Appointment requests list in the CuraCMS admin panel. #}
+    <div class="cms-shot cms-shot--placeholder cms-shot--wide" style="margin-top: var(--space-12);" role="img" aria-label="CuraCMS appointment dashboard screenshot (coming soon)">
+      <span>{% icon "calendar" size=28 %} Appointment dashboard screenshot coming soon</span>
+    </div>
+  </div>
+</section>
+
+{# ── SEO editor ───────────────────────────────────────────────────────────── #}
+<section class="section" id="seo-editor" style="background: var(--surface-card); --accent: {{ product.color }};">
+  <div class="container">
+    <div class="split-even" style="gap: var(--space-16); align-items: center;">
+      <div>
+        <div class="section-label" style="color: {{ product.color }};">Built-in SEO Editor</div>
+        <h2 style="margin-bottom: var(--space-4);">Rank for “Doctor Near Me” Without an SEO Plugin</h2>
+        <p style="color: var(--text-secondary); margin-bottom: var(--space-6);">
+          Every page and article in CuraCMS has its own SEO panel, so you control exactly how your
+          clinic appears on Google and when shared on WhatsApp or social media.
+        </p>
+        <ul class="check-list">
+          <li>SEO title, meta description and focus keyword for every page and blog post</li>
+          <li>Schema markup (structured data) for your clinic, doctors and articles</li>
+          <li>Automatic XML sitemap and canonical tags</li>
+          <li>Open Graph previews for WhatsApp, Facebook and LinkedIn shares</li>
+          <li>301 redirect manager to keep old URLs and rankings working</li>
+          <li>Editable robots.txt and Google Search Console verification</li>
+        </ul>
+      </div>
+      {# SCREENSHOT: SEO panel on a page edit screen in the CuraCMS admin. #}
+      <div class="cms-shot cms-shot--placeholder" style="aspect-ratio: 4/3;" role="img" aria-label="CuraCMS SEO editor screenshot (coming soon)">
+        <span>{% icon "search" size=28 %} SEO editor screenshot coming soon</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+{# ── Integrations ─────────────────────────────────────────────────────────── #}
+<section class="section" id="integrations" style="--accent: {{ product.color }};">
+  <div class="container">
+    <div class="text-center" style="max-width: 720px; margin: 0 auto var(--space-12);">
+      <div class="section-label" style="color: {{ product.color }};">Integrations</div>
+      <h2>Works With the Tools Your Clinic Already Uses</h2>
+      <p style="font-size: var(--text-lg); color: var(--text-secondary); margin-top: var(--space-4);">
+        Switch integrations on from the admin panel — no code changes.
+      </p>
+    </div>
+    <div class="grid grid-3" style="gap: var(--space-6);">
+      {% for item in cms_integrations %}
+      <div class="card feature-card" style="--accent: {{ product.color }};">
+        <div class="feature-icon">{% icon item.icon size=24 stroke_width=1.75 %}</div>
+        <h3 style="font-size: var(--text-lg); margin-bottom: var(--space-2);">{{ item.name }}</h3>
+        <p style="color: var(--text-secondary); font-size: var(--text-sm);">{{ item.description }}</p>
+      </div>
+      {% endfor %}
+    </div>
+    {% if integrations %}
+    <div class="logo-strip" style="margin-top: var(--space-10); display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-8); align-items: center;">
+      {% for integration in integrations %}
+        {% if integration.logo %}<img src="{{ integration.logo.url }}" alt="{{ integration.name }}" height="32" loading="lazy">{% else %}<span style="font-weight: var(--font-semi); color: var(--text-secondary);">{{ integration.name }}</span>{% endif %}
+      {% endfor %}
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+{# ── Migration ────────────────────────────────────────────────────────────── #}
+<section class="section" id="migration" style="background: var(--surface-card); --accent: {{ product.color }};">
+  <div class="container">
+    <div class="split-even" style="gap: var(--space-16); align-items: start;">
+      <div>
+        <div class="section-label" style="color: {{ product.color }};">Website Migration</div>
+        <h2 style="margin-bottom: var(--space-4);">Already Have a Website? We’ll Move It for You</h2>
+        <p style="color: var(--text-secondary); margin-bottom: var(--space-4);">
+          Moving from WordPress, Wix, a template site or an agency-built website? Our team migrates your
+          content and protects the Google rankings you’ve already earned.
+        </p>
+        <p style="color: var(--text-secondary); font-size: var(--text-sm);">
+          Content migration is included at no extra charge on the Professional and Enterprise plans.
+        </p>
+      </div>
+      <ol class="cms-steps cms-steps--stack">
+        {% for step in cms_migration_steps %}
+        <li class="cms-step">
+          <div class="cms-step__num" style="background: {{ product.color }};">{{ forloop.counter }}</div>
+          <div>
+            <h3 class="cms-step__title">{{ step.title }}</h3>
+            <p class="cms-step__text">{{ step.description }}</p>
+          </div>
+        </li>
+        {% endfor %}
+      </ol>
+    </div>
+  </div>
+</section>
+
+{# ── Security ─────────────────────────────────────────────────────────────── #}
+<section class="section" id="security" style="--accent: {{ product.color }};">
+  <div class="container">
+    <div class="text-center" style="max-width: 720px; margin: 0 auto var(--space-12);">
+      <div class="section-label" style="color: {{ product.color }};">Security &amp; Privacy</div>
+      <h2>Patient Enquiries Deserve Serious Security</h2>
+      <p style="font-size: var(--text-lg); color: var(--text-secondary); margin-top: var(--space-4);">
+        Your website collects names, phone numbers and health concerns. CuraCMS is built to keep them safe.
+      </p>
+    </div>
+    <div class="grid grid-3" style="gap: var(--space-6);">
+      {% for item in cms_security %}
+      <div class="card feature-card" style="--accent: {{ product.color }};">
+        <div class="feature-icon">{% icon item.icon size=24 stroke_width=1.75 %}</div>
+        <h3 style="font-size: var(--text-lg); margin-bottom: var(--space-2);">{{ item.title }}</h3>
+        <p style="color: var(--text-secondary); font-size: var(--text-sm);">{{ item.description }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{# ── Case studies (approved testimonials tagged "CuraCMS" in /manage/) ───── #}
+{% if testimonials %}
+<section class="section" id="case-studies" style="background: var(--surface-card); --accent: {{ product.color }};">
+  <div class="container">
+    <div class="text-center" style="max-width: 720px; margin: 0 auto var(--space-12);">
+      <div class="section-label" style="color: {{ product.color }};">Case Studies</div>
+      <h2>Clinics Growing With CuraCMS</h2>
+    </div>
+    <div class="grid grid-3" style="gap: var(--space-6);">
+      {% for t in testimonials %}
+      <figure class="testimonial-card card-hover" style="margin: 0;">
+        <div style="color: #F59E0B; font-size: var(--text-lg); margin-bottom: var(--space-3);" aria-label="{{ t.rating }} out of 5 stars">{{ t.star_display }}</div>
+        <blockquote style="color: var(--text-secondary); font-size: var(--text-sm); line-height: var(--leading-relaxed); margin: 0 0 var(--space-5); font-style: italic;">“{{ t.feedback }}”</blockquote>
+        <figcaption style="display: flex; align-items: center; gap: var(--space-3); border-top: 1px solid var(--border-default); padding-top: var(--space-4);">
+          {% if t.photo %}
+          <img src="{{ t.photo.url }}" alt="{{ t.customer_name }}" width="42" height="42" style="border-radius: 50%; object-fit: cover; flex-shrink: 0;" loading="lazy">
+          {% endif %}
+          <div>
+            <div style="font-size: var(--text-sm); font-weight: var(--font-semi); color: var(--text-primary);">{{ t.customer_name }}</div>
+            <div style="font-size: var(--text-xs); color: var(--text-muted);">{{ t.designation }}{% if t.clinic_name %}, {{ t.clinic_name }}{% endif %}{% if t.location %} · {{ t.location }}{% endif %}</div>
+          </div>
+        </figcaption>
+      </figure>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}

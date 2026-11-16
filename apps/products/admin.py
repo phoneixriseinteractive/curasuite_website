@@ -19,7 +19,7 @@ class ProductFeatureInline(admin.TabularInline):
 class ProductPricingInline(admin.TabularInline):
     model = ProductPricing
     extra = 1
-    fields = ["tier_name", "price", "billing_cycle", "is_featured", "cta_text", "sort_order"]
+    fields = ["tier_name", "price", "billing_cycle", "plus_gst", "is_featured", "cta_text", "sort_order"]
     ordering = ["sort_order"]
 
 

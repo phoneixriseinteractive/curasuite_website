@@ -107,7 +107,7 @@ PRODUCTS = [
         "key": "curalabs",
         "name": "CuraLabs",
         "sort_order": 2,
-        "color": "#16A34A",
+        "color": "#DC2626",
         "tagline": "Digital Experience Platform for Pathology Laboratories",
         "short_description": (
             "A digital platform designed for pathology laboratories to manage online test "
@@ -184,7 +184,7 @@ PRODUCTS = [
     },
     {
         "key": "curasuite",
-        "name": "CuraSuite CMS",
+        "name": "CuraOS",
         "sort_order": 3,
         "color": "#7C3AED",
         "tagline": "Complete Clinic Management Software for Modern Healthcare",
@@ -194,21 +194,21 @@ PRODUCTS = [
             "operations from a single platform."
         ),
         "long_description": (
-            "CuraSuite CMS is the operating system for your clinic. Designed for single-doctor "
+            "CuraOS is the operating system for your clinic. Designed for single-doctor "
             "practices, multi-specialty clinics, and polyclinics, it brings every part of your "
             "clinic onto one platform — from reception to billing to the doctor's dashboard.\n\n"
             "Reduce administrative burden, improve patient flow, and grow your practice."
         ),
         "target_audience": "Single Doctor Clinics, Multi-specialty Clinics, Polyclinics, Small Hospitals",
         "seo": {
-            "seo_title": "CuraSuite — Clinic Management Software for Doctors | CuraSuite",
+            "seo_title": "CuraOS — Clinic Management Software for Doctors | CuraSuite",
             "meta_description": (
-                "Manage your clinic operations with CuraSuite. Appointments, patient records, "
+                "Manage your clinic operations with CuraOS. Appointments, patient records, "
                 "billing, prescriptions & reports — all in one clinic management software."
             ),
             "schema_type": "SoftwareApplication",
             "focus_keyword": "clinic management software India",
-            "og_title": "CuraSuite — Complete Clinic Management System",
+            "og_title": "CuraOS — Complete Clinic Management System",
             "og_description": "Appointments, billing, patient records & more — one platform for your clinic.",
         },
         "features": [
@@ -223,32 +223,62 @@ PRODUCTS = [
         ],
         "pricing": [
             {
-                "tier_name": "Clinic Starter",
-                "price": None,
-                "billing_cycle": "custom",
-                "description": "For single-doctor clinics getting started with digital operations.",
-                "features_included": "Appointment Management\nReception Dashboard\nPatient Records\nBasic Billing\nDoctor Dashboard\nPrescription Management",
+                "tier_name": "3 Months",
+                "price": 4500,
+                "billing_cycle": "quarterly",
+                "plus_gst": True,
+                "description": "Get your clinic running digitally with a short-term plan.",
+                "features_included": "Appointment & Queue Management
+Patient Records (EHR)
+OPD Billing & Invoicing
+Doctor & Reception Dashboards
+Prescription Management
+Inventory Management
+Patient Notifications
+Reports & Analytics",
                 "is_featured": False,
-                "cta_text": "Request Pricing",
+                "cta_text": "Get Started",
                 "cta_url": "/contact/",
                 "sort_order": 1,
             },
             {
-                "tier_name": "Clinic Pro",
-                "price": None,
-                "billing_cycle": "custom",
-                "description": "For multi-doctor clinics needing full operational control.",
-                "features_included": "Everything in Starter\nMultiple Doctors\nInventory Management\nAdvanced Billing\nPatient Notifications\nReports & Analytics\nCRM Integration",
+                "tier_name": "1 Year",
+                "price": 12000,
+                "billing_cycle": "yearly",
+                "plus_gst": True,
+                "description": "Best value — save ₹6,000 compared with paying every 3 months.",
+                "features_included": "Appointment & Queue Management
+Patient Records (EHR)
+OPD Billing & Invoicing
+Doctor & Reception Dashboards
+Prescription Management
+Inventory Management
+Patient Notifications
+Reports & Analytics",
                 "is_featured": True,
-                "cta_text": "Contact Sales",
+                "cta_text": "Get Started",
                 "cta_url": "/contact/",
                 "sort_order": 2,
             },
+            {
+                "tier_name": "Enterprise",
+                "price": None,
+                "billing_cycle": "custom",
+                "description": "For hospitals and multi-branch clinic groups with custom requirements.",
+                "features_included": "Everything in the 1 Year plan
+Multiple branches / locations
+Custom integrations
+Dedicated onboarding & priority support",
+                "is_featured": False,
+                "cta_text": "Contact Sales",
+                "cta_url": "/contact/",
+                "sort_order": 3,
+            },
         ],
         "faqs": [
-            {"question": "Can multiple doctors share the same CuraSuite installation?", "answer": "Yes. CuraSuite supports multiple doctors on a single installation, each with their own calendar, patient queue, and dashboard. Roles and permissions control what each staff member can access.", "sort_order": 1},
-            {"question": "Does CuraSuite work on tablets and mobile devices?", "answer": "Yes. The web application is fully responsive and works on tablets and desktops. A dedicated mobile application is on the product roadmap.", "sort_order": 2},
-            {"question": "Can I print prescriptions from CuraSuite?", "answer": "Yes. Prescriptions can be printed on your clinic letterhead or saved as PDFs. The system includes a medicine database and dosage templates to speed up prescription writing.", "sort_order": 3},
+            {"question": "Can multiple doctors share the same CuraOS installation?", "answer": "Yes. CuraOS supports multiple doctors on a single installation, each with their own calendar, patient queue, and dashboard. Roles and permissions control what each staff member can access.", "sort_order": 1},
+            {"question": "Does CuraOS work on tablets and mobile devices?", "answer": "Yes. The web application is fully responsive and works on tablets and desktops. A dedicated mobile application is on the product roadmap.", "sort_order": 2},
+            {"question": "Can I print prescriptions from CuraOS?", "answer": "Yes. Prescriptions can be printed on your clinic letterhead or saved as PDFs. The system includes a medicine database and dosage templates to speed up prescription writing.", "sort_order": 3},
             {"question": "Is there a free trial available?", "answer": "Yes. We offer a 30-day free trial for qualified clinics. Book a demo and our team will set up a trial account tailored to your specialty.", "sort_order": 4},
         ],
     },
@@ -307,9 +337,9 @@ class Command(BaseCommand):
             for q in product_data["faqs"]:
                 add_faq(product, **q)
 
-            # Fix slug for curasuite (name is 'CuraSuite CMS' but slug should be 'curasuite')
-            if product.key == 'curasuite' and product.slug != 'curasuite':
-                product.slug = 'curasuite'
+            # Keep the CuraOS slug stable (product key stays 'curasuite' for internal lookups)
+            if product.key == 'curasuite' and product.slug != 'curaos':
+                product.slug = 'curaos'
                 product.save(update_fields=['slug'])
 
             # Publish the product

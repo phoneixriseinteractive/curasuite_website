@@ -54,3 +54,16 @@ def get_products_for_homepage() -> QuerySet:
 def get_featured_pricing_tier(product: Product) -> ProductPricing | None:
     """Return the featured pricing tier for a product (for homepage pricing preview)."""
     return product.pricing_tiers.filter(is_featured=True).first()
+
+
+def get_products_with_pricing(slugs: list[str]) -> dict[str, Product]:
+    """
+    Return published products for the given slugs, keyed by slug, with pricing
+    tiers and features prefetched in display order (home, about, pricing and
+    solutions pages).
+    """
+    products = Product.objects.filter(slug__in=slugs).prefetch_related(
+        Prefetch("pricing_tiers", queryset=ProductPricing.objects.order_by("sort_order")),
+        Prefetch("features", queryset=ProductFeature.objects.order_by("sort_order")),
+    )
+    return {p.slug: p for p in products}

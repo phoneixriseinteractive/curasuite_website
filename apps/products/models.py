@@ -135,6 +135,12 @@ class Product(PublishableModel):
     def audience_list(self) -> list[str]:
         return [a.strip() for a in self.target_audience.split(",") if a.strip()]
 
+    @property
+    def starting_tier(self):
+        """Cheapest priced tier, for "From ₹…" labels. Uses prefetched pricing_tiers when present."""
+        priced = [t for t in self.pricing_tiers.all() if t.price]
+        return min(priced, key=lambda t: t.price) if priced else None
+
 
 class ProductFeature(UUIDModel):
     """
@@ -181,6 +187,7 @@ class ProductPricing(UUIDModel):
 
     class BillingCycle(models.TextChoices):
         MONTHLY  = "monthly",  _("Monthly")
+        QUARTERLY = "quarterly", _("3 Months")
         YEARLY   = "yearly",   _("Yearly")
         ONE_TIME = "one_time", _("One Time")
         CUSTOM   = "custom",   _("Custom / Contact Sales")
@@ -213,6 +220,11 @@ class ProductPricing(UUIDModel):
         choices=BillingCycle.choices,
         default=BillingCycle.MONTHLY,
         verbose_name=_("Billing cycle"),
+    )
+    plus_gst = models.BooleanField(
+        default=False,
+        verbose_name=_("Price excludes GST"),
+        help_text=_("Shows '+ GST' after the price."),
     )
     description = models.TextField(blank=True, verbose_name=_("Description"))
     features_included = models.TextField(
@@ -248,6 +260,16 @@ class ProductPricing(UUIDModel):
         if not self.price:
             return "Contact Sales"
         return f"₹{self.price:,.0f}"
+
+    @property
+    def period_label(self) -> str:
+        """Per-period suffix for display, e.g. '₹4,500 / 3 months'."""
+        return {
+            self.BillingCycle.MONTHLY: "month",
+            self.BillingCycle.QUARTERLY: "3 months",
+            self.BillingCycle.YEARLY: "year",
+            self.BillingCycle.ONE_TIME: "one-time",
+        }.get(self.billing_cycle, "")
 
     @property
     def formatted_original_price(self) -> str:

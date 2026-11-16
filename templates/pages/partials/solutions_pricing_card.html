@@ -1,0 +1,31 @@
+{% load icons %}
+{# One product's plans as a compact list. Params: product (with pricing_tiers), label (display name), subtitle. #}
+<div class="sol-price" style="--accent: {{ product.color }};">
+  <div class="sol-price__head">
+    <h3>{{ label|default:product.name }}</h3>
+    <p>{{ subtitle|default:product.tagline }}</p>
+  </div>
+  <ul class="sol-price__tiers">
+    {% for tier in product.pricing_tiers.all %}
+    <li class="{% if tier.is_featured %}is-featured{% endif %}">
+      <div>
+        <div class="sol-price__name">{{ tier.tier_name }}{% if tier.is_featured %} <span class="sol-badge">Most popular</span>{% endif %}</div>
+        {% if tier.description %}<div class="sol-price__desc">{{ tier.description }}</div>{% endif %}
+      </div>
+      <div class="sol-price__amount">
+        {% if tier.price %}
+          {% if tier.has_discount %}<s class="sol-price__was">{{ tier.formatted_original_price }}</s>{% endif %}
+          {{ tier.formatted_price }}
+          <small>{% if tier.plus_gst %}+ GST {% endif %}{% if tier.period_label %}/ {{ tier.period_label }}{% endif %}{% if tier.has_discount %} · Save {{ tier.savings_percent }}%{% endif %}</small>
+        {% else %}
+          <span class="sol-price__contact">Contact sales</span>
+        {% endif %}
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+  <div class="sol-price__actions">
+    <a href="{{ product.get_absolute_url }}#pricing" class="sol-link">Compare plan features {% icon "arrow-right" size=16 %}</a>
+    <a href="#demo" class="btn sol-btn-primary">Get a quote</a>
+  </div>
+</div>

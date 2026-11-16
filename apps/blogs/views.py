@@ -2,6 +2,7 @@
 from django.core.paginator import Paginator
 from django.http import Http404
 from django.shortcuts import render
+from apps.seo.schema import blog_nodes
 from apps.seo.selectors import get_seo_for_object
 from .selectors import (
     get_all_categories, get_all_tags, get_blog_by_slug,
@@ -31,6 +32,7 @@ def blog_detail(request, slug: str):
         "related": get_related_blogs(blog),
         "comments": get_approved_comments(blog),
         "seo": seo,
+        "schema_nodes": blog_nodes(blog, seo=seo),
     })
 
 

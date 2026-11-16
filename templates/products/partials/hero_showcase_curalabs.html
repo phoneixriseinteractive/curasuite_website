@@ -1,0 +1,20 @@
+{% load static %}
+{# Layered CuraLabs hero: lab dashboard (back) → patient website (front-left) → booking flow (front-right). #}
+<div class="hero-showcase hero-showcase--labs" style="--accent: {{ product.color }};">
+  <figure class="hero-shot hero-shot--dashboard">
+    <div class="hero-shot__bar" aria-hidden="true"><span></span><span></span><span></span></div>
+    <img src="{% static 'img/CuraLabs/Hero/cura-labs-dashboard.webp' %}" width="1896" height="876"
+         alt="{{ product.name }} lab dashboard showing appointments, revenue, leads and reports issued">
+  </figure>
+  <figure class="hero-shot hero-shot--website">
+    <div class="hero-shot__bar" aria-hidden="true"><span></span><span></span><span></span></div>
+    <img src="{% static 'img/CuraLabs/Hero/cura-labs-website.webp' %}" width="1908" height="886"
+         alt="Pathology lab website built with {{ product.name }}, with test search and online booking"
+         fetchpriority="high">
+  </figure>
+  <figure class="hero-shot hero-shot--booking">
+    <div class="hero-shot__bar" aria-hidden="true"><span></span><span></span><span></span></div>
+    <img src="{% static 'img/CuraLabs/Hero/cura-labs-booking.webp' %}" width="1843" height="946"
+         alt="{{ product.name }} appointment booking flow offering home collection or a lab visit">
+  </figure>
+</div>

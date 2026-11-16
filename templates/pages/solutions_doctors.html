@@ -1,0 +1,151 @@
+{% extends "pages/solutions.html" %}
+{% load static icons %}
+{# Doctors & clinics sales page — sells CuraOS (clinic management) + CuraCMS together. #}
+
+{% block accent %}#2563EB{% endblock %}
+
+{% block hero_eyebrow %}{% icon "stethoscope" size=16 %} For Doctors &amp; Clinics{% endblock %}
+{% block hero_title %}More patients. Less paperwork. One platform for your clinic.{% endblock %}
+{% block hero_lead %}<strong>CuraCMS</strong> brings new patients to you with a professional website and 24/7 online booking. <strong>CuraOS</strong> runs everything once they walk in — queue, records, prescriptions and OPD billing.{% endblock %}
+
+{% block hero_trust %}
+  <li>{% icon "check" size=18 stroke_width=2.5 %} Setup &amp; staff training included</li>
+  <li>{% icon "check" size=18 stroke_width=2.5 %} GST-ready billing</li>
+  {% with tier=solution_products.curaos.starting_tier %}{% if tier %}
+  <li>{% icon "check" size=18 stroke_width=2.5 %} Plans from {{ tier.formatted_price }}{% if tier.plus_gst %} + GST{% endif %}</li>
+  {% endif %}{% endwith %}
+{% endblock %}
+
+{% block hero_visual %}
+<div class="hero-showcase hero-showcase--doctors">
+  <figure class="hero-shot hero-shot--dashboard">
+    <div class="hero-shot__bar" aria-hidden="true"><span></span><span></span><span></span></div>
+    <img src="{% static 'img/CuraOS/Hero/cura-os-dashboard.webp' %}" width="840" height="693"
+         alt="CuraOS clinical dashboard with OPD visits, inpatients and daily schedule" fetchpriority="high">
+  </figure>
+  <figure class="hero-shot hero-shot--website">
+    <div class="hero-shot__bar" aria-hidden="true"><span></span><span></span><span></span></div>
+    <img src="{% static 'img/CuraCms/Hero/cura-cms-website.webp' %}" width="723" height="442"
+         alt="Doctor website built with CuraCMS, with online appointment booking">
+  </figure>
+  <figure class="hero-shot hero-shot--mobile">
+    <img src="{% static 'img/CuraCms/Hero/cura-cms-mobile.webp' %}" width="382" height="775"
+         alt="Mobile view of a CuraCMS clinic website with Call, WhatsApp and Book Now buttons">
+  </figure>
+</div>
+{% endblock %}
+
+{% block pains_title %}What's holding your practice back{% endblock %}
+{% block pains %}
+  <div class="sol-pain">
+    <div class="sol-pain__icon">{% icon "phone" size=22 stroke_width=1.75 %}</div>
+    <h3>The phone never stops</h3>
+    <p>Reception spends the day answering timing and appointment calls instead of looking after patients in the clinic.</p>
+  </div>
+  <div class="sol-pain">
+    <div class="sol-pain__icon">{% icon "search" size=22 stroke_width=1.75 %}</div>
+    <h3>New patients can't find you</h3>
+    <p>When someone searches for a doctor nearby, they find your competitors' websites — not yours.</p>
+  </div>
+  <div class="sol-pain">
+    <div class="sol-pain__icon">{% icon "file-text" size=22 stroke_width=1.75 %}</div>
+    <h3>Paper registers &amp; manual bills</h3>
+    <p>Handwritten records, lost prescriptions and end-of-day billing that never quite adds up.</p>
+  </div>
+  <div class="sol-pain">
+    <div class="sol-pain__icon">{% icon "clock" size=22 stroke_width=1.75 %}</div>
+    <h3>Chaotic waiting rooms</h3>
+    <p>No view of who's next, walk-ins clash with appointments, and patients leave frustrated.</p>
+  </div>
+{% endblock %}
+
+{% block solution %}
+<div class="sol-heading">
+  <div class="sol-label">The solution</div>
+  <h2>Two products. One complete clinic.</h2>
+  <p>Win patients online with CuraCMS. Run your clinic smoothly with CuraOS.</p>
+</div>
+<div class="grid grid-2" style="gap: var(--space-8); align-items: stretch;">
+
+  {% with p=solution_products.curaos %}
+  <div class="sol-product" style="--accent: {{ p.color|default:'#7C3AED' }};">
+    <div class="sol-product__shot">
+      <img src="{% static 'img/CuraOS/Hero/cura-os-appointments.webp' %}" width="840" height="693" loading="lazy"
+           alt="CuraOS appointments and scheduling screen">
+    </div>
+    <div class="sol-product__body">
+      <div class="sol-product__tag">Run your clinic</div>
+      <h3>CuraOS</h3>
+      <p class="sol-product__sub">Clinic management software for doctors and multi-doctor clinics.</p>
+      <ul class="sol-checks sol-checks--stack">
+        <li>{% icon "check" size=18 stroke_width=2.5 %} Appointment &amp; patient queue management</li>
+        <li>{% icon "check" size=18 stroke_width=2.5 %} Digital patient records (EHR)</li>
+        <li>{% icon "check" size=18 stroke_width=2.5 %} OPD billing &amp; GST invoicing</li>
+        <li>{% icon "check" size=18 stroke_width=2.5 %} Digital prescriptions with medicine templates</li>
+        <li>{% icon "check" size=18 stroke_width=2.5 %} Pharmacy &amp; inventory with low-stock alerts</li>
+        <li>{% icon "check" size=18 stroke_width=2.5 %} Daily revenue &amp; doctor-wise reports</li>
+      </ul>
+      <div class="sol-product__foot">
+        {% if p.starting_tier %}<div class="sol-product__price">From <strong>{{ p.starting_tier.formatted_price }}</strong>{% if p.starting_tier.plus_gst %} + GST{% endif %}{% if p.starting_tier.period_label %} / {{ p.starting_tier.period_label }}{% endif %}</div>{% endif %}
+        <a href="{% if p %}{{ p.get_absolute_url }}{% else %}/products/curaos/{% endif %}" class="sol-link">Explore CuraOS {% icon "arrow-right" size=16 %}</a>
+      </div>
+    </div>
+  </div>
+  {% endwith %}
+
+  {% with p=solution_products.curacms %}
+  <div class="sol-product" style="--accent: {{ p.color|default:'#2563EB' }};">
+    <div class="sol-product__shot">
+      <img src="{% static 'img/CuraCms/Hero/cura-cms-website.webp' %}" width="723" height="442" loading="lazy"
+           alt="Doctor profile website built with CuraCMS">
+    </div>
+    <div class="sol-product__body">
+      <div class="sol-product__tag">Grow your practice</div>
+      <h3>CuraCMS</h3>
+      <p class="sol-product__sub">A professional website that turns online searches into booked appointments.</p>
+      <ul class="sol-checks sol-checks--stack">
+        <li>{% icon "check" size=18 stroke_width=2.5 %} Professional website showcasing your credentials</li>
+        <li>{% icon "check" size=18 stroke_width=2.5 %} 24/7 online appointment booking</li>
+        <li>{% icon "check" size=18 stroke_width=2.5 %} Built-in SEO so patients find you on Google</li>
+        <li>{% icon "check" size=18 stroke_width=2.5 %} AI chatbot that answers patient questions</li>
+        <li>{% icon "check" size=18 stroke_width=2.5 %} WhatsApp click-to-chat button</li>
+        <li>{% icon "check" size=18 stroke_width=2.5 %} Health blog to build your authority</li>
+      </ul>
+      <div class="sol-product__foot">
+        {% if p.starting_tier %}<div class="sol-product__price">From <strong>{{ p.starting_tier.formatted_price }}</strong>{% if p.starting_tier.plus_gst %} + GST{% endif %}{% if p.starting_tier.period_label %} / {{ p.starting_tier.period_label }}{% endif %}</div>{% endif %}
+        <a href="{% if p %}{{ p.get_absolute_url }}{% else %}/products/curacms/{% endif %}" class="sol-link">Explore CuraCMS {% icon "arrow-right" size=16 %}</a>
+      </div>
+    </div>
+  </div>
+  {% endwith %}
+
+</div>
+<div class="sol-note">
+  {% icon "sparkles" size=18 %} Start with the one you need most today — add the other whenever you're ready.
+</div>
+{% endblock %}
+
+{% block outcomes %}
+  <div class="sol-stat"><div class="sol-stat__num">300%</div><div class="sol-stat__label">Avg increase in online enquiries</div></div>
+  <div class="sol-stat"><div class="sol-stat__num">40%</div><div class="sol-stat__label">Of bookings made outside clinic hours</div></div>
+  <div class="sol-stat"><div class="sol-stat__num">60%</div><div class="sol-stat__label">Drop in phone call volume</div></div>
+  <div class="sol-stat"><div class="sol-stat__num">3 hrs</div><div class="sol-stat__label">Admin time saved every day</div></div>
+{% endblock %}
+
+{% block steps_audience %}your patients{% endblock %}
+{% block pricing_audience %}clinic{% endblock %}
+
+{% block pricing %}
+<div class="grid grid-2" style="gap: var(--space-8); align-items: start;">
+  {% if solution_products.curaos %}{% include "pages/partials/solutions_pricing_card.html" with product=solution_products.curaos label="CuraOS" subtitle="Clinic management software" %}{% endif %}
+  {% if solution_products.curacms %}{% include "pages/partials/solutions_pricing_card.html" with product=solution_products.curacms label="CuraCMS" subtitle="Website & online booking for doctors" %}{% endif %}
+</div>
+{% endblock %}
+
+{% block cta_title %}See CuraOS &amp; CuraCMS in action{% endblock %}
+{% block cta_lead %}Book a free 30-minute demo. We'll show you exactly how it would work in your clinic — no obligation.{% endblock %}
+{% block product_options %}
+  <option value="Not sure" selected>Interested in: both / not sure yet</option>
+  <option value="CuraOS">CuraOS — clinic management</option>
+  <option value="CuraCMS">CuraCMS — website &amp; online booking</option>
+{% endblock %}

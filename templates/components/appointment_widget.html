@@ -101,7 +101,7 @@
               <div class="form-row-2" style="gap:14px;">
                 <div>
                   <label style="font-size:var(--text-sm);font-weight:var(--font-medium);color:var(--text-secondary);display:block;margin-bottom:6px;">Phone Number <span style="color:var(--color-error);">*</span></label>
-                  <input type="tel" name="phone" required placeholder="98765 43210"
+                  <input type="tel" name="phone" required placeholder="10-digit mobile number"
                     style="width:100%;padding:11px 14px;border:1px solid var(--border-default);border-radius:var(--radius);font-size:var(--text-sm);font-family:inherit;">
                 </div>
                 <div>
@@ -189,7 +189,7 @@ function appointmentWidget() {
     selectProduct(key, name) {
       this.selectedProduct = name;  // store display name — matches Lead.product_interest convention
       this.selectedProductName = name;
-      const colors = { 'CuraCMS': '#2563EB', 'CuraLabs': '#16A34A', 'CuraSuite': '#EA580C' };
+      const colors = { 'CuraCMS': '#2563EB', 'CuraLabs': '#DC2626', 'CuraOS': '#7C3AED' };
       this.selectedColor = colors[name] || '#2563EB';
       this.step = 2;
     },

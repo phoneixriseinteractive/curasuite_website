@@ -1,4 +1,4 @@
-{% load static integrations_tags %}
+{% load static integrations_tags seo_tags %}
 <!DOCTYPE html>
 <html lang="en" x-data="{ darkMode: localStorage.getItem('theme')==='dark' }" :class="{ 'dark': darkMode }">
 <head>
@@ -9,14 +9,15 @@
   {# ── SEO ────────────────────────────────────────────────────────────────── #}
   <title>{% block seo_title %}{{ SITE_NAME }}{% endblock %}</title>
   <meta name="description" content="{% block meta_description %}{% endblock %}">
-  <link rel="canonical" href="{% block canonical_url %}{{ request.build_absolute_uri }}{% endblock %}">
+  {# Admin-set SEO canonical (seo.canonical_url) wins; otherwise self-canonical on SITE_URL. #}
+  <link rel="canonical" href="{% block canonical_url %}{% if seo.canonical_url %}{{ seo.canonical_url }}{% else %}{{ CANONICAL_URL }}{% endif %}{% endblock %}">
   <meta name="robots" content="{% block robots %}index, follow{% endblock %}">
 
   {# ── Open Graph ──────────────────────────────────────────────────────────── #}
   <meta property="og:type" content="website">
   <meta property="og:title" content="{% block og_title %}{{ SITE_NAME }}{% endblock %}">
   <meta property="og:description" content="{% block og_description %}{% endblock %}">
-  <meta property="og:url" content="{{ request.build_absolute_uri }}">
+  <meta property="og:url" content="{{ CANONICAL_URL }}">
   <meta property="og:image" content="{% block og_image %}{% endblock %}">
   <meta name="twitter:card" content="summary_large_image">
 
@@ -33,64 +34,14 @@
 
   {# ── Schema ── #}
   {% comment %}
-    Site-wide default Organization schema. Any template that needs its own
-    structured data (Product, BlogPosting, etc. — see home.html, product_detail.html,
-    blog_detail.html) overrides this block instead of appending to it, so only
-    one JSON-LD graph ever ships per page. Landing pages never see this block —
-    they extend landing_pages/_base_lp.html, a separate base template that
-    doesn't include it.
+    One JSON-LD @graph per page: the sitewide Organization + LocalBusiness +
+    WebSite nodes, plus whatever page-specific nodes the view passes as
+    `schema_nodes` (built in apps/seo/schema.py — product_nodes, blog_nodes).
+    Add page schema by passing schema_nodes from the view, not by overriding
+    this block — overriding it drops the sitewide Organization schema.
+    Landing pages extend landing_pages/_base_lp.html and don't get this.
   {% endcomment %}
-  {% block schema %}
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": ["Organization", "LocalBusiness", "SoftwareCompany"],
-        "@id": "https://curasuite.app/#organization",
-        "name": "CuraSuite",
-        "alternateName": "CuraSuite Healthcare Platform",
-        "url": "https://curasuite.app/",
-        "logo": "https://curasuite.app/logo.png",
-        "image": "https://curasuite.app/logo.png",
-        "description": "CuraSuite is an all-in-one healthcare management platform offering clinic management software, pathology lab management software, healthcare websites, and digital solutions for doctors, clinics, hospitals, and diagnostic centres.",
-        "telephone": "+91 88828 14698",
-        "contactPoint": {
-          "@type": "ContactPoint",
-          "telephone": "+91 88828 14698",
-          "contactType": "Customer Support",
-          "areaServed": "IN",
-          "availableLanguage": ["English", "Hindi"]
-        },
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "D-9, Ground Floor, Sector-3",
-          "addressLocality": "Noida",
-          "addressRegion": "Uttar Pradesh",
-          "postalCode": "201301",
-          "addressCountry": "IN"
-        },
-        "areaServed": {
-          "@type": "Country",
-          "name": "India"
-        },
-        "sameAs": [
-          "https://www.linkedin.com/company/curasuite/",
-          "https://www.facebook.com/curasuite",
-          "https://www.instagram.com/curasuite_app/"
-        ],
-        "aggregateRating": {
-          "@type": "AggregateRating",
-          "ratingValue": "4.9",
-          "reviewCount": "128",
-          "bestRating": "5",
-          "worstRating": "1"
-        }
-      }
-    ]
-  }
-  </script>
-  {% endblock %}
+  {% block schema %}{% schema_graph %}{% endblock %}
 
   {% block head_extra %}{% endblock %}
 </head>

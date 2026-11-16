@@ -1,0 +1,26 @@
+{% load static icons %}
+{# Product card with screenshot. Params: p (Product, pricing_tiers/features prefetched), shot (static path), #}
+{# shot_w, shot_h, tag (short benefit label), wide (bool, side-by-side on desktop), show_details (bool: features + price). #}
+<a href="{{ p.get_absolute_url }}" class="about-product{% if wide %} about-product--wide{% endif %}" style="--accent: {{ p.color }};">
+  <div class="about-product__shot">
+    <img src="{% static shot %}" width="{{ shot_w }}" height="{{ shot_h }}" alt="{{ p.name }} — {{ p.tagline }}" loading="lazy">
+  </div>
+  <div class="about-product__body">
+    <div class="sol-product__tag">{{ tag }}</div>
+    <h3>{{ p.name }}</h3>
+    <p>{{ p.tagline }}</p>
+    {% if show_details and p.features.all %}
+    <ul class="sol-checks sol-checks--stack about-product__features">
+      {% for f in p.features.all|slice:":4" %}
+      <li>{% icon "check" size=18 stroke_width=2.5 %} {{ f.title }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    <div class="about-product__foot">
+      {% if show_details and p.starting_tier %}
+      <span class="sol-product__price">From <strong>{{ p.starting_tier.formatted_price }}</strong>{% if p.starting_tier.plus_gst %} + GST{% endif %}{% if p.starting_tier.period_label %} / {{ p.starting_tier.period_label }}{% endif %}</span>
+      {% endif %}
+      <span class="sol-link">Explore {{ p.name }} {% icon "arrow-right" size=16 %}</span>
+    </div>
+  </div>
+</a>

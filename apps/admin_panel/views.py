@@ -1263,6 +1263,7 @@ def pricing_create(request, product_pk):
             price=price_raw if price_raw else None,
             original_price=original_price_raw if original_price_raw else None,
             billing_cycle=request.POST.get("billing_cycle", "yearly"),
+            plus_gst="plus_gst" in request.POST,
             description=request.POST.get("description", "").strip(),
             features_included=request.POST.get("features_included", "").strip(),
             is_featured="is_featured" in request.POST,
@@ -1307,6 +1308,7 @@ def pricing_edit(request, pk):
         tier.price            = price_raw if price_raw else None
         tier.original_price   = original_price_raw if original_price_raw else None
         tier.billing_cycle    = request.POST.get("billing_cycle", tier.billing_cycle)
+        tier.plus_gst         = "plus_gst" in request.POST
         tier.description      = request.POST.get("description", tier.description).strip()
         tier.features_included= request.POST.get("features_included", tier.features_included).strip()
         tier.is_featured      = "is_featured" in request.POST

@@ -1,5 +1,6 @@
 """CuraSuite — Pages URLs"""
 from django.urls import path
+from django.views.generic import RedirectView
 from . import views
 
 app_name = "pages"
@@ -11,7 +12,8 @@ urlpatterns = [
     # Explicit solutions routes — must come before generic slug catch-all
     # because Django's <slug:slug> doesn't match forward slashes
     path("solutions/doctors/",      views.page_detail, {"slug": "solutions/doctors"},      name="solutions_doctors"),
-    path("solutions/clinics/",      views.page_detail, {"slug": "solutions/clinics"},      name="solutions_clinics"),
+    # "For Clinics" was merged into the doctors page (CuraOS + CuraCMS) — keep old links working.
+    path("solutions/clinics/",      RedirectView.as_view(url="/solutions/doctors/", permanent=True), name="solutions_clinics"),
     path("solutions/pathology-labs/",views.page_detail,{"slug": "solutions/pathology-labs"},name="solutions_labs"),
 
     # Generic slug catch-all for all other pages (about, pricing, privacy, etc.)

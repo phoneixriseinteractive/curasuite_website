@@ -6,7 +6,7 @@ from .selectors import get_home_page, get_page_by_slug
 
 
 def home(request):
-    from apps.products.selectors import get_products_for_homepage
+    from apps.products.selectors import get_products_with_pricing
     from apps.settings_app.models import Testimonial
     from apps.blogs.selectors import get_published_blogs
 
@@ -28,11 +28,11 @@ def home(request):
     ]
 
     try:
-        products     = get_products_for_homepage()
+        products     = get_products_with_pricing(["curaos", "curacms", "curalabs"])
         testimonials = Testimonial.objects.filter(status="approved", is_featured=True).order_by("sort_order")[:6]
         recent_blogs = get_published_blogs(limit=3)
     except Exception:
-        products     = []
+        products     = {}
         testimonials = []
         recent_blogs = []
 
@@ -58,26 +58,30 @@ def page_detail(request, slug: str):
         "seo":         seo,
     }
 
-    # Solutions pages get extra context
+    # Solutions pages are sales pages per audience: doctors/clinics (CuraOS + CuraCMS)
+    # or pathology labs (CuraLabs). Each renders its own template on top of solutions.html.
     if page.template == "solutions" or slug.startswith("solutions/"):
+        if "labs" in slug:
+            audience, product_slugs, testimonial_products = "labs", ["curalabs"], ["CuraLabs"]
+        else:
+            audience, product_slugs, testimonial_products = "doctors", ["curaos", "curacms"], ["CuraOS", "CuraCMS"]
         try:
+            from apps.products.selectors import get_products_with_pricing
             from apps.settings_app.models import Testimonial
-            product_name = ""
-            if "doctors" in slug: product_name = "CuraCMS"
-            elif "labs" in slug:  product_name = "CuraLabs"
-            elif "clinics" in slug: product_name = "CuraSuite"
+            context["solution_products"] = get_products_with_pricing(product_slugs)
             context["testimonials"] = Testimonial.objects.filter(
-                status="approved", is_featured=True,
-                **({} if not product_name else {"product__in": [product_name, ""]})
+                status="approved", is_featured=True, product__in=testimonial_products + [""]
             ).order_by("sort_order")[:4]
-            context["demo_form_action"] = "/contact/demo/"
         except Exception:
             pass
+        return render(request, f"pages/solutions_{audience}.html", context)
 
     # About page gets extra context
     if page.template == "about" or slug == "about":
         try:
+            from apps.products.selectors import get_products_with_pricing
             from apps.settings_app.models import Testimonial
+            context["about_products"] = get_products_with_pricing(["curaos", "curacms", "curalabs"])
             context["testimonials"] = Testimonial.objects.filter(
                 status="approved", is_featured=True
             ).order_by("sort_order")[:6]
@@ -87,21 +91,28 @@ def page_detail(request, slug: str):
     # Pricing page gets extra context
     if page.page_type == "pricing" or slug == "pricing":
         try:
-            from apps.products.selectors import get_products_for_homepage
+            from apps.products.selectors import get_products_with_pricing
             from apps.settings_app.models import GlobalFAQ
-            context["products"] = get_products_for_homepage()
+            # Grouped the same way as the Solutions menu.
+            products = get_products_with_pricing(["curaos", "curacms", "curalabs"])
+            context["product_groups"] = [
+                {"id": "doctors", "title": "For Doctors & Clinics",
+                 "products": [products[s] for s in ("curaos", "curacms") if s in products]},
+                {"id": "labs", "title": "For Pathology Labs",
+                 "products": [products[s] for s in ("curalabs",) if s in products]},
+            ]
             context["pricing_faqs"] = GlobalFAQ.objects.filter(
                 category="pricing", is_active=True
             ).order_by("sort_order")
             context["included_items"] = [
-                {"icon": "🚀", "title": "Free Setup",          "description": "Our team sets up everything within 48 hours of signup."},
-                {"icon": "🎓", "title": "Training Included",   "description": "Live training session for you and your staff."},
-                {"icon": "🔒", "title": "SSL Certificate",     "description": "HTTPS encryption on all plans at no extra cost."},
-                {"icon": "💾", "title": "Daily Backups",       "description": "Your data is automatically backed up every day."},
-                {"icon": "📧", "title": "Email Support",       "description": "Responsive email support during business hours."},
-                {"icon": "📱", "title": "Mobile-Ready",        "description": "Works perfectly on all devices from day one."},
-                {"icon": "🔄", "title": "Free Updates",        "description": "All product updates and new features at no charge."},
-                {"icon": "📊", "title": "Analytics Ready",     "description": "GA4, GTM, Meta Pixel integrations pre-configured."},
+                {"icon": "rocket", "title": "Free Setup",          "description": "Our team sets up everything within 48 hours of signup."},
+                {"icon": "graduation-cap", "title": "Training Included",   "description": "Live training session for you and your staff."},
+                {"icon": "lock", "title": "SSL Certificate",     "description": "HTTPS encryption on all plans at no extra cost."},
+                {"icon": "database", "title": "Daily Backups",       "description": "Your data is automatically backed up every day."},
+                {"icon": "mail", "title": "Email Support",       "description": "Responsive email support during business hours."},
+                {"icon": "smartphone", "title": "Mobile-Ready",        "description": "Works perfectly on all devices from day one."},
+                {"icon": "refresh-cw", "title": "Free Updates",        "description": "All product updates and new features at no charge."},
+                {"icon": "bar-chart", "title": "Analytics Ready",     "description": "GA4, GTM, Meta Pixel integrations pre-configured."},
             ]
         except Exception:
             pass

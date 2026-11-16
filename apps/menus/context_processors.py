@@ -25,7 +25,7 @@ def navigation(request):
                 "children": [
                     {"label": "CuraCMS",   "url": "/products/curacms/",   "description": "Website CMS for doctors & clinics"},
                     {"label": "CuraLabs",  "url": "/products/curalabs/",  "description": "Digital platform for pathology labs"},
-                    {"label": "CuraSuite", "url": "/products/curasuite/", "description": "Complete clinic management software"},
+                    {"label": "CuraOS",    "url": "/products/curaos/",    "description": "Complete clinic management software"},
                 ],
             },
             {
@@ -33,9 +33,8 @@ def navigation(request):
                 "url": "/solutions/doctors/",
                 "has_dropdown": True,
                 "children": [
-                    {"label": "For Doctors",        "url": "/solutions/doctors/",        "description": "Grow your private practice online"},
-                    {"label": "For Clinics",        "url": "/solutions/clinics/",        "description": "Digitise your clinic operations"},
-                    {"label": "For Pathology Labs", "url": "/solutions/pathology-labs/", "description": "Modern digital lab experience"},
+                    {"label": "For Doctors & Clinics", "url": "/solutions/doctors/",        "description": "CuraOS + CuraCMS — run your clinic, grow your practice"},
+                    {"label": "For Pathology Labs",    "url": "/solutions/pathology-labs/", "description": "CuraLabs — online bookings, home collection & reports"},
                 ],
             },
             {"label": "Pricing", "url": "/pricing/",  "has_dropdown": False, "children": []},

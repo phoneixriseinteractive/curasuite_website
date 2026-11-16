@@ -116,7 +116,7 @@ class Command(BaseCommand):
         s.meta_pixel_id        = "123456789012345"
         s.clarity_project_id   = "abcdefghij"
         s.whatsapp_enabled     = True
-        s.whatsapp_phone       = "919876543210"
+        s.whatsapp_phone       = "918882814698"
         s.whatsapp_message     = "Hi! I'd like to know more about CuraSuite."
         s.whatsapp_tooltip     = "Chat with us on WhatsApp"
         s.chatbot_enabled      = True
@@ -128,7 +128,7 @@ class Command(BaseCommand):
             "Help visitors understand our three products:\n"
             "• CuraCMS — Professional website CMS for doctors and clinics\n"
             "• CuraLabs — Digital experience platform for pathology laboratories\n"
-            "• CuraSuite CMS — Complete clinic management software\n"
+            "• CuraOS — Complete clinic management software\n"
             "Answer questions about features, pricing (starting ₹9,999/year), "
             "and guide visitors to book a free demo. "
             "Be warm, professional, and concise. "
@@ -165,7 +165,7 @@ class Command(BaseCommand):
         s.linkedin     = "https://www.linkedin.com/company/curasuite"
         s.twitter_x    = "https://x.com/curasuite"
         s.youtube      = "https://www.youtube.com/@curasuite"
-        s.whatsapp_link= "https://wa.me/919876543210"
+        s.whatsapp_link= "https://wa.me/918882814698"
         s.save()
         self.stdout.write(self.style.SUCCESS("    ✓ Social links saved"))
 
@@ -218,7 +218,7 @@ class Command(BaseCommand):
             (Integration.Provider.GOOGLE_TAG_MANAGER, True,  {"container_id": "GTM-XXXXXXX"}),
             (Integration.Provider.META_PIXEL,         True,  {"pixel_id": "123456789012345"}),
             (Integration.Provider.MICROSOFT_CLARITY,  True,  {"project_id": "abcdefghij"}),
-            (Integration.Provider.WHATSAPP,           True,  {"phone": "919876543210"}),
+            (Integration.Provider.WHATSAPP,           True,  {"phone": "918882814698"}),
             (Integration.Provider.GEMINI,             True,  {"model_chain": "gemini-2.0-flash-lite,gemini-2.0-flash"}),
             (Integration.Provider.SMTP,               True,  {"host": "smtp.gmail.com", "port": 587}),
             (Integration.Provider.RECAPTCHA,          False, {"provider": "turnstile"}),
@@ -241,11 +241,11 @@ class Command(BaseCommand):
         lines = [l for l in out.getvalue().strip().split('\n') if l.strip()]
         for line in lines:
             self.stdout.write(f"    {line}")
-        # Fix slug for CuraSuite product (slugify makes 'curasuite-cms', should be 'curasuite')
+        # Keep the CuraOS product's slug stable (its internal key stays 'curasuite')
         try:
             cs = Product.all_objects.filter(key='curasuite').first()
-            if cs and cs.slug != 'curasuite':
-                cs.slug = 'curasuite'
+            if cs and cs.slug != 'curaos':
+                cs.slug = 'curaos'
                 cs.save(update_fields=['slug'])
         except Exception:
             pass
@@ -264,13 +264,13 @@ class Command(BaseCommand):
 
         faqs = [
             ("general",   "What is CuraSuite?",
-             "CuraSuite is a unified healthcare technology ecosystem built by PhoenixRise Interactive. It includes CuraCMS (website platform for doctors), CuraLabs (digital platform for pathology labs), and CuraSuite CMS (clinic management software)."),
+             "CuraSuite is a unified healthcare technology ecosystem built by PhoenixRise Interactive. It includes CuraCMS (website platform for doctors), CuraLabs (digital platform for pathology labs), and CuraOS (clinic management software)."),
             ("general",   "Who can use CuraSuite?",
              "CuraSuite is designed for individual doctors, dental clinics, physiotherapists, pathology labs, diagnostic centres, and multi-specialty clinics across India."),
             ("general",   "Is there a free trial available?",
              "Yes. We offer a 30-day free trial for all products. Book a demo and our team will configure a trial account tailored to your specialty within 24 hours."),
             ("general",   "How long does implementation take?",
-             "CuraCMS and CuraLabs websites go live within 7–14 working days. CuraSuite CMS implementations typically take 14–21 days including staff training."),
+             "CuraCMS and CuraLabs websites go live within 7–14 working days. CuraOS implementations typically take 14–21 days including staff training."),
             ("general",   "Do you provide training and support?",
              "Yes. Every plan includes onboarding training, video guides, and email support. Professional and Enterprise plans include priority support with dedicated account managers."),
             ("pricing",   "What does CuraCMS cost?",
@@ -327,15 +327,15 @@ class Command(BaseCommand):
              "CuraLabs gave our pathology lab a professional digital presence. Patients can now book tests online and download reports without calling us. Our call volume dropped by 60%."),
             ("Dr. Anjali Mehta",  "Managing Director",      "Mehta Diagnostic Centre",      "Ahmedabad",   5, "CuraLabs", "pathology_lab",
              "The home collection booking feature was a game-changer. We now manage home collection requests efficiently and send automated WhatsApp confirmations. Highly recommended."),
-            ("Dr. Vikram Singh",  "Medical Director",       "Singh Multi-Specialty Clinic", "Lucknow",     5, "CuraSuite", "",
-             "CuraSuite CMS streamlined our entire clinic operations. Reception, billing, and doctor workflows are now on one platform. We save 3 hours of administrative work every day."),
+            ("Dr. Vikram Singh",  "Medical Director",       "Singh Multi-Specialty Clinic", "Lucknow",     5, "CuraOS", "",
+             "CuraOS streamlined our entire clinic operations. Reception, billing, and doctor workflows are now on one platform. We save 3 hours of administrative work every day."),
             ("Dr. Sunita Reddy",  "Gynecologist",           "Reddy Women's Clinic",         "Pune",        4, "CuraCMS",  "other",
              "Professional website, easy to manage, and excellent SEO performance. Our clinic now gets 15-20 new patient enquiries every week through the website alone."),
             ("Mr. Arun Patel",    "Operations Manager",     "Patel Lab Network",            "Surat",       5, "CuraLabs", "pathology_lab",
              "We have 3 lab branches and CuraLabs manages all of them. Patient data, test catalogues, and report downloads work seamlessly across all locations."),
             ("Dr. Kavitha Iyer",  "Ayurvedic Practitioner", "Iyer Ayurveda Clinic",        "Chennai",     5, "CuraCMS",  "other",
              "I was skeptical about going digital, but CuraCMS made it easy. My patients love booking appointments online and the website looks beautiful on all devices."),
-            ("Dr. Ravi Malhotra", "Orthopedic Surgeon",     "Malhotra Orthopedic Centre",   "Delhi",       5, "CuraSuite", "",
+            ("Dr. Ravi Malhotra", "Orthopedic Surgeon",     "Malhotra Orthopedic Centre",   "Delhi",       5, "CuraOS", "",
              "From patient registration to billing — everything is digitized. The prescription module with our medicine templates saves 20 minutes per patient consultation."),
         ]
 
@@ -406,7 +406,7 @@ class Command(BaseCommand):
                 "slug": "contact",
                 "page_type": "contact",
                 "excerpt": "Get in touch with the CuraSuite team. Book a free demo today.",
-                "content": "<p>We'd love to hear from you. Book a free demo, request pricing, or just say hello.</p><p><strong>Email:</strong> hello@curasuite.app</p><p><strong>WhatsApp:</strong> +91 98765 43210</p><p><strong>Business Hours:</strong> Monday–Saturday, 9 AM–7 PM IST</p>",
+                "content": "<p>We'd love to hear from you. Book a free demo, request pricing, or just say hello.</p><p><strong>Email:</strong> hello@curasuite.app</p><p><strong>WhatsApp:</strong> +91 88828 14698</p><p><strong>Business Hours:</strong> Monday–Saturday, 9 AM–7 PM IST</p>",
                 "seo": {
                     "seo_title": "Contact CuraSuite — Book a Free Demo",
                     "meta_description": "Contact CuraSuite to book a free product demo, request pricing, or get support. Available Monday–Saturday, 9 AM–7 PM IST.",
@@ -690,12 +690,12 @@ class Command(BaseCommand):
 <li>What happens to our data if we cancel?</li>
 <li>Is the software cloud-based or installed locally?</li>
 </ul>
-<h2>Why CuraSuite CMS Stands Out</h2>
-<p>CuraSuite CMS is designed for Indian clinics — it understands the workflow, the compliance requirements, and the patient expectations of the Indian market. Implementation takes 14–21 days and includes full staff training.</p>""",
+<h2>Why CuraOS Stands Out</h2>
+<p>CuraOS is designed for Indian clinics — it understands the workflow, the compliance requirements, and the patient expectations of the Indian market. Implementation takes 14–21 days and includes full staff training.</p>""",
                 "is_featured": False,
                 "seo": {
                     "seo_title": "Clinic Management Software Buying Guide | CuraSuite Blog",
-                    "meta_description": "Complete buying guide for clinic management software in India. Features to look for, questions to ask vendors, and how CuraSuite CMS compares.",
+                    "meta_description": "Complete buying guide for clinic management software in India. Features to look for, questions to ask vendors, and how CuraOS compares.",
                     "focus_keyword": "clinic management software buying guide India",
                     "schema_type": "BlogPosting",
                 },
@@ -828,7 +828,7 @@ class Command(BaseCommand):
             ("/appointment/",         "/contact/",             "301", "Old appointment page → contact"),
             ("/lab/",                 "/products/curalabs/",   "301", "Short lab URL"),
             ("/cms/",                 "/products/curacms/",    "301", "Short CMS URL"),
-            ("/clinic/",              "/products/curasuite/",  "301", "Short clinic URL"),
+            ("/clinic/",              "/products/curaos/",  "301", "Short clinic URL"),
             ("/blog/category/news/",  "/blog/",                "302", "Temporary news redirect"),
         ]
         for old, new, rtype, note in redirects:
@@ -850,7 +850,7 @@ class Command(BaseCommand):
             ("Dr. Anjali Kapoor",   "anjali.kapoor@gmail.com",   "9876543210", "Kapoor Clinic",          "Dehradun",   "CuraCMS",   "organic",      "single_doctor",   "qualified",       5, True,  "Very interested in the blog feature. Send pricing PDF."),
             ("Dr. Rohit Sharma",    "rohit.sharma@example.com",  "9812345678", "Sharma Dental",          "Jaipur",     "CuraCMS",   "google_ads",   "dental",          "demo_scheduled",  3, True,  "Demo scheduled for next Tuesday. Send prep guide."),
             ("Mr. Suresh Patel",    "suresh.patel@mehtadiag.in", "9923456789", "Mehta Diagnostics",      "Ahmedabad",  "CuraLabs",  "demo_form",    "diagnostic",      "won",             20, True, "Signed up for Growth plan. Onboarding in progress."),
-            ("Dr. Priya Nair",      "priya.nair@example.com",    "8834567890", "Nair Ortho Centre",      "Kochi",      "CuraSuite", "referral",     "multi_specialty", "proposal_sent",   7, True,  "Proposal sent. Follow up end of week."),
+            ("Dr. Priya Nair",      "priya.nair@example.com",    "8834567890", "Nair Ortho Centre",      "Kochi",      "CuraOS", "referral",     "multi_specialty", "proposal_sent",   7, True,  "Proposal sent. Follow up end of week."),
             ("Dr. Vikram Singh",    "vikram.singh@example.com",  "9745678901", "Singh Multispecialty",   "Lucknow",    "CuraCMS",   "meta_ads",     "multi_specialty", "contacted",       2, False, "Called — interested but budget decision in Q3."),
             ("Ms. Kavitha Reddy",   "kavitha.reddy@example.com", "8856789012", "Reddy Lab Network",      "Hyderabad",  "CuraLabs",  "organic",      "pathology_lab",   "new",             1, False, ""),
             ("Dr. Arun Kumar",      "arun.kumar@example.com",    "9767890123", "Kumar Physiotherapy",    "Chennai",    "CuraCMS",   "contact_form", "single_doctor",   "new",             0, False, ""),
@@ -860,7 +860,7 @@ class Command(BaseCommand):
             ("Dr. Ravi Tiwari",     "ravi.tiwari@example.com",   "9901234567", "Tiwari Eye Care",        "Varanasi",   "CuraCMS",   "organic",      "single_doctor",   "lost",            15, False,"Went with competitor. Price was deciding factor."),
             ("Ms. Lalita Singh",    "lalita.singh@radiant.com",  "9912345678", "Radiant Diagnostics",    "Indore",     "CuraLabs",  "meta_ads",     "pathology_lab",   "new",             0, False, ""),
             ("Dr. Kiran Rao",       "kiran.rao@example.com",     "9823456781", "Rao Physiotherapy Hub",  "Mysore",     "CuraCMS",   "organic",      "single_doctor",   "new",             0, False, ""),
-            ("Dr. Faraz Ahmed",     "faraz.ahmed@example.com",   "9934567892", "Ahmed ENT Clinic",       "Lucknow",    "CuraSuite", "demo_form",    "single_doctor",   "demo_scheduled",  2, True, "Interested in prescription management specifically."),
+            ("Dr. Faraz Ahmed",     "faraz.ahmed@example.com",   "9934567892", "Ahmed ENT Clinic",       "Lucknow",    "CuraOS", "demo_form",    "single_doctor",   "demo_scheduled",  2, True, "Interested in prescription management specifically."),
             ("Dr. Nisha Gupta",     "nisha.gupta@example.com",   "9845678903", "Gupta Fertility Centre", "Chandigarh", "CuraCMS",   "referral",     "multi_specialty", "qualified",       8, True, "Referred by Dr. Anjali Kapoor. Ready to proceed."),
         ]
 
@@ -984,7 +984,7 @@ class Command(BaseCommand):
 <h2>Mehta Diagnostic Centre, Ahmedabad</h2>
 <p>"The home collection feature was a game-changer. We manage collection slots efficiently and confirmation WhatsApps go out automatically." — Dr. Anjali Mehta</p>
 <h2>Ready to Transform Your Lab?</h2>
-<p><a href="https://curasuite.app/products/curalabs/" style="background:#16A34A;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;">Explore CuraLabs →</a></p>""",
+<p><a href="https://curasuite.app/products/curalabs/" style="background:#DC2626;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;">Explore CuraLabs →</a></p>""",
             content_text="CuraLabs is helping pathology labs across India. Read real results at curasuite.app/products/curalabs/",
             status="draft",
         )

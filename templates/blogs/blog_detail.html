@@ -6,21 +6,6 @@
 {% block og_title %}{{ blog.title }}{% endblock %}
 {% block og_description %}{{ blog.excerpt }}{% endblock %}
 
-{% block schema %}
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "{{ blog.title }}",
-  "description": "{{ blog.excerpt }}",
-  "datePublished": "{{ blog.published_at|date:'c' }}",
-  "dateModified": "{{ blog.updated_at|date:'c' }}",
-  {% if blog.author %}"author": {"@type": "Person", "name": "{{ blog.author.full_name }}"},{% endif %}
-  "publisher": {"@type": "Organization", "name": "{{ SITE_NAME }}"}
-}
-</script>
-{% endblock %}
-
 {% block content %}
 <article>
   {# ── Hero ───────────────────────────────────────────────────────────────── #}

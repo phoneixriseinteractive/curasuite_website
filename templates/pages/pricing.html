@@ -1,8 +1,11 @@
 {% extends "base/base.html" %}
-{% load static %}
+{% load static icons %}
 
 {% block seo_title %}CuraSuite Pricing | Flexible Plans for Clinics & Labs{% endblock %}
-{% block meta_description %}Explore transparent and scalable pricing plans for CuraSuite, CuraCMS, and CuraLabs. Find the perfect fit for your medical practice.{% endblock %}
+{% block meta_description %}Explore transparent pricing for CuraOS, CuraCMS and CuraLabs — clinic management, doctor websites and pathology lab software. Find the right plan for your practice.{% endblock %}
+
+{# The page ends with its own "Not sure which plan" CTA, so skip the site-wide banner. #}
+{% block contextual_cta %}{% endblock %}
 
 {% block content %}
 
@@ -28,15 +31,28 @@
         <span style="color:var(--color-secondary-600);">✓</span> Cancel anytime
       </span>
     </div>
+    <div style="display:flex;gap:var(--space-3);justify-content:center;flex-wrap:wrap;margin-top:var(--space-8);">
+      {% for group in product_groups %}{% if group.products %}
+      <a href="#{{ group.id }}" class="btn btn-secondary">{{ group.title }}</a>
+      {% endif %}{% endfor %}
+    </div>
   </div>
 </section>
 
-<!-- ── Per-product pricing sections ──────────────────────────────────────────── -->
-{% for product in products %}
-{% if product.pricing_tiers.count > 0 %}
+<!-- ── Per-product pricing sections, grouped like the Solutions menu ────────── -->
+{% for group in product_groups %}
+{% if group.products %}
+<div id="{{ group.id }}" style="scroll-margin-top:80px;">
+  <div style="background:var(--surface-card);border-top:1px solid var(--border-default);border-bottom:1px solid var(--border-default);padding:var(--space-5) 0;">
+    <div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:var(--space-4);flex-wrap:wrap;">
+      <div style="font-size:var(--text-xs);font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);">{{ group.title }}</div>
+      <a href="/solutions/{% if group.id == 'labs' %}pathology-labs{% else %}doctors{% endif %}/" style="font-size:var(--text-sm);font-weight:600;">See how it works for you →</a>
+    </div>
+  </div>
+{% for product in group.products %}
+{% if product.pricing_tiers.all %}
 
-<section class="section {% if forloop.even %}{% else %}{% endif %}"
-         style="{% if not forloop.first %}border-top:1px solid var(--border-default);{% endif %}">
+<section class="section" style="{% if not forloop.first %}border-top:1px solid var(--border-default);{% endif %}">
   <div class="container">
 
     <!-- Product header -->
@@ -60,7 +76,7 @@
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:var(--space-6);align-items:stretch;">
       {% for tier in product.pricing_tiers.all %}
       <div style="
-        background:white;
+        background:var(--surface-raised);
         border-radius:var(--radius-xl);
         border:2px solid {% if tier.is_featured %}{{ product.color }}{% else %}var(--border-default){% endif %};
         box-shadow:{% if tier.is_featured %}0 8px 30px {{ product.color }}20{% else %}var(--shadow-sm){% endif %};
@@ -91,20 +107,16 @@
         <!-- Price -->
         <div style="margin-bottom:var(--space-6);">
           {% if tier.price %}
-          <div style="display:flex;align-items:baseline;gap:4px;">
-            <span style="font-size:var(--text-sm);color:var(--text-muted);font-weight:500;">₹</span>
-            <span style="font-size:40px;font-weight:800;color:var(--text-primary);line-height:1;">
-              {{ tier.price|floatformat:0 }}
-            </span>
-          </div>
-          <div style="font-size:var(--text-sm);color:var(--text-muted);margin-top:4px;">
-            per {{ tier.get_billing_cycle_display|lower }}
-            {% if tier.billing_cycle == 'yearly' %}
-            <span style="color:var(--color-secondary-600);font-weight:600;"> · Best value</span>
-            {% endif %}
+          {% if tier.has_discount %}
+          <div style="font-size:var(--text-sm);color:var(--text-muted);text-decoration:line-through;">{{ tier.formatted_original_price }}</div>
+          {% endif %}
+          <div style="font-size:40px;font-weight:800;color:{{ product.color }};line-height:1;">{{ tier.formatted_price }}</div>
+          <div style="font-size:var(--text-sm);color:var(--text-muted);margin-top:6px;">
+            {% if tier.plus_gst %}+ GST {% endif %}per {{ tier.period_label|default:tier.get_billing_cycle_display|lower }}
+            {% if tier.has_discount %}<span style="color:{{ product.color }};font-weight:600;"> · Save {{ tier.savings_percent }}%</span>{% endif %}
           </div>
           {% else %}
-          <div style="font-size:28px;font-weight:800;color:var(--text-primary);line-height:1.2;">
+          <div style="font-size:28px;font-weight:800;color:{{ product.color }};line-height:1.2;">
             Contact Sales
           </div>
           <div style="font-size:var(--text-sm);color:var(--text-muted);margin-top:4px;">
@@ -154,6 +166,9 @@
 
 {% endif %}
 {% endfor %}
+</div>
+{% endif %}
+{% endfor %}
 
 <!-- ── Comparison notes ───────────────────────────────────────────────────────── -->
 <section class="section" style="background:var(--color-primary-50);">
@@ -165,7 +180,7 @@
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:var(--space-6);">
       {% for item in included_items %}
       <div style="text-align:left;">
-        <div style="font-size:24px;margin-bottom:var(--space-2);">{{ item.icon }}</div>
+        <div style="width:40px;height:40px;display:grid;place-items:center;border-radius:10px;margin-bottom:var(--space-3);background:var(--color-white);color:var(--color-primary-600);box-shadow:var(--shadow-sm);">{% icon item.icon size=20 stroke_width=1.75 %}</div>
         <div style="font-size:var(--text-sm);font-weight:600;color:var(--text-primary);margin-bottom:4px;">{{ item.title }}</div>
         <div style="font-size:var(--text-xs);color:var(--text-muted);">{{ item.description }}</div>
       </div>

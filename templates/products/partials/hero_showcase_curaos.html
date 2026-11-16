@@ -1,0 +1,20 @@
+{% load static %}
+{# Layered CuraOS hero: clinical dashboard (back, centre) flanked by appointments (left) and OPD billing (right). #}
+<div class="hero-showcase hero-showcase--os" style="--accent: {{ product.color }};">
+  <figure class="hero-shot hero-shot--dashboard">
+    <div class="hero-shot__bar" aria-hidden="true"><span></span><span></span><span></span></div>
+    <img src="{% static 'img/CuraOS/Hero/cura-os-dashboard.webp' %}" width="840" height="693"
+         alt="{{ product.name }} clinical dashboard with OPD visits, inpatients, surgeries and discharges"
+         fetchpriority="high">
+  </figure>
+  <figure class="hero-shot hero-shot--appointments">
+    <div class="hero-shot__bar" aria-hidden="true"><span></span><span></span><span></span></div>
+    <img src="{% static 'img/CuraOS/Hero/cura-os-appointments.webp' %}" width="840" height="693"
+         alt="{{ product.name }} appointments and scheduling screen with daily OPD schedule">
+  </figure>
+  <figure class="hero-shot hero-shot--billing">
+    <div class="hero-shot__bar" aria-hidden="true"><span></span><span></span><span></span></div>
+    <img src="{% static 'img/CuraOS/Hero/cura-os-opd-billing.webp' %}" width="844" height="685"
+         alt="{{ product.name }} OPD fee billing and point-of-sale invoice screen">
+  </figure>
+</div>

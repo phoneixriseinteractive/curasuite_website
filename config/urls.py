@@ -3,6 +3,7 @@ from django.contrib import admin
 from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.sitemaps.views import sitemap
 from django.http import HttpResponse
 
 
@@ -11,11 +12,17 @@ def robots_txt(request):
     return HttpResponse(RobotsTxt.load().content, content_type="text/plain")
 
 
+def _sitemap_view(request):
+    from apps.seo.sitemaps import SITEMAPS
+    return sitemap(request, sitemaps=SITEMAPS)
+
+
 urlpatterns = [
     # ── System ──────────────────────────────────────────────────────────────
     path("admin/",       admin.site.urls),
     path("manage/",      include("apps.admin_panel.urls", namespace="admin_panel")),
     path("robots.txt",   robots_txt, name="robots_txt"),
+    path("sitemap.xml",  _sitemap_view, name="sitemap"),
 
     # ── Specific app routes (registered BEFORE the pages catch-all) ─────────
     path("blog/",        include("apps.blogs.urls",      namespace="blogs")),

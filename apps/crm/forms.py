@@ -14,7 +14,7 @@ class ContactForm(forms.Form):
         choices=[("", "Select a product")] + [
             ("CuraCMS", "CuraCMS — Website for Doctors"),
             ("CuraLabs", "CuraLabs — Platform for Labs"),
-            ("CuraSuite", "CuraSuite — Clinic Management"),
+            ("CuraOS", "CuraOS — Clinic Management"),
             ("Not sure", "Not sure yet"),
         ],
         label="Product Interest",
