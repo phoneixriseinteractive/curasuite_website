@@ -62,3 +62,14 @@ def upload_file(file: UploadedFile, *, folder=None, alt_text: str = "",
 
     logger.info("Media uploaded: %s (%s)", media.original_name, media.file_size_display)
     return media
+
+
+def upload_editor_image(file: UploadedFile, *, uploaded_by=None) -> MediaFile:
+    """Save an image inserted from the rich text editor into the media library.
+
+    Stricter than `upload_file`: raster images only (no SVG/docs/video), with the bytes
+    verified by Pillow, because the resulting URL is embedded directly in page HTML.
+    """
+    from .validators import validate_image_upload
+    validate_image_upload(file)
+    return upload_file(file, uploaded_by=uploaded_by)

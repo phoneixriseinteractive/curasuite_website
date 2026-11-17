@@ -592,11 +592,14 @@ table.adm-table {
 .adm-form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; }
 .adm-form-full   { grid-column: 1 / -1; }
 
-/* ── Quill editor override ────────────────────────────────────────────────── */
-.adm-editor-wrap { border: 1px solid var(--adm-border-strong); border-radius: var(--adm-radius-sm); overflow: hidden; }
-.adm-editor-wrap .ql-toolbar { background: var(--adm-surface-2); border: none; border-bottom: 1px solid var(--adm-border); }
-.adm-editor-wrap .ql-container { border: none; font-family: var(--adm-font); font-size: 13px; min-height: 240px; }
-.adm-editor-wrap .ql-editor { min-height: 240px; line-height: 1.6; }
+/* ── Rich text editor (TinyMCE) ───────────────────────────────────────────── */
+.tox.tox-tinymce { border: 1px solid var(--adm-border-strong); border-radius: var(--adm-radius-sm); }
+.tox .tox-editor-header { background: var(--adm-surface); }
+/* Docked (sticky) toolbar sits above page content but below the fixed admin header (z 100)/sidebar (z 200) */
+.tox.tox-tinymce--toolbar-sticky-on .tox-editor-header { z-index: 90; box-shadow: var(--adm-shadow); }
+
+/* Featured image picker */
+.adm-featured-preview { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: var(--adm-radius-sm); border: 1px solid var(--adm-border); margin-bottom: 10px; }
 
 /* ── Status pill select ───────────────────────────────────────────────────── */
 .adm-status-select {

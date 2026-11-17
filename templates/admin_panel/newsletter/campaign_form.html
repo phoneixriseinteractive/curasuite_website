@@ -24,7 +24,7 @@
         </div>
         <div class="adm-form-group" style="margin-bottom:0;">
           <label class="adm-label">HTML Content</label>
-          {% include "admin_panel/components/quill_editor.html" with field_id="content_html" field_name="content_html" initial_value=campaign.content_html %}
+          {% include "admin_panel/components/rich_text_editor.html" with field_id="content_html" field_name="content_html" initial_value=campaign.content_html absolute_urls=True %}
         </div>
       </div>
     </div>

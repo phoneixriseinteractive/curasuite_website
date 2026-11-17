@@ -1,0 +1,19 @@
+{% comment %}
+Rich text editor (TinyMCE 7, self-hosted community build from jsDelivr, GPL licence key).
+
+Usage:
+  {% include "admin_panel/components/rich_text_editor.html" with field_id="content" field_name="content" initial_value=obj.content %}
+
+Optional:
+  absolute_urls=True  — keep scheme+host on inserted image/link URLs (needed for email HTML,
+                        where relative /media/... paths don't resolve in the recipient's inbox).
+{% endcomment %}
+<textarea id="{{ field_id }}-editor" name="{{ field_name }}" class="adm-textarea" rows="20"
+          data-rte data-upload-url="{% url 'admin_panel:editor_image_upload' %}"
+          {% if absolute_urls %}data-absolute-urls="1"{% endif %}>{{ initial_value|default:'' }}</textarea>
+<script src="https://cdn.jsdelivr.net/npm/tinymce@7.9.3/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  initRichEditor('{{ field_id }}-editor');
+});
+</script>

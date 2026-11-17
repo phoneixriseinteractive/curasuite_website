@@ -84,6 +84,7 @@ urlpatterns = [
     # Media
     path("media/",                 views.media_library, name="media_library"),
     path("media/upload/",          views.media_upload,  name="media_upload"),
+    path("media/editor-upload/",   views.editor_image_upload, name="editor_image_upload"),
     path("media/<uuid:pk>/delete/",views.media_delete,  name="media_delete"),
 
     # FAQs

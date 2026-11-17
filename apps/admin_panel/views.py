@@ -327,6 +327,22 @@ def page_delete(request, pk):
 # BLOGS
 # ═══════════════════════════════════════════════════════════════════════════════
 
+def _save_blog_featured_image(request, blog):
+    """Apply featured-image fields from the blog form. Returns False (and queues an
+    error toast) if the uploaded file was rejected; the rest of the post still saves."""
+    from apps.blogs.services import set_featured_image
+    try:
+        set_featured_image(
+            blog,
+            image=request.FILES.get("featured_image"),
+            alt_text=request.POST.get("featured_image_alt", "").strip(),
+            remove="remove_featured_image" in request.POST,
+        )
+    except ValueError as e:
+        _toast(request, f"Featured image not saved: {e}", kind="error")
+        return False
+    return True
+
 @admin_required
 def blogs_list(request):
     from apps.blogs.models import Blog, BlogCategory
@@ -366,6 +382,7 @@ def blog_create(request):
                 blog.tags.set(BlogTag.objects.filter(pk__in=tag_ids))
             blog.save()
             _save_seo(blog, request.POST)
+            _save_blog_featured_image(request, blog)
             _toast(request, f'Post "{title}" created.')
             return redirect("admin_panel:blog_edit", pk=blog.pk)
     categories = BlogCategory.all_objects.filter(deleted_at__isnull=True)
@@ -397,6 +414,7 @@ def blog_edit(request, pk):
                     is_featured="is_featured" in request.POST)
         if tag_ids:
             blog.tags.set(BlogTag.objects.filter(pk__in=tag_ids))
+        _save_blog_featured_image(request, blog)
         if action == "publish":
             blog.publish(published_by=request.user)
             _toast(request, f'"{blog.title}" published.')
@@ -693,6 +711,22 @@ def media_upload(request):
         except ValueError as e:
             errors.append(str(e))
     return JsonResponse({"uploaded": uploaded, "errors": errors})
+
+
+@admin_required
+@require_POST
+def editor_image_upload(request):
+    """Image upload endpoint for the rich text editor (TinyMCE images_upload_handler).
+    Responds with {"location": url} on success, {"error": msg} + 400 otherwise."""
+    from apps.media.services import upload_editor_image
+    f = request.FILES.get("file")
+    if not f:
+        return JsonResponse({"error": "No file received."}, status=400)
+    try:
+        mf = upload_editor_image(f, uploaded_by=request.user)
+    except ValueError as e:
+        return JsonResponse({"error": str(e)}, status=400)
+    return JsonResponse({"location": mf.file.url})
 
 
 @admin_required

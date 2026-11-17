@@ -946,3 +946,40 @@ p + p { margin-top: var(--space-4); }
 @media (max-width: 900px) { .cms-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 560px) { .cms-steps { grid-template-columns: 1fr; } }
 .cms-jump ~ section[id] { scroll-margin-top: 5rem; }
+
+/* ── Prose (rich text from the admin editor: blog posts, CMS pages) ─────────────
+   The reset above zeroes margins and removes list markers globally, so editor
+   content needs its own typography or bullets/spacing disappear on the live site. */
+.prose { font-size: var(--text-lg); line-height: var(--leading-relaxed); color: var(--text-primary); overflow-wrap: break-word; }
+.prose > * + * { margin-top: 1.1em; }
+.prose h2 { font-size: var(--text-2xl); line-height: var(--leading-tight); margin-top: 1.8em; }
+.prose h3 { font-size: var(--text-xl); line-height: var(--leading-tight); margin-top: 1.6em; }
+.prose h4 { font-size: var(--text-lg); margin-top: 1.4em; }
+.prose a { text-decoration: underline; }
+.prose ul, .prose ol { padding-left: 1.6em; }
+.prose ul { list-style: disc; }
+.prose ul ul { list-style: circle; }
+.prose ul ul ul { list-style: square; }
+.prose ol { list-style: decimal; }
+.prose ol ol { list-style: lower-alpha; }
+.prose ol ol ol { list-style: lower-roman; }
+.prose li + li, .prose li > ul, .prose li > ol { margin-top: 0.4em; }
+.prose li::marker { color: var(--text-secondary); }
+.prose img { height: auto; border-radius: var(--radius-md); }
+.prose img[style*="float: left"] { margin: 0.3em 1.2em 0.8em 0; }
+.prose img[style*="float: right"] { margin: 0.3em 0 0.8em 1.2em; }
+.prose figure.image { display: table; margin-inline: auto; }
+.prose figure.image figcaption { display: table-caption; caption-side: bottom; text-align: center; font-size: var(--text-sm); color: var(--text-secondary); margin-top: 0.5em; }
+.prose blockquote { border-left: 3px solid var(--color-primary-600); padding-left: 1em; color: var(--text-secondary); font-style: italic; }
+.prose pre { font-family: var(--font-mono); font-size: var(--text-sm); background: var(--surface-card); border: 1px solid var(--border-default); border-radius: var(--radius-md); padding: 1em; overflow-x: auto; }
+.prose code { font-family: var(--font-mono); font-size: 0.9em; }
+.prose hr { border: 0; border-top: 1px solid var(--border-default); margin-block: 2em; }
+.prose table { width: 100%; border-collapse: collapse; font-size: var(--text-base); display: block; overflow-x: auto; }
+.prose th, .prose td { border: 1px solid var(--border-default); padding: 0.5em 0.75em; text-align: left; }
+.prose th { background: var(--surface-card); }
+.prose iframe, .prose video { max-width: 100%; }
+/* Legacy Quill markup in posts not yet re-saved through the new editor */
+.prose li[data-list="bullet"] { list-style-type: disc; }
+.prose li.ql-indent-1 { margin-left: 1.5em; } .prose li.ql-indent-2 { margin-left: 3em; } .prose li.ql-indent-3 { margin-left: 4.5em; }
+.prose .ql-ui { display: none; }
+.prose .ql-align-center { text-align: center; } .prose .ql-align-right { text-align: right; } .prose .ql-align-justify { text-align: justify; }

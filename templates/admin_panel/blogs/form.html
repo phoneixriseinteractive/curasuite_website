@@ -14,7 +14,7 @@
   {% endif %}
 </div>
 
-<form method="post" id="blog-form">
+<form method="post" id="blog-form" enctype="multipart/form-data">
   {% csrf_token %}
   <input type="hidden" name="action" id="blog-action" value="save">
 
@@ -36,7 +36,7 @@
           </div>
           <div class="adm-form-group" style="margin-bottom:0;">
             <label class="adm-label">Content</label>
-            {% include "admin_panel/components/quill_editor.html" with field_id="content" field_name="content" initial_value=blog_obj.content %}
+            {% include "admin_panel/components/rich_text_editor.html" with field_id="content" field_name="content" initial_value=blog_obj.content %}
           </div>
         </div>
       </div>
@@ -64,6 +64,33 @@
           {% endif %}
           {% if blog_obj and blog_obj.is_published %}
           <a href="{{ blog_obj.get_absolute_url }}" target="_blank" class="adm-btn adm-btn-ghost" style="width:100%;justify-content:center;font-size:12px;">↗ View Live</a>
+          {% endif %}
+        </div>
+      </div>
+
+      {# Featured image #}
+      <div class="adm-card" x-data="{ preview: '{% if blog_obj.featured_image %}{{ blog_obj.featured_image.url|escapejs }}{% endif %}', removing: false }">
+        <div class="adm-card-header"><span class="adm-card-title">Featured Image</span></div>
+        <div class="adm-card-body">
+          <template x-if="preview && !removing">
+            <img :src="preview" alt="" class="adm-featured-preview">
+          </template>
+          <div class="adm-form-group">
+            <input type="file" name="featured_image" id="featured_image" class="adm-input"
+                   accept="image/jpeg,image/png,image/webp,image/gif"
+                   @change="const f = $event.target.files[0]; if (f) { preview = URL.createObjectURL(f); removing = false; }">
+            <div style="font-size:11px;color:var(--adm-text-muted);margin-top:4px;">JPEG, PNG, WebP or GIF · max 10MB · 1200×630 recommended (used for listings &amp; social cards)</div>
+          </div>
+          <div class="adm-form-group"{% if not blog_obj.featured_image %} style="margin-bottom:0;"{% endif %}>
+            <label class="adm-label" for="featured_image_alt">Alt text</label>
+            <input type="text" name="featured_image_alt" id="featured_image_alt" class="adm-input" maxlength="200"
+                   value="{{ blog_obj.featured_image_alt|default:'' }}" placeholder="Describe the image for screen readers">
+          </div>
+          {% if blog_obj.featured_image %}
+          <label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer;color:var(--adm-red);">
+            <input type="checkbox" name="remove_featured_image" x-model="removing" style="accent-color:var(--adm-red);">
+            Remove featured image
+          </label>
           {% endif %}
         </div>
       </div>

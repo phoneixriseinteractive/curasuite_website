@@ -37,6 +37,34 @@ def update_blog(blog: Blog, *, updated_by=None, **kwargs) -> Blog:
     return blog
 
 
+def set_featured_image(blog: Blog, *, image=None, alt_text: str = None, remove: bool = False) -> Blog:
+    """Replace, remove, or re-caption a post's featured image.
+
+    `image` is an UploadedFile (validated here; raises ValueError if invalid).
+    `alt_text=None` leaves the existing alt text untouched. The previous image file is
+    deleted from storage when replaced or removed — revisions don't reference it.
+    """
+    from apps.media.validators import validate_image_upload
+
+    fields = []
+    if image is not None:
+        validate_image_upload(image)
+        if blog.featured_image:
+            blog.featured_image.delete(save=False)
+        blog.featured_image = image
+        fields.append("featured_image")
+    elif remove and blog.featured_image:
+        blog.featured_image.delete(save=False)
+        blog.featured_image = None
+        fields.append("featured_image")
+    if alt_text is not None and alt_text != blog.featured_image_alt:
+        blog.featured_image_alt = alt_text
+        fields.append("featured_image_alt")
+    if fields:
+        blog.save(update_fields=fields + ["updated_at"])
+    return blog
+
+
 def submit_comment(*, blog: Blog, author_name: str, author_email: str,
                    content: str, ip_address: str = None) -> BlogComment:
     return BlogComment.objects.create(
