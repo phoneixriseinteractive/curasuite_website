@@ -1,0 +1,72 @@
+{% extends "admin_panel/base.html" %}
+{% block content %}
+<div class="adm-page-header">
+  <div>
+    <h1 class="adm-page-title">{{ action }} Author</h1>
+    <div class="adm-breadcrumb"><a href="{% url 'admin_panel:blogs_list' %}">Blog Posts</a> › <a href="{% url 'admin_panel:blog_authors' %}">Authors</a> › {{ action }}</div>
+  </div>
+</div>
+
+{% if error %}
+<div class="adm-card" style="border-color:var(--adm-red);margin-bottom:16px;">
+  <div class="adm-card-body" style="color:var(--adm-red);padding:12px 20px;">{{ error }}</div>
+</div>
+{% endif %}
+
+{# On a failed POST, re-show what was typed (form_data) rather than the stored values #}
+<form method="post" enctype="multipart/form-data">{% csrf_token %}
+  <div style="display:grid;grid-template-columns:1fr 280px;gap:20px;align-items:start;">
+    <div class="adm-card">
+      <div class="adm-card-header"><span class="adm-card-title">Author Details</span></div>
+      <div class="adm-card-body">
+        <div class="adm-form-grid-2">
+          <div class="adm-form-group">
+            <label class="adm-label">Name <span style="color:var(--adm-red);">*</span></label>
+            <input type="text" name="name" class="adm-input" required maxlength="120"
+                   value="{% if error %}{{ form_data.name }}{% else %}{{ author.name|default:'' }}{% endif %}" placeholder="Dr. Priya Sharma">
+          </div>
+          <div class="adm-form-group">
+            <label class="adm-label">Designation</label>
+            <input type="text" name="designation" class="adm-input" maxlength="150"
+                   value="{% if error %}{{ form_data.designation }}{% else %}{{ author.designation|default:'' }}{% endif %}" placeholder="Head of Product, CuraSuite">
+          </div>
+          <div class="adm-form-group adm-form-full" x-data="{ n: 0 }" x-init="n = $refs.bio.value.length">
+            <label class="adm-label">Short bio <span style="font-weight:400;color:var(--adm-text-muted);">(<span x-text="n"></span>/600)</span></label>
+            <textarea name="bio" x-ref="bio" class="adm-textarea" rows="4" maxlength="600" @input="n = $event.target.value.length"
+                      placeholder="2–3 sentences shown in the author box at the end of each post.">{% if error %}{{ form_data.bio }}{% else %}{{ author.bio|default:'' }}{% endif %}</textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div class="adm-card" x-data="{ preview: '{% if author.photo %}{{ author.photo.url|escapejs }}{% endif %}', removing: false }">
+        <div class="adm-card-header"><span class="adm-card-title">Photo</span></div>
+        <div class="adm-card-body">
+          <template x-if="preview && !removing">
+            <img :src="preview" alt="" style="width:96px;height:96px;border-radius:50%;object-fit:cover;margin:0 auto 12px;">
+          </template>
+          <input type="file" name="photo" class="adm-input" accept="image/jpeg,image/png,image/webp,image/gif"
+                 @change="const f = $event.target.files[0]; if (f) { preview = URL.createObjectURL(f); removing = false; }">
+          <div style="font-size:11px;color:var(--adm-text-muted);margin-top:4px;">Square image, 400×400 recommended · max 10MB</div>
+          {% if author.photo %}
+          <label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer;color:var(--adm-red);margin-top:10px;">
+            <input type="checkbox" name="remove_photo" x-model="removing" style="accent-color:var(--adm-red);"> Remove photo
+          </label>
+          {% endif %}
+        </div>
+      </div>
+      <div class="adm-card">
+        <div class="adm-card-body" style="display:flex;flex-direction:column;gap:12px;">
+          <div class="adm-form-group" style="margin-bottom:0;">
+            <label class="adm-label">Sort order</label>
+            <input type="number" name="sort_order" class="adm-input" min="0" value="{% if author %}{{ author.sort_order }}{% endif %}" placeholder="Auto">
+          </div>
+          <button type="submit" class="adm-btn adm-btn-primary" style="width:100%;justify-content:center;">Save Author</button>
+          <a href="{% url 'admin_panel:blog_authors' %}" class="adm-btn adm-btn-ghost" style="width:100%;justify-content:center;">Cancel</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+{% endblock %}

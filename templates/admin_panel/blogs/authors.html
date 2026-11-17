@@ -1,0 +1,57 @@
+{% extends "admin_panel/base.html" %}
+{% block content %}
+<div class="adm-page-header">
+  <div>
+    <h1 class="adm-page-title">Blog Authors</h1>
+    <div class="adm-breadcrumb"><a href="{% url 'admin_panel:dashboard' %}">Dashboard</a> › <a href="{% url 'admin_panel:blogs_list' %}">Blog Posts</a> › Authors</div>
+  </div>
+  <a href="{% url 'admin_panel:blog_author_create' %}" class="adm-btn adm-btn-primary">
+    <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    Add Author
+  </a>
+</div>
+
+<div class="adm-card">
+  <div class="adm-card-header">
+    <span class="adm-card-title">All Authors</span>
+    <span style="font-size:12px;color:var(--adm-text-muted);">Shown in the byline and the "About the author" box on each post</span>
+  </div>
+  <div class="adm-table-wrap">
+    {% if authors %}
+    <table class="adm-table">
+      <thead><tr><th>Author</th><th>Designation</th><th>Posts</th><th>Actions</th></tr></thead>
+      <tbody>
+        {% for a in authors %}
+        <tr>
+          <td>
+            <div style="display:flex;align-items:center;gap:10px;">
+              {% if a.photo %}<img src="{{ a.photo.url }}" alt="" style="width:36px;height:36px;border-radius:50%;object-fit:cover;">
+              {% else %}<div class="adm-avatar" style="width:36px;height:36px;">{{ a.name|slice:":1"|upper }}</div>{% endif %}
+              <div>
+                <div style="font-weight:500;">{{ a.name }}</div>
+                {% if a.bio %}<div style="font-size:11px;color:var(--adm-text-muted);">{{ a.bio|truncatechars:70 }}</div>{% endif %}
+              </div>
+            </div>
+          </td>
+          <td style="color:var(--adm-text-secondary);">{{ a.designation|default:"—" }}</td>
+          <td style="color:var(--adm-text-muted);">{{ a.post_count }}</td>
+          <td>
+            <div style="display:flex;gap:6px;">
+              <a href="{% url 'admin_panel:blog_author_edit' a.pk %}" class="adm-btn adm-btn-secondary" style="font-size:12px;padding:4px 10px;">Edit</a>
+              <form method="post" action="{% url 'admin_panel:blog_author_delete' a.pk %}" style="display:inline;"
+                    onsubmit="return confirm('Delete this author? Their posts will no longer show an author box.')">
+                {% csrf_token %}
+                <button type="submit" class="adm-btn adm-btn-danger" style="font-size:12px;padding:4px 10px;">Del</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    {% include "admin_panel/components/empty_state.html" with icon="👤" title="No authors yet" message="Add an author profile, then pick it when writing a post." %}
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

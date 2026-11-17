@@ -68,6 +68,10 @@ urlpatterns = [
     path("blogs/<uuid:pk>/edit/",         views.blog_edit,       name="blog_edit"),
     path("blogs/<uuid:pk>/delete/",       views.blog_delete,     name="blog_delete"),
     path("blogs/categories/",             views.blog_categories, name="blog_categories"),
+    path("blogs/authors/",                views.blog_authors,       name="blog_authors"),
+    path("blogs/authors/create/",         views.blog_author_create, name="blog_author_create"),
+    path("blogs/authors/<uuid:pk>/edit/", views.blog_author_edit,   name="blog_author_edit"),
+    path("blogs/authors/<uuid:pk>/delete/", views.blog_author_delete, name="blog_author_delete"),
     path("blogs/comments/",               views.blog_comments,   name="blog_comments"),
 
     # Products

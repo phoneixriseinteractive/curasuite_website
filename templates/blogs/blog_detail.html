@@ -17,7 +17,7 @@
       <h1 style="margin-bottom:var(--space-6);">{{ blog.title }}</h1>
       <p style="font-size:var(--text-xl);color:var(--text-secondary);margin-bottom:var(--space-6);">{{ blog.excerpt }}</p>
       <div style="display:flex;align-items:center;gap:var(--space-4);font-size:var(--text-sm);color:var(--text-muted);">
-        {% if blog.author %}<span>By <strong style="color:var(--text-primary);">{{ blog.author.full_name }}</strong></span><span>·</span>{% endif %}
+        {% if blog.byline_name %}<span>By <a href="#about-author" style="color:var(--text-primary);font-weight:var(--font-semi);">{{ blog.byline_name }}</a></span><span>·</span>{% endif %}
         {% if blog.published_at %}<time datetime="{{ blog.published_at|date:'c' }}">{{ blog.published_at|date:"F j, Y" }}</time><span>·</span>{% endif %}
         <span>{{ blog.reading_time_minutes }} min read</span>
       </div>
@@ -43,6 +43,23 @@
       {% endfor %}
     </div>
     {% endif %}
+
+    {# ── About the author (sits after the article, before comments/related) ── #}
+    {% with author=blog.byline %}{% if author %}
+    <aside id="about-author" class="author-box" aria-label="About the author">
+      {% if author.photo %}
+      <img src="{{ author.photo.url }}" alt="{{ author.name }}" class="author-box__photo" width="88" height="88" loading="lazy">
+      {% else %}
+      <div class="author-box__photo author-box__photo--initial" aria-hidden="true">{{ author.name|slice:":1"|upper }}</div>
+      {% endif %}
+      <div>
+        <div class="author-box__label">Written by</div>
+        <div class="author-box__name">{{ author.name }}</div>
+        {% if author.designation %}<div class="author-box__designation">{{ author.designation }}</div>{% endif %}
+        {% if author.bio %}<p class="author-box__bio">{{ author.bio|linebreaksbr }}</p>{% endif %}
+      </div>
+    </aside>
+    {% endif %}{% endwith %}
   </div>
 
   {# ── Related Posts ──────────────────────────────────────────────────────── #}

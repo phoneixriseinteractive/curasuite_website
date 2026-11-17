@@ -7,6 +7,7 @@ Blog posts use VersionedModel for draft/review/published workflow + revision his
 Models:
   BlogCategory  — hierarchical content categories
   BlogTag       — flat tagging system
+  BlogAuthor    — public author profile (name, designation, bio, photo) shown on posts
   Blog          — the article itself
   BlogRevision  — version snapshot per save
   BlogComment   — moderated reader comments
@@ -76,6 +77,44 @@ class BlogTag(UUIDModel):
         return reverse("blogs:tag", kwargs={"slug": self.slug})
 
 
+class BlogAuthor(AuditedModel):
+    """
+    Public-facing author profile shown in the byline and the author box on each post.
+
+    Deliberately separate from the User account (Blog.author): bylines can credit people
+    who never log in to /manage/ (guest writers, doctors), and a profile holds public
+    bio/photo data that doesn't belong on a login account.
+    """
+
+    name        = models.CharField(max_length=120, verbose_name=_("Name"))
+    slug        = models.SlugField(max_length=140, unique=True, db_index=True)
+    designation = models.CharField(
+        max_length=150, blank=True, verbose_name=_("Designation"),
+        help_text=_("e.g. 'Head of Product, CuraSuite' or 'MBBS, MD — Cardiologist'."),
+    )
+    bio         = models.TextField(max_length=600, blank=True, verbose_name=_("Short bio"))
+    photo       = models.ImageField(upload_to="blog_authors/", null=True, blank=True, verbose_name=_("Photo"))
+    sort_order  = models.PositiveIntegerField(default=0, db_index=True)
+
+    class Meta:
+        db_table = "blog_authors"
+        verbose_name = _("Blog Author")
+        verbose_name_plural = _("Blog Authors")
+        ordering = ["sort_order", "name"]
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base = slugify(self.name) or "author"
+            slug, n = base, 2
+            while BlogAuthor.all_objects.filter(slug=slug).exclude(pk=self.pk).exists():
+                slug, n = f"{base}-{n}", n + 1
+            self.slug = slug
+        super().save(*args, **kwargs)
+
+
 class Blog(VersionedModel):
     """
     A blog article. Inherits VersionedModel for full publishing workflow.
@@ -90,6 +129,13 @@ class Blog(VersionedModel):
         settings.AUTH_USER_MODEL, null=True, blank=True,
         on_delete=models.SET_NULL, related_name="blog_posts",
         verbose_name=_("Author"),
+        help_text=_("Account that created the post. The public byline uses author_profile."),
+    )
+    author_profile = models.ForeignKey(
+        "BlogAuthor", null=True, blank=True,
+        on_delete=models.SET_NULL, related_name="posts",
+        verbose_name=_("Author profile"),
+        help_text=_("Public author shown in the byline and author box."),
     )
 
     # ── Content ───────────────────────────────────────────────────────────────
@@ -151,6 +197,22 @@ class Blog(VersionedModel):
     def get_absolute_url(self):
         from django.urls import reverse
         return reverse("blogs:detail", kwargs={"slug": self.slug})
+
+    @property
+    def byline(self):
+        """The public author profile, or None if unset or the profile was deleted."""
+        p = self.author_profile
+        return p if p is not None and p.is_active and p.deleted_at is None else None
+
+    @property
+    def byline_name(self) -> str:
+        """Public author name: the profile, else the account's real name. Never the
+        email address (User.full_name falls back to it, which must not be published)."""
+        if self.byline:
+            return self.byline.name
+        if self.author:
+            return f"{self.author.first_name} {self.author.last_name}".strip()
+        return ""
 
     def increment_view_count(self):
         Blog.all_objects.filter(pk=self.pk).update(view_count=models.F("view_count") + 1)

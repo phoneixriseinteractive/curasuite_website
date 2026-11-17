@@ -983,3 +983,13 @@ p + p { margin-top: var(--space-4); }
 .prose li.ql-indent-1 { margin-left: 1.5em; } .prose li.ql-indent-2 { margin-left: 3em; } .prose li.ql-indent-3 { margin-left: 4.5em; }
 .prose .ql-ui { display: none; }
 .prose .ql-align-center { text-align: center; } .prose .ql-align-right { text-align: right; } .prose .ql-align-justify { text-align: justify; }
+
+/* ── Blog author box (end of each post) ─────────────────────────────────────── */
+.author-box { display: flex; gap: var(--space-6); align-items: flex-start; margin-top: var(--space-10); padding: var(--space-6); background: var(--surface-card); border: 1px solid var(--border-default); border-radius: var(--radius-md); scroll-margin-top: 6rem; }
+.author-box__photo { width: 88px; height: 88px; flex-shrink: 0; border-radius: 50%; object-fit: cover; }
+.author-box__photo--initial { display: flex; align-items: center; justify-content: center; background: var(--color-primary-600); color: #fff; font-size: var(--text-3xl); font-weight: 700; }
+.author-box__label { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: .06em; color: var(--text-muted); margin-bottom: var(--space-1); }
+.author-box__name { font-size: var(--text-xl); font-weight: var(--font-semi); color: var(--text-primary); line-height: var(--leading-tight); }
+.author-box__designation { font-size: var(--text-sm); color: var(--color-primary-600); margin-top: var(--space-1); }
+.author-box__bio { font-size: var(--text-base); color: var(--text-secondary); line-height: var(--leading-relaxed); margin-top: var(--space-3); }
+@media (max-width: 560px) { .author-box { flex-direction: column; align-items: center; text-align: center; } }

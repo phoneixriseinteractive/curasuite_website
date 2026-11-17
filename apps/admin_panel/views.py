@@ -23,6 +23,7 @@ from .services import (
     client_ip, get_pending_2fa_user, issue_remember_device_cookie, set_pending_2fa,
 )
 from apps.accounts.services import create_and_send_otp, resend_otp, verify_otp
+from apps.blogs.selectors import get_active_authors
 from django.urls import reverse
 
 logger = logging.getLogger(__name__)
@@ -327,6 +328,19 @@ def page_delete(request, pk):
 # BLOGS
 # ═══════════════════════════════════════════════════════════════════════════════
 
+def _selected_author_profile(request):
+    """Resolve the author <select> on the blog form to an active BlogAuthor (or None)."""
+    from django.core.exceptions import ValidationError
+    from apps.blogs.models import BlogAuthor
+    pk = request.POST.get("author_profile")
+    if not pk:
+        return None
+    try:
+        return BlogAuthor.objects.filter(pk=pk).first()
+    except (ValidationError, ValueError):
+        return None
+
+
 def _save_blog_featured_image(request, blog):
     """Apply featured-image fields from the blog form. Returns False (and queues an
     error toast) if the uploaded file was rejected; the rest of the post still saves."""
@@ -346,7 +360,7 @@ def _save_blog_featured_image(request, blog):
 @admin_required
 def blogs_list(request):
     from apps.blogs.models import Blog, BlogCategory
-    qs = Blog.all_objects.filter(deleted_at__isnull=True).select_related("author","category").order_by("-created_at")
+    qs = Blog.all_objects.filter(deleted_at__isnull=True).select_related("author","author_profile","category").order_by("-created_at")
     if request.GET.get("status"): qs = qs.filter(status=request.GET["status"])
     if request.GET.get("q"):      qs = qs.filter(title__icontains=request.GET["q"])
     page = Paginator(qs, 20).get_page(request.GET.get("page", 1))
@@ -376,7 +390,8 @@ def blog_create(request):
             from apps.blogs.models import BlogCategory
             cat = BlogCategory.all_objects.filter(pk=cat_id).first() if cat_id else None
             blog = create_blog(title=title, content=content, excerpt=excerpt,
-                               category=cat, created_by=request.user)
+                               category=cat, created_by=request.user,
+                               author_profile=_selected_author_profile(request))
             blog.is_featured = featured
             if tag_ids:
                 blog.tags.set(BlogTag.objects.filter(pk__in=tag_ids))
@@ -390,6 +405,7 @@ def blog_create(request):
     return render(request, "admin_panel/blogs/form.html", {
         "action": "Create", "blog_obj": None, "seo": None,
         "categories": categories, "tags": tags,
+        "authors": get_active_authors(),
         "stats": get_dashboard_stats(),
         "page_title": "New Blog Post", "active_nav": "blogs",
     })
@@ -411,6 +427,7 @@ def blog_edit(request, pk):
                     content=request.POST.get("content", blog.content),
                     excerpt=request.POST.get("excerpt", blog.excerpt),
                     category=cat,
+                    author_profile=_selected_author_profile(request),
                     is_featured="is_featured" in request.POST)
         if tag_ids:
             blog.tags.set(BlogTag.objects.filter(pk__in=tag_ids))
@@ -432,10 +449,93 @@ def blog_edit(request, pk):
     return render(request, "admin_panel/blogs/form.html", {
         "action": "Edit", "blog_obj": blog, "seo": seo,
         "categories": categories, "tags": tags,
+        "authors": get_active_authors(),
         "selected_tags": list(blog.tags.values_list("pk", flat=True)),
         "stats": get_dashboard_stats(),
         "page_title": f"Edit — {blog.title}", "active_nav": "blogs",
     })
+
+
+# ── Blog authors ───────────────────────────────────────────────────────────────
+
+@admin_required
+def blog_authors(request):
+    from apps.blogs.selectors import get_authors_for_admin
+    return render(request, "admin_panel/blogs/authors.html", {
+        "authors": get_authors_for_admin(),
+        "stats": get_dashboard_stats(),
+        "page_title": "Blog Authors", "active_nav": "blogs",
+    })
+
+
+def _author_form(request, author):
+    from apps.blogs.services import save_author
+    try:
+        sort_order = int(request.POST["sort_order"]) if request.POST.get("sort_order") else None
+    except ValueError:
+        sort_order = None
+    return save_author(
+        author,
+        name=request.POST.get("name", ""),
+        designation=request.POST.get("designation", ""),
+        bio=request.POST.get("bio", ""),
+        photo=request.FILES.get("photo"),
+        remove_photo="remove_photo" in request.POST,
+        sort_order=sort_order,
+        user=request.user,
+    )
+
+
+@admin_required
+@require_http_methods(["GET", "POST"])
+def blog_author_create(request):
+    error = None
+    if request.method == "POST":
+        try:
+            author = _author_form(request, None)
+        except ValueError as e:
+            error = str(e)
+        else:
+            _toast(request, f'Author "{author.name}" added.')
+            return redirect("admin_panel:blog_authors")
+    return render(request, "admin_panel/blogs/author_form.html", {
+        "action": "Add", "author": None, "error": error, "form_data": request.POST,
+        "stats": get_dashboard_stats(),
+        "page_title": "Add Author", "active_nav": "blogs",
+    })
+
+
+@admin_required
+@require_http_methods(["GET", "POST"])
+def blog_author_edit(request, pk):
+    from apps.blogs.models import BlogAuthor
+    author = get_object_or_404(BlogAuthor.objects, pk=pk)
+    error = None
+    if request.method == "POST":
+        try:
+            _author_form(request, author)
+        except ValueError as e:
+            error = str(e)
+            author.refresh_from_db()
+        else:
+            _toast(request, "Author updated.")
+            return redirect("admin_panel:blog_authors")
+    return render(request, "admin_panel/blogs/author_form.html", {
+        "action": "Edit", "author": author, "error": error, "form_data": request.POST,
+        "stats": get_dashboard_stats(),
+        "page_title": f"Edit — {author.name}", "active_nav": "blogs",
+    })
+
+
+@admin_required
+@require_POST
+def blog_author_delete(request, pk):
+    from apps.blogs.models import BlogAuthor
+    from apps.blogs.services import delete_author
+    author = get_object_or_404(BlogAuthor.objects, pk=pk)
+    delete_author(author)
+    _toast(request, f'Author "{author.name}" deleted.')
+    return redirect("admin_panel:blog_authors")
 
 
 @admin_required

@@ -291,12 +291,19 @@ def blog_nodes(blog, *, seo=None) -> list[dict]:
         article["datePublished"] = blog.published_at.date().isoformat()
     if blog.updated_at:
         article["dateModified"] = blog.updated_at.date().isoformat()
-    # Not User.full_name: that falls back to the email address, which must not be published.
-    author_name = (
-        f"{blog.author.first_name} {blog.author.last_name}".strip() if blog.author else ""
-    )
+    # byline_name never falls back to the email address (unlike User.full_name).
+    author_name = blog.byline_name
     if author_name:
-        article["author"] = {"@type": "Person", "name": author_name}
+        person = {"@type": "Person", "name": author_name}
+        profile = blog.byline
+        if profile:
+            if profile.designation:
+                person["jobTitle"] = profile.designation
+            if profile.bio:
+                person["description"] = profile.bio
+            if profile.photo:
+                person["image"] = absolute_url(profile.photo.url)
+        article["author"] = person
     else:
         article["author"] = {"@id": ORGANIZATION_ID}
     if blog.featured_image:

@@ -8,6 +8,7 @@
   </div>
   <div style="display:flex;gap:8px;">
     <a href="{% url 'admin_panel:blog_comments' %}" class="adm-btn adm-btn-secondary">Comments</a>
+    <a href="{% url 'admin_panel:blog_authors' %}" class="adm-btn adm-btn-secondary">Authors</a>
     <a href="{% url 'admin_panel:blog_categories' %}" class="adm-btn adm-btn-secondary">Categories & Tags</a>
     <a href="{% url 'admin_panel:blog_create' %}" class="adm-btn adm-btn-primary">
       <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -49,7 +50,7 @@
             {% if blog.is_featured %}<span class="adm-badge adm-badge-amber" style="font-size:10px;margin-top:2px;">⭐ Featured</span>{% endif %}
           </td>
           <td style="color:var(--adm-text-secondary);">{{ blog.category.name|default:"—" }}</td>
-          <td style="font-size:12px;color:var(--adm-text-secondary);">{{ blog.author.full_name|default:"—" }}</td>
+          <td style="font-size:12px;color:var(--adm-text-secondary);">{% if blog.byline %}{{ blog.byline.name }}{% else %}{{ blog.author.full_name|default:"—" }}{% endif %}</td>
           <td>{% status_badge blog.status %}</td>
           <td style="color:var(--adm-text-muted);">{{ blog.view_count }}</td>
           <td style="font-size:12px;color:var(--adm-text-muted);">{{ blog.published_at|date:"M j, Y"|default:"—" }}</td>

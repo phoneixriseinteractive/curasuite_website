@@ -38,7 +38,7 @@
               </h2>
               <p style="color:var(--text-secondary);font-size:var(--text-sm);margin-bottom:var(--space-4);">{{ blog.excerpt|truncatewords:20 }}</p>
               <div style="display:flex;align-items:center;gap:var(--space-3);font-size:var(--text-xs);color:var(--text-muted);">
-                {% if blog.author %}<span>{{ blog.author.full_name }}</span><span>·</span>{% endif %}
+                {% if blog.byline_name %}<span>{{ blog.byline_name }}</span><span>·</span>{% endif %}
                 {% if blog.published_at %}<span>{{ blog.published_at|date:"M j, Y" }}</span><span>·</span>{% endif %}
                 <span>{{ blog.reading_time_minutes }} min read</span>
               </div>

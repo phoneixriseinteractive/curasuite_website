@@ -68,6 +68,21 @@
         </div>
       </div>
 
+      {# Author #}
+      <div class="adm-card">
+        <div class="adm-card-header">
+          <span class="adm-card-title">Author</span>
+          <a href="{% url 'admin_panel:blog_authors' %}" target="_blank" style="font-size:12px;">Manage authors ↗</a>
+        </div>
+        <div class="adm-card-body">
+          <select name="author_profile" class="adm-select">
+            <option value="">— No author box —</option>
+            {% for a in authors %}<option value="{{ a.pk }}" {% if blog_obj and blog_obj.author_profile_id == a.pk %}selected{% endif %}>{{ a.name }}{% if a.designation %} — {{ a.designation }}{% endif %}</option>{% endfor %}
+          </select>
+          {% if not authors %}<div style="font-size:12px;color:var(--adm-text-muted);margin-top:6px;">No authors yet — <a href="{% url 'admin_panel:blog_author_create' %}" target="_blank">add one</a>, then reload this page.</div>{% endif %}
+        </div>
+      </div>
+
       {# Featured image #}
       <div class="adm-card" x-data="{ preview: '{% if blog_obj.featured_image %}{{ blog_obj.featured_image.url|escapejs }}{% endif %}', removing: false }">
         <div class="adm-card-header"><span class="adm-card-title">Featured Image</span></div>

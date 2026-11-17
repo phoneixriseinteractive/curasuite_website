@@ -1,6 +1,6 @@
 """CuraSuite — Blogs Admin"""
 from django.contrib import admin
-from .models import Blog, BlogCategory, BlogComment, BlogRevision, BlogTag
+from .models import Blog, BlogAuthor, BlogCategory, BlogComment, BlogRevision, BlogTag
 
 
 class BlogRevisionInline(admin.TabularInline):
@@ -12,9 +12,20 @@ class BlogRevisionInline(admin.TabularInline):
     def has_add_permission(self, request, obj=None): return False
 
 
+@admin.register(BlogAuthor)
+class BlogAuthorAdmin(admin.ModelAdmin):
+    list_display  = ["name", "designation", "sort_order", "is_active"]
+    search_fields = ["name", "designation"]
+    prepopulated_fields = {"slug": ("name",)}
+    fields = ["name", "slug", "designation", "bio", "photo", "sort_order", "is_active"]
+
+    def get_queryset(self, request):
+        return BlogAuthor.all_objects.all()
+
+
 @admin.register(Blog)
 class BlogAdmin(admin.ModelAdmin):
-    list_display   = ["title", "author", "category", "status", "is_featured", "reading_time_minutes", "view_count", "published_at"]
+    list_display   = ["title", "author_profile", "category", "status", "is_featured", "reading_time_minutes", "view_count", "published_at"]
     list_filter    = ["status", "is_featured", "category"]
     search_fields  = ["title", "excerpt", "content"]
     prepopulated_fields = {"slug": ("title",)}
@@ -22,7 +33,7 @@ class BlogAdmin(admin.ModelAdmin):
     readonly_fields   = ["reading_time_minutes", "view_count", "version", "created_at", "updated_at"]
     inlines = [BlogRevisionInline]
     fieldsets = (
-        ("Post", {"fields": ("title", "slug", "author", "category", "tags", "is_featured")}),
+        ("Post", {"fields": ("title", "slug", "author", "author_profile", "category", "tags", "is_featured")}),
         ("Content", {"fields": ("excerpt", "content", "featured_image", "featured_image_alt")}),
         ("Publishing", {"fields": ("status", "published_at", "allow_comments", "reading_time_minutes", "view_count", "version")}),
     )

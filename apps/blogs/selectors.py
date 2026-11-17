@@ -1,23 +1,23 @@
 """CuraSuite — Blogs Selectors"""
 from django.db.models import Prefetch, QuerySet
-from .models import Blog, BlogCategory, BlogComment, BlogTag
+from .models import Blog, BlogAuthor, BlogCategory, BlogComment, BlogTag
 
 
 def get_published_blogs(limit: int = None) -> QuerySet:
-    qs = Blog.objects.select_related("author", "category").prefetch_related("tags").order_by("-published_at")
+    qs = Blog.objects.select_related("author", "author_profile", "category").prefetch_related("tags").order_by("-published_at")
     return qs[:limit] if limit else qs
 
 def get_blog_by_slug(slug: str) -> Blog | None:
-    return Blog.objects.select_related("author", "category").prefetch_related("tags").filter(slug=slug).first()
+    return Blog.objects.select_related("author", "author_profile", "category").prefetch_related("tags").filter(slug=slug).first()
 
 def get_featured_blogs(limit: int = 3) -> QuerySet:
-    return Blog.objects.filter(is_featured=True).select_related("author", "category")[:limit]
+    return Blog.objects.filter(is_featured=True).select_related("author", "author_profile", "category")[:limit]
 
 def get_blogs_by_category(category_slug: str) -> QuerySet:
-    return Blog.objects.filter(category__slug=category_slug).select_related("author", "category").order_by("-published_at")
+    return Blog.objects.filter(category__slug=category_slug).select_related("author", "author_profile", "category").order_by("-published_at")
 
 def get_blogs_by_tag(tag_slug: str) -> QuerySet:
-    return Blog.objects.filter(tags__slug=tag_slug).select_related("author", "category").order_by("-published_at")
+    return Blog.objects.filter(tags__slug=tag_slug).select_related("author", "author_profile", "category").order_by("-published_at")
 
 def get_related_blogs(blog: Blog, limit: int = 3) -> QuerySet:
     qs = Blog.objects.exclude(pk=blog.pk)
@@ -33,3 +33,13 @@ def get_all_tags() -> QuerySet:
 
 def get_approved_comments(blog: Blog) -> QuerySet:
     return BlogComment.objects.filter(blog=blog, status=BlogComment.Status.APPROVED).order_by("created_at")
+
+def get_active_authors() -> QuerySet:
+    """Author profiles selectable on the blog form (soft-deleted ones excluded)."""
+    return BlogAuthor.objects.order_by("sort_order", "name")
+
+def get_authors_for_admin() -> QuerySet:
+    from django.db.models import Count, Q
+    return (BlogAuthor.objects
+            .annotate(post_count=Count("posts", filter=Q(posts__deleted_at__isnull=True)))
+            .order_by("sort_order", "name"))
